@@ -1,0 +1,88 @@
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--color-bg-base);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar {
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.pageName {
+  font: 600 13.5px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.pageWrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 3D Viewer layout */
+.viewerLayout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.viewportWrap {
+  flex: 1;
+  min-width: 0;
+  padding: 12px;
+}
+
+.rightPanel {
+  width: var(--panel-r-w);
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--color-border);
+}
+
+/* Scrollable pages */
+.scrollPage {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* ── Responsive ─────────────────────────── */
+@media (max-width: 1024px) {
+  .rightPanel { width: 260px; }
+}
+
+@media (max-width: 768px) {
+  .rightPanel { display: none; }
+  .viewportWrap { padding: 8px; }
+}

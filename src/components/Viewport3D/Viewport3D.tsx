@@ -1,0 +1,169 @@
+﻿import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Grid, Html, OrbitControls, useGLTF } from '@react-three/drei';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import * as THREE from 'three';
+import { Download } from 'lucide-react';
+import { useAppStore } from '../../store/appStore';
+import styles from './Viewport3D.module.css';
+
+function normalize(name = '') { return name.toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>; onReady: (model: THREE.Group) => void }> = ({ controls, onReady }) => {
+  const { scene } = useGLTF('/anatomy/skeletal_male.glb', '/draco/gltf/');
+  const model = useMemo(() => {
+    const clone = scene.clone(true);
+    clone.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const mesh = object as THREE.Mesh;
+      mesh.material = Array.isArray(mesh.material) ? mesh.material.map((material) => material.clone()) : mesh.material.clone();
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+    });
+    const bounds = new THREE.Box3().setFromObject(clone);
+    const center = bounds.getCenter(new THREE.Vector3());
+    const size = bounds.getSize(new THREE.Vector3());
+    clone.position.sub(center);
+    clone.scale.multiplyScalar(3 / Math.max(size.x, size.y, size.z));
+    return clone;
+  }, [scene]);
+  const { anatomyStructures, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView } = useAppStore();
+  useEffect(() => onReady(model), [model, onReady]);
+  useEffect(() => onReady(model), [model, onReady]);
+  const selectedId = Array.from(selectedBones).pop() ?? null;
+  const group = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+
+  const byNode = useMemo(() => new Map(anatomyStructures.map((item) => [normalize(item.node), item])), [anatomyStructures]);
+  useEffect(() => {
+    model.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const item = byNode.get(normalize(object.name));
+      const id = item?.organ_id;
+      object.userData.organId = id;
+      object.userData.structureName = item?.name_en;
+      object.visible = !id || (!hiddenBones.has(id) && (!isolationMode || selectedBones.has(id)));
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material) => {
+        if (material instanceof THREE.MeshStandardMaterial) {
+          material.color.set(id && selectedBones.has(id) ? '#30dec6' : '#d4d3c8');
+          material.emissive.set(id && selectedBones.has(id) ? '#07534d' : '#000000');
+          material.roughness = 0.78;
+          material.metalness = 0.02;
+        }
+      });
+    });
+  }, [model, byNode, selectedBones, hiddenBones, isolationMode]);
+
+  useEffect(() => {
+    if (!selectedId || !controls.current) return;
+    let selected: THREE.Object3D | null = null;
+    model.traverse((object) => { if (object.userData.organId === selectedId) selected = object; });
+    if (!selected) return;
+    const bounds = new THREE.Box3().setFromObject(selected);
+    const center = bounds.getCenter(new THREE.Vector3());
+    const distance = Math.max(...bounds.getSize(new THREE.Vector3()).toArray()) * 5 + 0.15;
+    const direction = camera.position.clone().sub(controls.current.target).normalize();
+    controls.current.target.copy(center);
+    camera.position.copy(center.clone().add(direction.multiplyScalar(distance)));
+    controls.current.update();
+  }, [selectedId, model, camera, controls]);
+
+  useEffect(() => {
+    if (!controls.current) return;
+    const target = controls.current.target.clone();
+    const distance = Math.max(camera.position.distanceTo(target), 4);
+    const direction: Record<string, THREE.Vector3> = {
+      anterior: new THREE.Vector3(0, 0, 1), posterior: new THREE.Vector3(0, 0, -1),
+      'lateral-l': new THREE.Vector3(-1, 0, 0), 'lateral-r': new THREE.Vector3(1, 0, 0),
+      superior: new THREE.Vector3(0, 1, 0), inferior: new THREE.Vector3(0, -1, 0),
+    };
+    camera.position.copy(target.clone().add(direction[anatomicalView].multiplyScalar(distance)));
+    camera.up.set(0, anatomicalView === 'superior' || anatomicalView === 'inferior' ? 0 : 1, anatomicalView === 'superior' ? -1 : 1);
+    camera.lookAt(target);
+    controls.current.update();
+  }, [anatomicalView, camera, controls]);
+
+  useFrame((_, delta) => { if (isRotating && group.current) group.current.rotation.y += delta * 0.35; });
+
+  return <group ref={group} onClick={(event) => {
+    event.stopPropagation();
+    const id = event.object.userData.organId as string | undefined;
+    if (id) toggleBoneSelection(id);
+  }}><primitive object={model} /></group>;
+};
+
+class ModelBoundary extends React.Component<React.PropsWithChildren, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? <Html center><div className={styles.loadError}>Anatomy atlas failed to load.</div></Html> : this.props.children; }
+}
+
+const Viewport3D: React.FC = () => {
+  const controls = useRef<OrbitControlsImpl>(null);
+  const exportModel = useRef<THREE.Group | null>(null);
+  const [modelLoaded, setModelLoaded] = useState(false);
+  const onModelReady = useCallback((model: THREE.Group) => { exportModel.current = model; setModelLoaded(true); }, []);
+  const { clearBoneSelection, anatomyStructures } = useAppStore();
+
+  return (
+    <div className={styles.viewport}>
+      <div className={styles.attribution}>Reference anatomy · Z-Anatomy / BodyParts3D · CC BY-SA 4.0</div>
+      <div className={styles.assetCount}>{anatomyStructures.length || '—'} named structures</div>
+      <Canvas camera={{ position: [0, 0.4, 5.7], fov: 36, near: 0.01, far: 100 }} dpr={[1, 2]} onPointerMissed={clearBoneSelection}>
+        <color attach="background" args={['#080d10']} />
+        <hemisphereLight args={['#d7f3ff', '#171f23', 1.8]} />
+        <directionalLight position={[3, 6, 6]} intensity={2.2} />
+        <directionalLight position={[-4, 2, -4]} intensity={1.4} color="#30dec6" />
+        <Grid position={[0, -1.8, 0]} args={[12, 12]} cellSize={0.4} cellThickness={0.4} cellColor="#163231" sectionColor="#214440" fadeDistance={12} fadeStrength={2} infiniteGrid />
+        <ModelBoundary><Suspense fallback={<Html center><div className={styles.loading}>Loading segmented atlas…</div></Html>}><AtlasModel controls={controls} onReady={onModelReady} /></Suspense></ModelBoundary>
+        <OrbitControls ref={controls} enablePan enableZoom enableRotate minDistance={0.7} maxDistance={15} makeDefault />
+      </Canvas>
+      <div className={styles.exports}>
+        <button onClick={() => exportGLB(exportModel.current)} disabled={!modelLoaded} aria-label="Export GLB"><Download size={13}/> GLB</button>
+        <button onClick={() => exportOBJ(exportModel.current)} disabled={!modelLoaded} aria-label="Export OBJ"><Download size={13}/> OBJ</button>
+        <button onClick={() => exportSummary(anatomyStructures, useAppStore.getState().selectedBones)} disabled={!anatomyStructures.length} aria-label="Export PDF summary"><Download size={13}/> PDF</button>
+      </div>
+      <div className={styles.hint}>DRAG TO ROTATE · SCROLL TO ZOOM · SHIFT + DRAG TO PAN</div>
+    </div>
+  );
+};
+
+export default Viewport3D;
+
+function saveFile(data: BlobPart, type: string, filename: string) {
+  const url = URL.createObjectURL(new Blob([data], { type }));
+  const link = document.createElement('a'); link.href = url; link.download = filename; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+async function exportGLB(model: THREE.Group | null) {
+  if (!model) return;
+  const { GLTFExporter } = await import('three/addons/exporters/GLTFExporter.js');
+  new GLTFExporter().parse(model, (result) => saveFile(result as ArrayBuffer, 'model/gltf-binary', 'osteovision-reference-skeleton.glb'), (error) => console.error('GLB export failed', error), { binary: true });
+}
+async function exportOBJ(model: THREE.Group | null) {
+  if (!model) return;
+  const { OBJExporter } = await import('three/addons/exporters/OBJExporter.js');
+  saveFile(new OBJExporter().parse(model), 'text/plain', 'osteovision-reference-skeleton.obj');
+}
+async function exportSummary(structures: import('../../store/appStore').AnatomyStructure[], selected: Set<string>) {
+  const { jsPDF } = await import('jspdf');
+  const pdf = new jsPDF();
+  pdf.setFontSize(18); pdf.text('OsteoVision 3D — Reference Atlas Summary', 16, 20);
+  pdf.setFontSize(10); pdf.text('Generalized reference anatomy. No patient-specific interpretation.', 16, 29);
+  pdf.text(`Atlas structures: ${structures.length}`, 16, 40);
+  pdf.text(`Selected structures: ${selected.size}`, 16, 47);
+  let y = 60;
+  structures.filter((item) => selected.has(item.organ_id)).forEach((item) => {
+    if (y > 275) { pdf.addPage(); y = 20; }
+    pdf.text(`${item.name_en} — ${item.ta2_latin}`, 16, y);
+    y += 7;
+  });
+  pdf.save('osteovision-reference-summary.pdf');
+}
+
+
+
+
+
+

@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* ─── Design Tokens ─────────────────────────────────── */
+:root {
+  /* Background layers */
+  --color-bg-base:       #06080d;
+  --color-bg-surface:    #0e1118;
+  --color-bg-elevated:   #161b26;
+  --color-bg-hover:      #1e2535;
+
+  /* Borders */
+  --color-border:        rgba(255,255,255,0.08);
+  --color-border-strong: rgba(255,255,255,0.16);
+
+  /* Brand accent — cyan-teal */
+  --color-accent:        #00e5cc;
+  --color-accent-dim:    rgba(0,229,204,0.12);
+  --color-accent-glow:   rgba(0,229,204,0.35);
+
+  /* Semantic */
+  --color-success:       #34d399;
+  --color-warning:       #fbbf24;
+  --color-error:         #f87171;
+  --color-info:          #60a5fa;
+
+  /* Text */
+  --color-text-primary:   #e9edf5;
+  --color-text-secondary: #8b95a7;
+  --color-text-tertiary:  #4b5563;
+  --color-text-inverse:   #06080d;
+
+  /* Bone selection */
+  --color-bone-default:  #c4a882;
+  --color-bone-hover:    #e5c99a;
+  --color-bone-selected: #00e5cc;
+  --color-bone-isolated: #7c3aed;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  /* Text scale */
+  --text-xs:   0.75rem;
+  --text-sm:   0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md:   1.0625rem;
+  --text-lg:   1.25rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  2rem;
+
+  /* Spacing */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Layout */
+  --sidebar-w:      240px;
+  --panel-r-w:      300px;
+  --topbar-h:       56px;
+  --border-radius:  10px;
+  --border-radius-lg: 16px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { color-scheme: dark; scroll-behavior: smooth; }
+
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font: 400 var(--text-base)/1.6 var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#root { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+
+/* ─── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+/* ─── Focus ──────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Typography Utilities ───────────────────────────── */
+.mono-label {
+  font: 600 var(--text-xs)/1.333 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Pulse Skeleton ─────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.7; }
+}
+.skeleton {
+  background: var(--color-bg-elevated);
+  border-radius: 6px;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+/* ─── Glow accents ───────────────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--color-accent-glow); }
+  50%       { box-shadow: 0 0 20px var(--color-accent-glow), 0 0 40px rgba(0,229,204,0.15); }
+}
+
+/* ─── Viewport canvas ────────────────────────────────── */
+canvas { display: block; touch-action: none; outline: none; }
+
+/* ─── Reduced motion ─────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
