@@ -25,12 +25,15 @@ const anatomicalViews: { id: AnatomicalView; label: string }[] = [
 
 const ViewerToolbar: React.FC = () => {
   const {
-    viewMode, setViewMode,
+    setViewMode,
+    activePage,
+    setActivePage,
     anatomicalView, setAnatomicalView,
     selectedBones, clearBoneSelection,
     isolationMode, setIsolationMode,
     isRotating, setIsRotating,
   } = useAppStore();
+  const selectedMode = activePage === 'stress' || activePage === 'xray' ? activePage : 'bone';
 
   return (
     <div className={styles.toolbar}>
@@ -42,11 +45,13 @@ const ViewerToolbar: React.FC = () => {
             <button
               key={id}
               role="tab"
-              aria-selected={viewMode === id}
-              className={`${styles.tab} ${viewMode === id ? styles.tabActive : ''}`}
-              onClick={() => setViewMode(id)}
-              disabled={id !== 'bone'}
-              title={id === 'stress' ? 'Requires patient-specific biomechanical data' : id === 'xray' ? 'Requires an X-ray volume' : undefined}
+              aria-selected={selectedMode === id}
+              className={`${styles.tab} ${selectedMode === id ? styles.tabActive : ''}`}
+              onClick={() => {
+                setViewMode(id);
+                setActivePage(id === 'bone' ? 'viewer' : id);
+              }}
+              title={id === 'stress' ? 'Open the educational 1D axial finite-element simulation' : id === 'xray' ? 'Open the local radiograph viewer' : 'Return to the 3D anatomy viewer'}
             >
               <Icon size={14} />
               {label}

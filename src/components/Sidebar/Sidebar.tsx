@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Bone, AlignCenter, Upload, ClipboardList, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Bone, AlignCenter, Upload, Activity, ClipboardList, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Sidebar.module.css';
 
@@ -9,6 +9,7 @@ const navItems = [
   { id: 'viewer', label: '3D Anatomy', icon: Bone },
   { id: 'spine', label: 'Spine Explorer', icon: AlignCenter },
   { id: 'xray', label: 'X-Ray Workspace', icon: Upload },
+  { id: 'stress', label: 'Stress Analysis', icon: Activity },
   { id: 'studies', label: 'Studies', icon: ClipboardList },
 ] as const;
 

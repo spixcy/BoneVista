@@ -56,18 +56,40 @@ test('spine filters show individually named vertebrae from the atlas', async ({ 
   await expect(page.getByTestId('spine-vertebra-grid').locator('button')).toHaveCount(2);
 });
 
-test('previews local AP and lateral images without enabling inference', async ({ page }) => {
+test('views local AP and lateral images with working controls and no claimed inference', async ({ page }) => {
   await page.goto('/');
   await openWorkspace(page);
   await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
   await page.getByLabel('AP radiograph file input').setInputFiles(sample);
   await page.getByLabel('Lateral radiograph file input').setInputFiles(sample);
-  await expect(page.getByAltText('AP radiograph preview')).toBeVisible();
-  await expect(page.getByAltText('Lateral radiograph preview')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Inference unavailable' })).toBeDisabled();
+  await expect(page.getByAltText('AP radiograph')).toBeVisible();
+  await expect(page.getByText(/\d+ × \d+px/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Zoom in' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Zoom in' }).click();
+  await expect(page.getByText('120%', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Rotate right' }).click();
+  await page.getByRole('slider', { name: 'Brightness' }).fill('130');
+  await page.getByRole('tab', { name: /Lateral/ }).click();
+  await expect(page.getByAltText('Lateral radiograph')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Zoom in' })).toBeEnabled();
+  await expect(page.getByText(/no AI analysis, diagnosis, or 3D reconstruction/)).toBeVisible();
   await page.getByLabel('Remove AP radiograph').click();
   await page.getByLabel('AP radiograph file input').setInputFiles(invalid);
-  await expect(page.getByText('Choose a JPEG or PNG image.')).toBeVisible();
+  await expect(page.getByText('Choose a JPEG, PNG, or WebP image. DICOM is not supported yet.')).toBeVisible();
+});
+
+test('runs the educational finite-element stress model and validates invalid inputs', async ({ page }) => {
+  await page.goto('/');
+  await openWorkspace(page);
+  await page.getByRole('button', { name: '3D Anatomy', exact: true }).click();
+  await page.getByRole('tab', { name: 'Stress' }).click();
+  await expect(page.getByRole('heading', { name: 'Axial Bone Stress' })).toBeVisible();
+  await page.getByRole('button', { name: 'Run simulation' }).click();
+  await expect(page.getByText('1.6667 MPa')).toBeVisible();
+  await expect(page.getByText('0.039216 mm')).toBeVisible();
+  await page.getByLabel('Cross-sectional area').fill('0');
+  await page.getByRole('button', { name: 'Run simulation' }).click();
+  await expect(page.getByRole('alert')).toContainText('area, length, and modulus must be positive');
 });
 
 test('exports a binary GLB reference model', async ({ page }) => {

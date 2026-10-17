@@ -12,6 +12,7 @@ import landing from './LandingPage.module.css';
 const Viewport3D     = lazy(() => import('./components/Viewport3D/Viewport3D'));
 const SpineExplorer  = lazy(() => import('./components/SpineExplorer/SpineExplorer'));
 const XrayWorkspace  = lazy(() => import('./components/XrayWorkspace/XrayWorkspace'));
+const StressAnalysis = lazy(() => import('./components/StressAnalysis/StressAnalysis'));
 const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
 const LandingBone    = lazy(() => import('./components/LandingBone'));
 
@@ -186,6 +187,7 @@ const App: React.FC = () => {
                 {activePage === 'dashboard' && <Dashboard />}
                 {activePage === 'spine'     && <div className={styles.scrollPage}><SpineExplorer /></div>}
                 {activePage === 'xray'      && <div className={styles.scrollPage}><XrayWorkspace /></div>}
+                {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
                 {activePage === 'studies'   && <StudiesPlaceholder />}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
               </Suspense>
@@ -236,7 +238,7 @@ const SettingsPlaceholder: React.FC = () => {
 function pageName(page: string): string {
   const map: Record<string, string> = {
     dashboard: 'Home', viewer: '3D Anatomy', spine: 'Spine Explorer',
-    xray: 'X-Ray Workspace', studies: 'Studies', settings: 'Settings',
+    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings',
   };
   return map[page] ?? page;
 }
