@@ -21,7 +21,7 @@ const RotatingBone: React.FC<{ spec: BoneSpec }> = ({ spec }) => {
       let belongsToBone = false;
       while (parent && !belongsToBone) { belongsToBone = boneNodes.has(parent); parent = parent.parent; }
       object.visible = belongsToBone;
-      if (belongsToBone) object.material = new THREE.MeshBasicMaterial({ color: '#354bd0', wireframe: true, transparent: true, opacity: 0.98 });
+      if (belongsToBone) object.material = new THREE.MeshBasicMaterial({ color: '#243bb4', wireframe: true, transparent: true, opacity: 0.98 });
     });
     model.updateMatrixWorld(true);
     const bounds = new THREE.Box3();
@@ -31,7 +31,7 @@ const RotatingBone: React.FC<{ spec: BoneSpec }> = ({ spec }) => {
     // Keep each decorative bone in the background at a deliberate accent size.
     // The previous multi-unit scale filled most of the section canvas and cut
     // through the hero copy and card layouts.
-    const decorativeSize = Math.min(spec.scale, 0.85);
+    const decorativeSize = Math.min(spec.scale, 1.2);
     const scale = largestSide > 0 ? decorativeSize / largestSide : 1;
     return { model, center, scale };
   }, [scene, spec.name, spec.scale]);
@@ -44,7 +44,7 @@ const RotatingBone: React.FC<{ spec: BoneSpec }> = ({ spec }) => {
     rotation.current.position.set(edgePosition * viewport.width, spec.y * viewport.height + Math.sin(time * 0.45 + spec.rotation[1]) * 0.07, 0);
     rotation.current.rotation.set(
       spec.rotation[0] + Math.sin(time * 0.2 + spec.rotation[1]) * 0.08,
-      spec.rotation[1] + time * spec.speed,
+      spec.rotation[1] + time * spec.speed * 1.35,
       spec.rotation[2] + Math.cos(time * 0.17 + spec.rotation[0]) * 0.06,
     );
   });
