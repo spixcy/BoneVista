@@ -1,4 +1,4 @@
-﻿# OsteoVision 3D — Licenses
+﻿# BoneVista — Licenses
 
 ## Application code
 
@@ -19,3 +19,4 @@ The research repository [naamiinepal/xrayto3D-benchmark](https://github.com/naam
 - Three.js: MIT License.
 - Bundled Draco decoder: Apache License 2.0; see `public/draco/README.md`.
 - jsPDF: MIT License.
+

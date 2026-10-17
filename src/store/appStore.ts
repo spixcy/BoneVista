@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 export type ViewMode = 'bone' | 'stress' | 'xray';
+export type Theme = 'dark' | 'light';
 export type AnatomicalView = 'anterior' | 'posterior' | 'lateral-l' | 'lateral-r' | 'superior' | 'inferior';
 export type SpineRegion = 'cervical' | 'thoracic' | 'lumbar' | 'sacral' | 'all';
 
@@ -53,6 +54,8 @@ export interface ReconstructionResult {
 }
 
 interface AppState {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
   // Navigation
   activePage: 'dashboard' | 'viewer' | 'spine' | 'xray' | 'studies' | 'settings';
   setActivePage: (page: AppState['activePage']) => void;
@@ -109,7 +112,15 @@ const defaultReconstruction: ReconstructionResult = {
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
-  activePage: 'viewer',
+  theme: (() => {
+    try { return localStorage.getItem('bonevista-theme') === 'light' ? 'light' : 'dark'; }
+    catch { return 'dark'; }
+  })(),
+  setTheme: (theme) => {
+    try { localStorage.setItem('bonevista-theme', theme); } catch { /* Keep the in-memory preference. */ }
+    set({ theme });
+  },
+  activePage: 'dashboard',
   setActivePage: (page) => set({ activePage: page }),
 
   anatomyStructures: [],

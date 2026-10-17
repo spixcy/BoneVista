@@ -1,22 +1,76 @@
-﻿import React from 'react';
-import { motion } from 'framer-motion';
-import { Activity, Bone, Upload, AlignCenter } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { ArrowDown, ArrowRight, AlignCenter, Bone, ImageUp, Layers3, ShieldCheck } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
 
-const quickLinks = [
-  { page: 'viewer', label: '3D Viewer', desc: 'Explore 335 segmented reference structures', icon: Bone, color: 'var(--color-accent)' },
-  { page: 'spine', label: 'Spine Explorer', desc: 'Select named vertebrae in the atlas', icon: AlignCenter, color: '#a0c4ff' },
-  { page: 'xray', label: 'X-Ray Workspace', desc: 'Preview local AP and lateral images', icon: Upload, color: '#ffd6a5' },
+const actions = [
+  { page: 'viewer', title: '3D Anatomy', detail: 'Explore the segmented reference atlas', icon: Bone, art: '/branding/bonevista-mascot.webp', tone: 'blue' },
+  { page: 'spine', title: 'Spine Explorer', detail: 'Browse 26 individually named meshes', icon: AlignCenter, art: '/branding/spine-guide.webp', tone: 'teal' },
+  { page: 'xray', title: 'X-Ray Workspace', detail: 'Preview AP and lateral images locally', icon: ImageUp, art: '/branding/xray-guide.webp', tone: 'violet' },
 ] as const;
 
 const Dashboard: React.FC = () => {
   const { anatomyStructures, setActivePage } = useAppStore();
-  return <div className={styles.dashboard}>
-    <div className={styles.heroRow}><div><h1 className={styles.heroTitle}>OsteoVision 3D</h1><p className={styles.heroSub}>Reference anatomy visualization and biplanar imaging workspace.</p></div><div className={styles.statusChip}><span className={styles.dot} />Inference unavailable</div></div>
-    <div className={styles.statsRow}><motion.div className={styles.statCard} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}><div className={styles.statIcon}><Bone size={18} /></div><div><div className={styles.statValue}>{anatomyStructures.length || '…'}</div><div className={styles.statLabel}>Atlas structures</div></div></motion.div><motion.div className={styles.statCard} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}><div className={styles.statIcon}><Activity size={18} /></div><div><div className={styles.statValue}>Not configured</div><div className={styles.statLabel}>X-ray inference</div></div></motion.div></div>
-    <div><span className="mono-label" style={{ display: 'block', marginBottom: 10 }}>Quick access</span><div className={styles.quickGrid}>{quickLinks.map(({ page, label, desc, icon: Icon, color }) => <button key={page} className={styles.quickCard} onClick={() => setActivePage(page)}><div className={styles.quickIcon} style={{ background: `${color}18` }}><Icon size={22} color={color} /></div><div className={styles.quickText}><span className={styles.quickLabel}>{label}</span><span className={styles.quickDesc}>{desc}</span></div></button>)}</div></div>
-    <div className={styles.studiesTable}><span className="mono-label">No patient studies loaded</span><p>Images are previewed locally in this browser. A clinical inference service and study store are not configured.</p></div>
+  const exploreRef = useRef<HTMLElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const spineCount = anatomyStructures.filter((item) => /^(Atlas \(C1\)|Axis \(C2\)|Vertebra [CTL]\d+|Sacrum|Coccyx)$/.test(item.name_en)).length;
+  return <div className={styles.dashboard} data-testid="bonevista-dashboard" onScroll={(event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    setScrollProgress(scrollHeight > clientHeight ? Math.round(scrollTop / (scrollHeight - clientHeight) * 100) : 100);
+  }}>
+    <div className={styles.scrollProgress} role="progressbar" aria-label="Home page scroll progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={scrollProgress}><span style={{ height: `${scrollProgress}%` }} /></div>
+    <section className={styles.intro}>
+      <div className={styles.introCopy}>
+        <span className={styles.eyebrow}>YOUR ANATOMY WORKSPACE</span>
+        <h1>Explore human anatomy</h1>
+        <p>Learn from a segmented skeletal atlas, inspect the spine, and preview radiographs in one workspace.</p>
+        <div className={styles.introMeta}><span><Layers3 size={15}/>{anatomyStructures.length || '…'} named atlas structures</span><span><ShieldCheck size={15}/>Images stay in this browser</span></div>
+        <button className={styles.primaryButton} onClick={() => setActivePage('viewer')}>Open 3D Anatomy <ArrowRight size={16}/></button>
+        <button className={styles.scrollCue} onClick={() => exploreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>SCROLL TO EXPLORE <ArrowDown size={13}/></button>
+      </div>
+      <div className={styles.heroArt} aria-label="BoneVista mascot waving"><img src="/branding/bonevista-mascot.webp" alt="BoneVista's waving hooded skeleton mascot"/><span>Hi, explorer!</span></div>
+    </section>
+
+    <div className={styles.dashboardGrid}>
+      <main className={styles.mainColumn}>
+        <section className={styles.section} ref={exploreRef}>
+          <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>QUICK ACCESS</span><h2>Pick up where you want to explore</h2></div></div>
+          <div className={styles.actionGrid}>{actions.map(({ page, title, detail, icon: Icon, art, tone }) => <button key={page} className={`${styles.actionCard} ${styles[tone]}`} onClick={() => setActivePage(page)}>
+            <div className={styles.actionText}><span className={styles.actionIcon}><Icon size={17}/></span><strong>{title}</strong><span>{detail}</span><span className={styles.actionArrow}><ArrowRight size={15}/></span></div>
+            <img src={art} alt="" aria-hidden="true"/>
+          </button>)}</div>
+        </section>
+
+        <section className={styles.atlasPanel}>
+          <div className={styles.atlasPanelIcon}><Layers3 size={19}/></div>
+          <div className={styles.atlasPanelCopy}><span className={styles.eyebrow}>REFERENCE ATLAS</span><h2>Built for careful exploration</h2><p>BoneVista uses a generalized, segmented reference skeleton. It does not represent a patient or create a diagnosis.</p></div>
+          <div className={styles.atlasStats}><div><strong>{anatomyStructures.length || '…'}</strong><span>structures</span></div><div><strong>{spineCount || '…'}</strong><span>spine meshes</span></div></div>
+        </section>
+
+        <section className={styles.emptyStudies}>
+          <div><span className={styles.eyebrow}>STUDIES</span><h2>No saved studies yet</h2><p>This prototype does not store patient studies. Uploaded images remain local and are only previewed.</p></div>
+          <button className={styles.secondaryButton} onClick={() => setActivePage('xray')}>Open X-Ray Workspace <ArrowRight size={15}/></button>
+        </section>
+      </main>
+
+      <aside className={styles.sideColumn}>
+        <section className={styles.quickPanel}>
+          <div className={styles.panelHeading}><h2>Quick actions</h2><span>3 tools</span></div>
+          {([
+            { page: 'xray', label: 'Preview X-Ray', icon: ImageUp },
+            { page: 'viewer', label: 'Explore 3D model', icon: Bone },
+            { page: 'spine', label: 'Open Spine Explorer', icon: AlignCenter },
+          ] as const).map(({ page, label, icon: Icon }) => <button key={page} className={styles.quickAction} onClick={() => setActivePage(page)}><Icon size={17}/><span>{label}</span><ArrowRight size={15}/></button>)}
+        </section>
+        <section className={styles.guideCard}>
+          <img src="/branding/learning-guide.webp" alt="BoneVista mascot learning anatomy"/>
+          <div><span className={styles.eyebrow}>A NOTE FROM YOUR GUIDE</span><p>Small steps. Big discoveries.</p></div>
+        </section>
+        <section className={styles.statusCard}><div className={styles.statusMark}><ShieldCheck size={16}/></div><div><strong>Private by default</strong><p>Radiograph previews are created locally. No image upload or AI inference is configured.</p></div></section>
+      </aside>
+    </div>
   </div>;
 };
+
 export default Dashboard;
+

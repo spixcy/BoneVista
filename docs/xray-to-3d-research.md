@@ -1,4 +1,4 @@
-# X-ray-to-3D research note
+﻿# X-ray-to-3D research note
 
 **Recommendation: ADAPT the benchmark as a research/evaluation starting point; do not use it as a ready inference service.**
 
@@ -12,7 +12,7 @@ The GitHub README announced trained models in February 2024 through a SharePoint
 
 The prompt's ConvNeXt plus occupancy decoder describes a different, newer research direction. The [X2BR paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC13133211/) uses ConvNeXt and an implicit occupancy field but reports single-view DRR input in its comparison table, and describes a custom CT/DRR dataset. It is not evidence that the NeurIPS benchmark's released models use ConvNeXt, nor that it accepts arbitrary patient AP/LAT radiographs.
 
-## Fit for OsteoVision
+## Fit for BoneVista
 
 | Question | Finding |
 |---|---|
@@ -31,3 +31,4 @@ Keep the independent reference atlas usable. For an inference phase, first obtai
 ## Design workflow references
 
 The pasted design-tool list is treated as guidance, not as a request to install every external agent tool. This repository establishes its own `DESIGN.md`, uses accessible native controls and responsive CSS, and includes a Playwright browser suite. The referenced design-tools guide was not accessible during research; no claims are made about its current contents. The suggested external review skills were not installed.
+

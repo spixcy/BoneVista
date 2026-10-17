@@ -1,4 +1,4 @@
-# OsteoVision design system
+﻿# BoneVista design system
 
 ## Product direction
 
@@ -7,7 +7,7 @@ Medical research workstation with a quiet, high-contrast interface. Keep the ana
 ## Foundations
 
 - **Canvas:** `#080d10`; side rail: `#0b1114`; panels: `#0d1418`.
-- **Primary accent:** `#30dec6`; selected surface: `#142320`.
+- **Primary accent:** `#7da2ff`; selected surface: `#18243d`.
 - **Text:** `#e8eceb`; secondary: `#819092`; muted: `#657274`.
 - **Borders:** `#1e2a2d`; warning: muted amber with a visible explanatory label.
 - **Typography:** Manrope for display headings; DM Sans for interface text; DM Mono for technical labels and status.
@@ -22,3 +22,5 @@ Medical research workstation with a quiet, high-contrast interface. Keep the ana
 - Preserve visible keyboard focus and accessible names on icon-only controls.
 - On narrow screens, stack the structure list and details below the viewport.
 - Use transitions for state feedback only; no ambient motion beyond the load indicator.
+
+
