@@ -74,6 +74,7 @@
   .workspaceFrame { height: 78vh; min-height: 580px; }
   .footer { padding-inline: 28px; }
 }
+@media (max-width: 1100px) { .boneLayer { opacity: 0; } }
 @media (max-width: 540px) {
   .brand { font-size: 13px; }
   .brandMark { width: 30px; height: 30px; }
