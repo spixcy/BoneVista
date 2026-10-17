@@ -92,6 +92,24 @@ test('runs the educational finite-element stress model and validates invalid inp
   await expect(page.getByRole('alert')).toContainText('area, length, and modulus must be positive');
 });
 
+test('toolbar X-Ray and Stress modes remain in the 3D anatomy viewer', async ({ page }) => {
+  await page.goto('/');
+  await openWorkspace(page);
+  await page.getByRole('button', { name: '3D Anatomy', exact: true }).click();
+  await expect(page.locator('[class*=assetCount]')).toContainText('335', { timeout: 30_000 });
+  await page.getByRole('tab', { name: 'X-Ray' }).click();
+  await expect(page.getByRole('region', { name: 'Radiograph viewer' })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Bone' })).toHaveAttribute('aria-selected', 'false');
+  await expect(page.locator('[class*=assetCount]')).toBeVisible();
+  await page.getByRole('tab', { name: 'Stress' }).click();
+  await expect(page.getByRole('heading', { name: 'Axial Bone Stress' })).toBeVisible();
+  await page.getByRole('button', { name: 'Run simulation' }).click();
+  await expect(page.getByTestId('stress-mapped-target')).toContainText('mapped onto the selected atlas mesh');
+  await expect(page.locator('[class*=assetCount]')).toBeVisible();
+  await page.getByRole('tab', { name: 'Bone' }).click();
+  await expect(page.getByRole('heading', { name: 'Axial Bone Stress' })).toHaveCount(0);
+});
+
 test('exports a binary GLB reference model', async ({ page }) => {
   await page.goto('/');
   await openWorkspace(page);

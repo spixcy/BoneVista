@@ -69,6 +69,10 @@ interface AppState {
   setAnatomicalView: (view: AnatomicalView) => void;
   selectedBones: Set<string>;
   toggleBoneSelection: (id: string) => void;
+  stressTargetId: string | null;
+  setStressTargetId: (id: string | null) => void;
+  stressResultMPa: number | null;
+  setStressResultMPa: (stress: number | null) => void;
   clearBoneSelection: () => void;
   hiddenBones: Set<string>;
   toggleBoneVisibility: (id: string) => void;
@@ -135,6 +139,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (next.has(id)) next.delete(id); else next.add(id);
     set({ selectedBones: next });
   },
+  stressTargetId: null,
+  setStressTargetId: (id) => set({ stressTargetId: id, selectedBones: id ? new Set([id]) : new Set(), stressResultMPa: null }),
+  stressResultMPa: null,
+  setStressResultMPa: (stress) => set({ stressResultMPa: stress }),
   clearBoneSelection: () => set({ selectedBones: new Set() }),
   hiddenBones: new Set(),
   toggleBoneVisibility: (id) => {

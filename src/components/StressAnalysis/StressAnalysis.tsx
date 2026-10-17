@@ -1,20 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Activity, Info, Play, RotateCcw } from 'lucide-react';
+import { useAppStore } from '../../store/appStore';
 import { solveAxialBar, type AxialFemResult } from './axialFemSolver';
 import styles from './StressAnalysis.module.css';
 
 const defaults = { forceN: 500, areaMm2: 300, lengthMm: 400, modulusGPa: 17, elements: 12 };
 
 export default function StressAnalysis() {
+  const { anatomyStructures, stressTargetId, setStressTargetId, setStressResultMPa } = useAppStore();
   const [values, setValues] = useState(defaults);
   const [result, setResult] = useState<AxialFemResult | null>(null);
   const [error, setError] = useState('');
+  useEffect(() => {
+    if (!stressTargetId && anatomyStructures.length) {
+      const femur = anatomyStructures.find((item) => item.name_en.toLowerCase().includes('femur'));
+      if (femur) setStressTargetId(femur.organ_id);
+    }
+  }, [anatomyStructures, stressTargetId, setStressTargetId]);
   const update = (key: keyof typeof defaults, value: number) => setValues((current) => ({ ...current, [key]: value }));
   const run = () => {
-    try { setResult(solveAxialBar(values)); setError(''); }
-    catch (reason) { setResult(null); setError(reason instanceof Error ? reason.message : 'Simulation could not be solved.'); }
+    if (!stressTargetId) { setError('Choose an atlas structure to show the simplified result on.'); return; }
+    try {
+      const solved = solveAxialBar(values);
+      setResult(solved); setStressResultMPa(solved.maxStressMPa); setError('');
+    } catch (reason) { setResult(null); setStressResultMPa(null); setError(reason instanceof Error ? reason.message : 'Simulation could not be solved.'); }
   };
-  const reset = () => { setValues(defaults); setResult(null); setError(''); };
+  const reset = () => { setValues(defaults); setResult(null); setError(''); setStressResultMPa(null); };
+  const targetName = anatomyStructures.find((item) => item.organ_id === stressTargetId)?.name_en ?? '';
 
   return <main className={styles.page}>
     <header className={styles.header}><span className="mono-label">EDUCATIONAL SIMULATION</span><h2>Axial Bone Stress</h2><p>Explore how a simplified uniform bone shaft responds to an axial load.</p></header>
@@ -23,7 +35,8 @@ export default function StressAnalysis() {
       <section className={styles.card}>
         <h3>Simulation inputs</h3>
         <p className={styles.description}>One end fixed; an axial tensile force is applied at the other end.</p>
-        <label className={styles.field}>Simplified model<select value="uniform-shaft" disabled><option value="uniform-shaft">Uniform long-bone shaft (1D bar)</option></select></label>
+        <label className={styles.field}>Atlas structure to highlight<select aria-label="Bone to color" value={stressTargetId ?? ''} onChange={(event) => { setStressTargetId(event.target.value || null); setResult(null); }}><option value="">Choose a structure…</option>{anatomyStructures.map((item) => <option key={item.organ_id} value={item.organ_id}>{item.name_en}</option>)}</select></label>
+        <label className={styles.field}>Calculation geometry<select value="uniform-shaft" disabled><option value="uniform-shaft">Uniform long-bone shaft (1D bar)</option></select></label>
         <div className={styles.fields}>
           <NumberField label="Axial force" unit="N" value={values.forceN} min={0} onChange={(v) => update('forceN', v)}/>
           <NumberField label="Cross-sectional area" unit="mm²" value={values.areaMm2} min={0.01} onChange={(v) => update('areaMm2', v)}/>
@@ -37,7 +50,7 @@ export default function StressAnalysis() {
       </section>
       <section className={styles.card} aria-live="polite">
         <h3>Results</h3>
-        {!result ? <div className={styles.empty}><Activity size={29}/><strong>No simulation yet</strong><span>Set the inputs and run the educational model.</span></div> : <Results result={result}/>}
+        {!result ? <div className={styles.empty}><Activity size={29}/><strong>No simulation yet</strong><span>Set the inputs and run the educational model.</span></div> : <Results result={result} targetName={targetName}/>}
       </section>
     </div>
     <p className={styles.method}>Method: direct stiffness assembly for linear 2-node axial bar elements, with Gaussian elimination of the constrained global stiffness system. Stress is calculated as E·Δu/Δx; displacement is shown in millimetres. This simplified 1D method does not model 3D geometry, bending, anisotropy, failure, or fracture.</p>
@@ -48,13 +61,15 @@ function NumberField({ label, unit, value, min, max, step = 1, onChange }: { lab
   return <label className={styles.field}>{label}<div className={styles.inputWrap}><input type="number" min={min} max={max} step={step} value={value} onChange={(event) => onChange(event.currentTarget.value === '' ? 0 : Number(event.currentTarget.value))}/><span>{unit}</span></div></label>;
 }
 
-function Results({ result }: { result: AxialFemResult }) {
+function Results({ result, targetName }: { result: AxialFemResult; targetName: string }) {
   return <div className={styles.results}>
     <div className={styles.metrics}><Metric label="Max axial stress" value={`${result.maxStressMPa.toFixed(4)} MPa`}/><Metric label="End displacement" value={`${result.endDisplacementMm.toFixed(6)} mm`}/></div>
     <div className={styles.barVisual} aria-label="Uniform axial stress across the simplified bar">
       <span>Fixed</span><div className={styles.bar}><i/></div><span>Load →</span>
     </div>
     <div className={styles.resultDetail}><span>Elements solved</span><strong>{result.elementStressMPa.length}</strong><span>Element stress variation</span><strong>{(Math.max(...result.elementStressMPa) - Math.min(...result.elementStressMPa)).toExponential(2)} MPa</strong></div>
+    <div className={styles.stressLegend}><span>0 MPa</span><i/><span>10 MPa</span></div>
+    <p className={styles.resultNote} data-testid="stress-mapped-target">The calculated uniform 1D stress is mapped onto the selected atlas mesh: <strong>{targetName}</strong>.</p>
     <p className={styles.resultNote}>Calculated by the stated 1D finite-element model using the inputs shown. The uniform bar has constant axial stress under these assumptions.</p>
   </div>;
 }

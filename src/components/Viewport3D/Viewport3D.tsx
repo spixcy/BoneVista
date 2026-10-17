@@ -27,7 +27,7 @@ const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>
     clone.scale.multiplyScalar(3 / Math.max(size.x, size.y, size.z));
     return clone;
   }, [scene]);
-  const { anatomyStructures, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView } = useAppStore();
+  const { anatomyStructures, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView, viewMode, stressTargetId, stressResultMPa } = useAppStore();
   useEffect(() => onReady(model), [model, onReady]);
   const selectedId = Array.from(selectedBones).pop() ?? null;
   const group = useRef<THREE.Group>(null);
@@ -43,16 +43,20 @@ const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>
       object.userData.structureName = item?.name_en;
       object.visible = !id || (!hiddenBones.has(id) && (!isolationMode || selectedBones.has(id)));
       const materials = Array.isArray(object.material) ? object.material : [object.material];
+      const isStressTarget = viewMode === 'stress' && stressResultMPa !== null && id === stressTargetId;
+      const stressColor = isStressTarget
+        ? new THREE.Color('#2864d7').lerp(new THREE.Color('#ed493b'), Math.max(0, Math.min(1, stressResultMPa / 10)))
+        : null;
       materials.forEach((material) => {
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.color.set(id && selectedBones.has(id) ? '#668cff' : '#d4d3c8');
-          material.emissive.set(id && selectedBones.has(id) ? '#182b68' : '#000000');
+          material.color.set(stressColor ?? (id && selectedBones.has(id) ? '#668cff' : '#d4d3c8'));
+          material.emissive.set(isStressTarget && stressColor ? stressColor.clone().multiplyScalar(0.18) : id && selectedBones.has(id) ? '#182b68' : '#000000');
           material.roughness = 0.78;
           material.metalness = 0.02;
         }
       });
     });
-  }, [model, byNode, selectedBones, hiddenBones, isolationMode]);
+  }, [model, byNode, selectedBones, hiddenBones, isolationMode, viewMode, stressTargetId, stressResultMPa]);
 
   useEffect(() => {
     if (!selectedId || !controls.current) return;

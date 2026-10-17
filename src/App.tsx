@@ -48,7 +48,7 @@ const PageSkeleton: React.FC = () => (
 );
 
 const App: React.FC = () => {
-  const { activePage, rightPanelOpen, setAnatomyStructures, theme, setTheme } = useAppStore();
+  const { activePage, rightPanelOpen, setAnatomyStructures, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const siteRef = useRef<HTMLDivElement>(null);
@@ -173,6 +173,8 @@ const App: React.FC = () => {
               <div className={styles.viewportWrap}><Viewport3D active={isViewer} /></div>
               {rightPanelOpen && <div className={styles.rightPanel}><AnatomyPanel /></div>}
             </div>
+            {isViewer && viewMode === 'xray' && <div className={styles.modeOverlay}><Suspense fallback={<PageSkeleton />}><XrayWorkspace /></Suspense></div>}
+            {isViewer && viewMode === 'stress' && <div className={`${styles.modeOverlay} ${styles.stressModeOverlay}`}><Suspense fallback={<PageSkeleton />}><StressAnalysis /></Suspense></div>}
           </div>}
           <AnimatePresence mode="wait">
             <motion.div

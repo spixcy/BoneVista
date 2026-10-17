@@ -86,6 +86,24 @@
   border-left: 1px solid var(--color-border);
 }
 
+.modeOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: auto;
+  background: rgba(8, 13, 16, .96);
+  backdrop-filter: blur(8px);
+}
+
+.stressModeOverlay {
+  inset: 10px 10px 10px auto;
+  width: min(540px, 52%);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  background: rgba(8, 13, 16, .94);
+  box-shadow: 0 16px 50px rgba(0,0,0,.38);
+}
+
 /* Scrollable pages */
 .scrollPage {
   height: 100%;
@@ -100,6 +118,10 @@
 @media (max-width: 768px) {
   .rightPanel { display: none; }
   .viewportWrap { padding: 8px; }
+}
+
+@media (max-width: 600px) {
+  .stressModeOverlay { inset: 6px; width: auto; }
 }
 .topbar{gap:12px;padding-right:14px}
 .searchWrap{position:relative;display:flex;align-items:center;gap:9px;flex:1;min-width:140px;max-width:360px;height:36px;padding:0 11px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg-elevated);color:var(--color-text-tertiary)}
