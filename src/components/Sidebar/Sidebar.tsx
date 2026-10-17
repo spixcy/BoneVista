@@ -14,6 +14,14 @@ const navItems = [
 
 const Sidebar: React.FC = () => {
   const { activePage, setActivePage, sidebarCollapsed, setSidebarCollapsed } = useAppStore();
+  React.useEffect(() => {
+    const compactViewport = window.matchMedia('(max-width: 560px)');
+    const syncSidebar = () => setSidebarCollapsed(compactViewport.matches);
+    syncSidebar();
+    compactViewport.addEventListener('change', syncSidebar);
+    return () => compactViewport.removeEventListener('change', syncSidebar);
+  }, [setSidebarCollapsed]);
+
   return <motion.aside data-collapsed={sidebarCollapsed} className={styles.sidebar} animate={{ width: sidebarCollapsed ? 68 : 248 }} transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}>
     <div className={styles.logo}>
       <div className={styles.logoIcon}><Bone size={21} strokeWidth={2.2} /></div>
