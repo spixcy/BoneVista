@@ -2,7 +2,9 @@
 
 ## X-Ray viewer
 
-The X-Ray Workspace accepts local JPEG, PNG, and WebP files up to 25 MB. AP and lateral views are held in browser memory and are not uploaded. The viewer supports zoom, pointer-drag panning, fit, rotation, brightness, contrast, and reset. Image filename, dimensions, and file size are displayed when available.
+The X-Ray Workspace accepts local JPEG, PNG, and WebP files up to 25 MB. AP and lateral views are held in browser memory and are not uploaded. The viewer supports zoom, pointer-drag panning, fit, rotation, brightness, contrast, and reset. Image filename, dimensions, and file size are displayed when available. A paired, real AP/lateral hip-replacement example can be loaded from the UI; source and CC0 licensing are listed in `public/test-images/README.md`.
+
+Users can associate the uploaded pair with an atlas structure and open its educational stress mapping. This association is manual: the application does not detect which bone is in the image. The X-ray stays available as a reference in the stress view, but the solver does not consume image pixels.
 
 DICOM is not currently supported. No image segmentation model, inference API, fracture analysis, or radiograph-to-3D reconstruction pipeline is configured. The app must not interpret the viewing controls as image analysis. DICOM support would require a maintained DICOM decoder and validation across transfer syntaxes and photometric interpretations. Image analysis/reconstruction requires a separately selected model/service, documented input requirements, and validation; no endpoint or model weights are assumed here.
 

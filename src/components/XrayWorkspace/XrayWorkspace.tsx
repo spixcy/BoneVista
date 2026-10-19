@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
-import { Contrast, FileImage, Info, Maximize, Minus, Plus, RotateCcw, RotateCw, Sun, Upload, X } from 'lucide-react';
+import { ArrowRight, Contrast, FileImage, Info, Maximize, Minus, Plus, RotateCcw, RotateCw, Sun, Upload, X } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './XrayWorkspace.module.css';
 
@@ -31,7 +31,7 @@ function DropZone({ label, preview, onFile }: { label: View; preview: string | n
 }
 
 export default function XrayWorkspace() {
-  const { xrayUpload, setXrayAP, setXrayLateral } = useAppStore();
+  const { anatomyStructures, stressTargetId, setStressTargetId, setActivePage, setViewMode, xrayUpload, setXrayAP, setXrayLateral } = useAppStore();
   const [view, setView] = useState<View>('ap');
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
@@ -40,11 +40,13 @@ export default function XrayWorkspace() {
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
+  const [loadingSamples, setLoadingSamples] = useState(false);
+  const [sampleError, setSampleError] = useState('');
   const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const file = view === 'ap' ? xrayUpload.ap : xrayUpload.lateral;
   const preview = view === 'ap' ? xrayUpload.apPreview : xrayUpload.lateralPreview;
-  const updateFile = view === 'ap' ? setXrayAP : setXrayLateral;
+  const target = anatomyStructures.find((item) => item.organ_id === stressTargetId);
 
   useEffect(() => {
     setDimensions(null);
@@ -82,9 +84,30 @@ export default function XrayWorkspace() {
     setPan({ x: dragStart.current.panX + event.clientX - dragStart.current.x, y: dragStart.current.panY + event.clientY - dragStart.current.y });
   };
   const endPan = () => { dragStart.current = null; setDragging(false); };
+  const loadSamplePair = async () => {
+    setLoadingSamples(true); setSampleError('');
+    try {
+      const [apResponse, lateralResponse] = await Promise.all([
+        fetch('/test-images/bonevista-hip-ap-sample.jpg'),
+        fetch('/test-images/bonevista-hip-lateral-sample.jpg'),
+      ]);
+      if (!apResponse.ok || !lateralResponse.ok) throw new Error('The sample images could not be loaded.');
+      const [apBlob, lateralBlob] = await Promise.all([apResponse.blob(), lateralResponse.blob()]);
+      setXrayAP(new File([apBlob], 'bonevista-hip-ap-sample.jpg', { type: 'image/jpeg' }));
+      setXrayLateral(new File([lateralBlob], 'bonevista-hip-lateral-sample.jpg', { type: 'image/jpeg' }));
+    } catch (reason) {
+      setSampleError(reason instanceof Error ? reason.message : 'The sample images could not be loaded.');
+    } finally { setLoadingSamples(false); }
+  };
+  const openStressMapping = () => { setViewMode('stress'); setActivePage('viewer'); };
 
   return <div className={styles.workspace}>
     <div className={styles.header}><h2 className={styles.title}>X-Ray Workspace</h2><p className={styles.subtitle}>View and adjust AP and lateral radiographs locally in this browser.</p></div>
+    <div className={styles.sampleActions}>
+      <button onClick={loadSamplePair} disabled={loadingSamples}>{loadingSamples ? 'Loading sample pair…' : 'Load real AP + lateral sample X-rays'}</button>
+      <span>CC0 teaching example of a hip replacement. <a href="https://commons.wikimedia.org/wiki/File:X-ray_of_hip_with_total_arthroplasty_-_Anteroposterior.jpg" target="_blank" rel="noreferrer">Image source and license</a>.</span>
+    </div>
+    {sampleError && <div className={styles.fieldError} role="alert">{sampleError}</div>}
     <div className={styles.uploadRow}>
       <DropZone label="ap" preview={xrayUpload.apPreview} onFile={setXrayAP}/>
       <DropZone label="lateral" preview={xrayUpload.lateralPreview} onFile={setXrayLateral}/>
@@ -114,6 +137,17 @@ export default function XrayWorkspace() {
         <div className={styles.metadata}>{file ? <><strong>{file.name}</strong><span>{dimensions ? `${dimensions.width} × ${dimensions.height}px` : 'Reading dimensions…'} · {(file.size / 1024 / 1024).toFixed(2)} MB</span></> : <span>No image metadata</span>}</div>
       </div>
     </section>
+    <div className={styles.association}>
+      <label htmlFor="xray-bone-target">Associate these images with an atlas bone</label>
+      <select id="xray-bone-target" aria-label="Bone associated with radiographs" value={stressTargetId ?? ''} onChange={(event) => setStressTargetId(event.target.value || null)}>
+        <option value="">Choose the matching bone…</option>
+        {anatomyStructures.map((item) => <option key={item.organ_id} value={item.organ_id}>{item.name_en}</option>)}
+      </select>
+      <button onClick={openStressMapping} disabled={!stressTargetId || (!xrayUpload.ap && !xrayUpload.lateral)} title={!stressTargetId ? 'Choose the corresponding atlas bone first' : !xrayUpload.ap && !xrayUpload.lateral ? 'Upload an AP or lateral image first' : 'Open the educational stress mapping for the selected bone'}>
+        Open stress mapping{target ? ` for ${target.name_en}` : ''}<ArrowRight size={15}/>
+      </button>
+      <small>The image is a reference only. Stress is calculated from the educational load/material inputs; it is not inferred from the X-ray.</small>
+    </div>
     <div className={styles.info}><Info size={14}/><span>Images stay in this browser. Brightness, contrast, pan, zoom, and rotation are viewing adjustments only; there is no AI analysis, diagnosis, or 3D reconstruction configured. DICOM files are not supported in this version.</span></div>
   </div>;
 }

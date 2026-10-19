@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Activity, Info, Play, RotateCcw } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import { solveAxialBar, type AxialFemResult } from './axialFemSolver';
@@ -7,16 +7,10 @@ import styles from './StressAnalysis.module.css';
 const defaults = { forceN: 500, areaMm2: 300, lengthMm: 400, modulusGPa: 17, elements: 12 };
 
 export default function StressAnalysis() {
-  const { anatomyStructures, stressTargetId, setStressTargetId, setStressResultMPa } = useAppStore();
+  const { anatomyStructures, stressTargetId, setStressTargetId, setStressResultMPa, setViewMode, xrayUpload } = useAppStore();
   const [values, setValues] = useState(defaults);
   const [result, setResult] = useState<AxialFemResult | null>(null);
   const [error, setError] = useState('');
-  useEffect(() => {
-    if (!stressTargetId && anatomyStructures.length) {
-      const femur = anatomyStructures.find((item) => item.name_en.toLowerCase().includes('femur'));
-      if (femur) setStressTargetId(femur.organ_id);
-    }
-  }, [anatomyStructures, stressTargetId, setStressTargetId]);
   const update = (key: keyof typeof defaults, value: number) => setValues((current) => ({ ...current, [key]: value }));
   const run = () => {
     if (!stressTargetId) { setError('Choose an atlas structure to show the simplified result on.'); return; }
@@ -31,6 +25,11 @@ export default function StressAnalysis() {
   return <main className={styles.page}>
     <header className={styles.header}><span className="mono-label">EDUCATIONAL SIMULATION</span><h2>Axial Bone Stress</h2><p>Explore how a simplified uniform bone shaft responds to an axial load.</p></header>
     <div className={styles.notice}><Info size={17}/><span><strong>Educational model only.</strong> This is a one-dimensional linear elastic finite-element model of a uniform bar, not the 3D skeleton. Its assumptions and default material values are illustrative and not patient-specific or clinically validated.</span></div>
+    {(xrayUpload.apPreview || xrayUpload.lateralPreview) && <section className={styles.xrayReference} aria-label="Associated X-ray reference">
+      <div><strong>Associated X-ray reference</strong><span>The uploaded image is shown for reference; the solver does not read or measure X-ray pixels.</span></div>
+      <div className={styles.xrayThumbs}>{xrayUpload.apPreview && <figure><img src={xrayUpload.apPreview} alt="AP X-ray reference"/><figcaption>AP</figcaption></figure>}{xrayUpload.lateralPreview && <figure><img src={xrayUpload.lateralPreview} alt="Lateral X-ray reference"/><figcaption>Lateral</figcaption></figure>}</div>
+      <button onClick={() => setViewMode('xray')}>View uploaded X-rays</button>
+    </section>}
     <div className={styles.layout}>
       <section className={styles.card}>
         <h3>Simulation inputs</h3>
