@@ -60,8 +60,13 @@ test('views local AP and lateral images with working controls and no claimed inf
   await page.goto('/');
   await openWorkspace(page);
   await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await expect(page.getByRole('region', { name: '3D reconstruction status' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
   await page.getByLabel('AP radiograph file input').setInputFiles(sample);
   await page.getByLabel('Lateral radiograph file input').setInputFiles(sample);
+  await expect(page.getByText('AP input').locator('..')).toContainText('Ready');
+  await expect(page.getByText('Lateral input').locator('..')).toContainText('Ready');
+  await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
   await expect(page.getByAltText('AP radiograph')).toBeVisible();
   await expect(page.getByText(/\d+ × \d+px/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Zoom in' })).toBeEnabled();

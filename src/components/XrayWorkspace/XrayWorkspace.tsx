@@ -112,6 +112,20 @@ export default function XrayWorkspace() {
       <DropZone label="ap" preview={xrayUpload.apPreview} onFile={setXrayAP}/>
       <DropZone label="lateral" preview={xrayUpload.lateralPreview} onFile={setXrayLateral}/>
     </div>
+    <section className={styles.reconstructionStatus} aria-label="3D reconstruction status">
+      <div className={styles.reconstructionHeading}>
+        <div><span className="mono-label">RECONSTRUCTION</span><h3>Patient-specific 3D model</h3></div>
+        <span className={styles.unavailableBadge}>Unavailable</span>
+      </div>
+      <p>Images are ready for local viewing, but BoneVista has no configured reconstruction service or verified model checkpoint. No 3D result will be generated from these images.</p>
+      <div className={styles.inputStatus}>
+        <span>AP input <strong>{xrayUpload.ap ? 'Ready' : 'Waiting for image'}</strong></span>
+        <span>Lateral input <strong>{xrayUpload.lateral ? 'Ready' : 'Waiting for image'}</strong></span>
+        <span>Inference model <strong>Not configured</strong></span>
+      </div>
+      <button className={styles.reconstructDisabled} disabled title="A verified model checkpoint and local inference service are not configured">Reconstruct 3D bone</button>
+      <small>The BoneVision comparison and the candidate-repository review are documented in <code>docs/bonevision-comparison.md</code>. The reference atlas remains available separately.</small>
+    </section>
     <section className={styles.viewer} aria-label="Radiograph viewer">
       <div className={styles.viewerHeader}>
         <div className={styles.switcher} role="tablist" aria-label="Radiograph view">
