@@ -173,8 +173,8 @@ const App: React.FC = () => {
               <div className={styles.viewportWrap}><Viewport3D active={isViewer} /></div>
               {rightPanelOpen && <div className={styles.rightPanel}><AnatomyPanel /></div>}
             </div>
-            {isViewer && viewMode === 'xray' && <div className={styles.modeOverlay}><Suspense fallback={<PageSkeleton />}><XrayWorkspace /></Suspense></div>}
-            {isViewer && viewMode === 'stress' && <div className={`${styles.modeOverlay} ${styles.stressModeOverlay}`}><Suspense fallback={<PageSkeleton />}><StressAnalysis /></Suspense></div>}
+            {isViewer && <div className={styles.modeOverlay} hidden={viewMode !== 'xray'} aria-hidden={viewMode !== 'xray'}><Suspense fallback={<PageSkeleton />}><XrayWorkspace /></Suspense></div>}
+            {isViewer && <div className={`${styles.modeOverlay} ${styles.stressModeOverlay}`} hidden={viewMode !== 'stress'} aria-hidden={viewMode !== 'stress'}><Suspense fallback={<PageSkeleton />}><StressAnalysis /></Suspense></div>}
           </div>}
           <AnimatePresence mode="wait">
             <motion.div
