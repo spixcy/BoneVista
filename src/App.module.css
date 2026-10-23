@@ -135,13 +135,12 @@
 .topbarActions{display:flex;align-items:center;gap:9px;flex:none;margin-left:auto}
 .themeToggle{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg-elevated);color:var(--color-text-secondary);cursor:pointer}
 .themeToggle:hover{border-color:var(--color-accent);color:var(--color-accent)}
-.topbarBrand{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#3766db;color:white;font:700 10px var(--font-sans);letter-spacing:.02em}
 .utilityPage{width:min(100%,940px);margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:18px}
 .utilityPage h2{color:var(--color-text-primary);font:650 23px var(--font-sans)}
 .utilityPage p{max-width:650px;color:var(--color-text-secondary);font-size:13px;line-height:1.65}
 .utilityCard{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-bg-surface)}
 .themeChoices{display:flex;gap:8px}.themeChoices button{display:flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg-elevated);color:var(--color-text-secondary);cursor:pointer}.themeChoices button[aria-pressed="true"]{border-color:var(--color-accent);background:var(--color-accent-dim);color:var(--color-accent)}
 @media(max-width:1100px){.topbar{gap:8px}.searchWrap{max-width:240px}.pageName{display:none}}
-@media(max-width:760px){.searchWrap{max-width:none;min-width:60px}.topbar{padding-right:8px}.topbarBrand{display:none}}
+@media(max-width:760px){.searchWrap{max-width:none;min-width:60px}.topbar{padding-right:8px}}
 @media(max-width:560px){.searchWrap{height:32px;padding:0 8px}.searchWrap input{font-size:11px}.themeToggle{width:31px;height:31px}.utilityPage{padding:20px 16px}.utilityCard{align-items:flex-start;flex-direction:column}}
 .utilityAction{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-bg-elevated);color:var(--color-text-primary);font:600 11px var(--font-sans);cursor:pointer}.utilityAction:hover{border-color:var(--color-accent);color:var(--color-accent)}

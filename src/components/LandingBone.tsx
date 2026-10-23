@@ -4,7 +4,7 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 type Rotation = [number, number, number];
-type BoneSpec = { name: string; x: number; y: number; scale: number; rotation: Rotation; speed: number };
+type BoneSpec = { name: string; x: number; y: number; scale: number; rotation: Rotation; speed: number; centered?: boolean; freeFloat?: boolean };
 
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
 
@@ -40,7 +40,7 @@ const RotatingBone: React.FC<{ spec: BoneSpec }> = ({ spec }) => {
   useFrame((state) => {
     if (!rotation.current) return;
     const time = state.clock.elapsedTime;
-    const edgePosition = spec.x < 0 ? Math.min(spec.x, -0.52) : Math.max(spec.x, 0.35);
+    const edgePosition = spec.centered ? 0 : spec.freeFloat ? spec.x : spec.x < 0 ? Math.min(spec.x, -0.52) : Math.max(spec.x, 0.35);
     rotation.current.position.set(edgePosition * viewport.width, spec.y * viewport.height + Math.sin(time * 0.45 + spec.rotation[1]) * 0.07, 0);
     rotation.current.rotation.set(
       spec.rotation[0] + Math.sin(time * 0.2 + spec.rotation[1]) * 0.08,

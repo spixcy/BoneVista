@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown, ArrowRight, Bone, Moon, Search, Sun } from 'lucide-react';
+import { ArrowDown, ArrowRight, Bone, Maximize2, Minimize2, Moon, Search, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
@@ -19,22 +19,25 @@ const LandingBone    = lazy(() => import('./components/LandingBone'));
 const boneField = {
   hero: [
     { name: 'Femur.l', x: 0.34, y: -0.16, scale: 2.2, rotation: [0.2, 0.45, -0.4] as [number, number, number], speed: 0.36 },
-    { name: 'Humerus.r', x: -0.36, y: 0.2, scale: 1.95, rotation: [-0.4, 1, -0.2] as [number, number, number], speed: -0.32 },
+  ],
+  heroCenter: [
+    { name: 'Hip bone.l', x: 0, y: 0.0, scale: 2.8, rotation: [-0.2, 0.5, 0.15] as [number, number, number], speed: 0.18, centered: true },
+    { name: 'Scapula.l', x: -0.2, y: -0.15, scale: 1.85, rotation: [-0.4, 1.1, -0.3] as [number, number, number], speed: 0.22, freeFloat: true },
   ],
   scanner: [
-    { name: 'Tibia.r', x: -0.36, y: 0.2, scale: 2.15, rotation: [0.55, 0.8, -0.35] as [number, number, number], speed: -0.38 },
+    { name: 'Tibia.r', x: -0.22, y: 0.15, scale: 2.15, rotation: [0.55, 0.8, -0.35] as [number, number, number], speed: -0.38, freeFloat: true },
     { name: 'Clavicle.l', x: 0.34, y: -0.18, scale: 1.8, rotation: [-0.3, -0.7, 0.45] as [number, number, number], speed: 0.42 },
   ],
   intelligence: [
-    { name: 'Humerus.l', x: -0.35, y: -0.18, scale: 2.05, rotation: [-0.5, -0.3, 0.55] as [number, number, number], speed: 0.36 },
+    { name: 'Humerus.l', x: -0.22, y: -0.12, scale: 2.05, rotation: [-0.5, -0.3, 0.55] as [number, number, number], speed: 0.36, freeFloat: true },
     { name: 'Patella.r', x: 0.35, y: 0.17, scale: 1.7, rotation: [0.3, 1.4, -0.6] as [number, number, number], speed: -0.44 },
   ],
   platform: [
-    { name: 'Scapula.r', x: -0.35, y: -0.18, scale: 2.1, rotation: [0.45, 1.2, -0.5] as [number, number, number], speed: -0.34 },
+    { name: 'Scapula.r', x: -0.22, y: -0.12, scale: 2.1, rotation: [0.45, 1.2, -0.5] as [number, number, number], speed: -0.34, freeFloat: true },
     { name: 'Vertebra T8', x: 0.35, y: 0.2, scale: 1.75, rotation: [-0.5, -1, 0.35] as [number, number, number], speed: 0.4 },
   ],
   roadmap: [
-    { name: 'Hip bone.l', x: -0.34, y: 0.19, scale: 2.1, rotation: [-0.45, -1, 0.35] as [number, number, number], speed: 0.36 },
+    { name: 'Hip bone.l', x: -0.22, y: 0.12, scale: 2.1, rotation: [-0.45, -1, 0.35] as [number, number, number], speed: 0.36, freeFloat: true },
     { name: 'Fibula.r', x: 0.36, y: -0.18, scale: 2.05, rotation: [0.3, 0.8, -0.5] as [number, number, number], speed: -0.42 },
   ],
 };
@@ -51,6 +54,7 @@ const App: React.FC = () => {
   const { activePage, rightPanelOpen, setAnatomyStructures, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
+  const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
   const siteRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -81,6 +85,13 @@ const App: React.FC = () => {
   useEffect(() => { if (isViewer) setHasVisitedViewer(true); }, [isViewer]);
 
   useEffect(() => {
+    if (!workspaceMaximized) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setWorkspaceMaximized(false); };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [workspaceMaximized]);
+
+  useEffect(() => {
     let active = true;
     fetch('/anatomy/manifest.json').then((response) => {
       if (!response.ok) throw new Error('Atlas labels could not be loaded.');
@@ -104,6 +115,7 @@ const App: React.FC = () => {
       <main>
         <section className={landing.hero} id="top">
           <Suspense fallback={null}><LandingBone className={`${landing.boneLayer} ${landing.heroBone}`} bones={boneField.hero}/></Suspense>
+          <Suspense fallback={null}><LandingBone className={`${landing.boneLayer} ${landing.centerBone}`} bones={boneField.heroCenter}/></Suspense>
           <div className={landing.heroCopy}>
             <span className={landing.eyebrow}>BONEVISTA · ANATOMY WORKSPACE</span>
             <h1 className={landing.heroTitle}><span>THE ANATOMY</span><span>WORKSPACE</span><span>FOR BONE.</span></h1>
@@ -123,7 +135,7 @@ const App: React.FC = () => {
             <p className={landing.bodyCopy}>Start with the full skeletal reference, select named structures, and focus the view to study individual anatomy. BoneVista is an educational reference workspace, not a patient-specific diagnostic system.</p>
             <div className={landing.scanLabel}>335 named reference structures · interactive 3D</div>
           </div>
-          <div className={landing.scannerFigure}><img src="/branding/bonevista-mascot.webp" alt="BoneVista mascot beside the anatomy workspace"/></div>
+          <div className={landing.scannerFigure}><img src="/branding/scanner-target.jpg" alt="BoneVista anatomical targeting reference"/></div>
         </section>
 
         <section className={landing.intelligence} id="intelligence">
@@ -146,7 +158,10 @@ const App: React.FC = () => {
             <div><span className={landing.eyebrow}>03 · PLATFORM</span><h2>THE WORKSPACE</h2></div>
             <p>Scroll into the working BoneVista app. Use its sidebar, search, atlas, and viewing tools here.</p>
           </div>
-          <div className={landing.workspaceFrame}>
+          <div className={`${landing.workspaceFrame} ${workspaceMaximized ? landing.workspaceMaximized : ''}`}>
+            <button className={landing.workspaceMaximize} onClick={() => setWorkspaceMaximized((maximized) => !maximized)} aria-label={workspaceMaximized ? 'Restore workspace size' : 'Maximize workspace'} title={workspaceMaximized ? 'Restore workspace size (Esc)' : 'Maximize workspace'}>
+              {workspaceMaximized ? <Minimize2 size={18}/> : <Maximize2 size={18}/>}
+            </button>
             <div className={styles.app}>
       <Sidebar />
 
@@ -162,7 +177,6 @@ const App: React.FC = () => {
             <button className={styles.themeToggle} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             </button>
-            <span className={styles.topbarBrand}>BV</span>
           </div>
         </header>
 

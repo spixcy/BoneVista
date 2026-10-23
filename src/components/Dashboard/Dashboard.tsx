@@ -20,15 +20,14 @@ const Dashboard: React.FC = () => {
   }}>
     <div className={styles.scrollProgress} role="progressbar" aria-label="Home page scroll progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={scrollProgress}><span style={{ height: `${scrollProgress}%` }} /></div>
     <section className={styles.intro}>
+      <img className={styles.introBanner} src="/branding/anatomy-workspace-banner.png" alt="" aria-hidden="true" />
       <div className={styles.introCopy}>
         <span className={styles.eyebrow}>YOUR ANATOMY WORKSPACE</span>
         <h1>Explore human anatomy</h1>
         <p>Learn from a segmented skeletal atlas, inspect the spine, and preview radiographs in one workspace.</p>
-        <div className={styles.introMeta}><span><Layers3 size={15}/>{anatomyStructures.length || '…'} named atlas structures</span><span><ShieldCheck size={15}/>Images stay in this browser</span></div>
         <button className={styles.primaryButton} onClick={() => setActivePage('viewer')}>Open 3D Anatomy <ArrowRight size={16}/></button>
         <button className={styles.scrollCue} onClick={() => exploreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>SCROLL TO EXPLORE <ArrowDown size={13}/></button>
       </div>
-      <div className={styles.heroArt} aria-label="BoneVista mascot waving"><img src="/branding/bonevista-mascot.webp" alt="BoneVista's waving hooded skeleton mascot"/><span>Hi, explorer!</span></div>
     </section>
 
     <div className={styles.dashboardGrid}>
@@ -54,14 +53,6 @@ const Dashboard: React.FC = () => {
       </main>
 
       <aside className={styles.sideColumn}>
-        <section className={styles.quickPanel}>
-          <div className={styles.panelHeading}><h2>Quick actions</h2><span>3 tools</span></div>
-          {([
-            { page: 'xray', label: 'Preview X-Ray', icon: ImageUp },
-            { page: 'viewer', label: 'Explore 3D model', icon: Bone },
-            { page: 'spine', label: 'Open Spine Explorer', icon: AlignCenter },
-          ] as const).map(({ page, label, icon: Icon }) => <button key={page} className={styles.quickAction} onClick={() => setActivePage(page)}><Icon size={17}/><span>{label}</span><ArrowRight size={15}/></button>)}
-        </section>
         <section className={styles.guideCard}>
           <img src="/branding/learning-guide.webp" alt="BoneVista mascot learning anatomy"/>
           <div><span className={styles.eyebrow}>A NOTE FROM YOUR GUIDE</span><p>Small steps. Big discoveries.</p></div>

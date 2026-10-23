@@ -1,7 +1,8 @@
 ﻿.dashboard{height:100%;overflow-y:auto;padding:clamp(20px,3vw,38px);max-width:1540px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:24px}
-.intro{position:relative;display:flex;align-items:center;justify-content:space-between;min-height:230px;padding:30px 34px;overflow:hidden;border:1px solid var(--color-border);border-radius:18px;background:radial-gradient(ellipse at 82% 30%,rgba(74,110,255,.18),transparent 42%),linear-gradient(115deg,var(--color-bg-surface),var(--color-bg-elevated))}
-.intro:after{content:"";position:absolute;width:280px;height:280px;right:70px;top:-120px;border-radius:50%;background:rgba(83,112,255,.1);filter:blur(5px);pointer-events:none}
-.introCopy{position:relative;z-index:1;max-width:650px}.eyebrow{display:block;color:var(--color-accent);font:700 10px/1.4 var(--font-mono);letter-spacing:.14em}
+.intro{position:relative;isolation:isolate;display:flex;align-items:center;min-height:clamp(280px,30vw,420px);padding:clamp(24px,4vw,52px);overflow:hidden;border:1px solid rgba(116,190,204,.42);border-radius:18px;background:#10202e}
+.introBanner{position:absolute;z-index:-2;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 48%}
+.intro:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(8,20,32,.42),rgba(8,20,32,.18) 48%,rgba(8,20,32,.02) 100%);pointer-events:none}
+.introCopy{position:relative;z-index:1;max-width:650px;text-shadow:0 1px 12px rgba(5,14,24,.42)}.eyebrow{display:block;color:var(--color-accent);font:700 10px/1.4 var(--font-mono);letter-spacing:.14em}
 .intro h1{margin:10px 0 8px;color:var(--color-text-primary);font:750 clamp(28px,3vw,42px)/1.1 var(--font-sans);letter-spacing:-.045em}
 .introCopy>p{max-width:590px;color:var(--color-text-secondary);font-size:14px;line-height:1.65}
 .introMeta{display:flex;flex-wrap:wrap;gap:18px;margin:17px 0 19px}.introMeta span{display:flex;align-items:center;gap:7px;color:var(--color-text-secondary);font-size:11px}.introMeta svg{color:var(--color-accent)}
@@ -23,3 +24,22 @@
 .scrollCue{display:flex;width:max-content}
 
 .scrollProgress{flex:none}.intro,.dashboardGrid{flex:none}
+
+/* Let the three primary destinations use the full dashboard width. */
+.introCopy{max-width:58%}
+.dashboardGrid{grid-template-columns:minmax(0,1fr);gap:20px}
+.sideColumn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.actionCard{min-height:190px;padding:20px}
+.actionText{max-width:62%;gap:9px}
+.actionText strong{font-size:15px}
+.actionText>span:nth-of-type(2){max-width:260px;font-size:12px}
+.actionCard img{width:44%}
+.guideCard{display:grid;grid-template-columns:minmax(150px,.9fr) minmax(0,1.1fr);align-items:center;min-height:160px}
+.guideCard img{width:100%;height:100%;min-height:160px;max-height:190px;object-fit:cover;object-position:center 38%}
+.guideCard div{padding:20px}
+.guideCard p{font-size:16px;line-height:1.4}
+.statusCard{align-self:stretch;align-items:flex-start;padding:22px}
+.statusCard p{font-size:12px;line-height:1.65}
+@media(max-width:620px){.sideColumn{grid-template-columns:1fr}.actionCard{min-height:135px;padding:14px}.actionText{max-width:70%}.actionText strong{font-size:13px}.actionText>span:nth-of-type(2){font-size:10px}}
+@media(max-width:620px){.intro{min-height:300px;padding:22px}.introCopy{max-width:100%}.intro:after{background:linear-gradient(90deg,rgba(8,20,32,.72),rgba(8,20,32,.4) 75%,rgba(8,20,32,.22))}.introBanner{object-position:62% center}}
+@media(max-width:620px){.guideCard{grid-template-columns:minmax(110px,.8fr) minmax(0,1.2fr);min-height:130px}.guideCard img{min-height:130px;max-height:150px}.guideCard div{padding:12px}.guideCard p{font-size:13px}}
