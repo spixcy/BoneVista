@@ -45,8 +45,6 @@
 .platformHeading h2 { color: #f0f3fb; font: 350 clamp(32px, 5vw, 64px)/1 var(--font-sans); letter-spacing: -.04em; }
 .platformHeading p { max-width: 350px; color: #a9b4ca; font-size: 12px; line-height: 1.6; }
 .workspaceFrame { max-width: 1450px; height: min(880px, 88vh); min-height: 620px; margin: 0 auto; overflow: hidden; border: 1px solid rgba(175, 188, 224, .17); border-radius: 16px; box-shadow: 0 30px 90px rgba(0, 0, 0, .35); }
-.workspaceMaximize { position: absolute; z-index: 40; top: 12px; right: 14px; width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid rgba(175, 188, 224, .22); border-radius: 8px; background: rgba(19, 25, 42, .9); color: #aeb8d0; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
-.workspaceMaximize:hover { border-color: #12dcc4; background: #202a41; color: #12dcc4; }
 .workspaceMaximized { position: fixed; z-index: 100; inset: 12px; width: auto; height: auto; max-width: none; min-height: 0; margin: 0; border-radius: 12px; background: #0b0f1a; }
 .workspaceMaximized > div { height: 100%; min-height: 0; }
 .roadmap { padding: 100px clamp(28px, 10vw, 190px) 115px; background: radial-gradient(ellipse at 50% 70%, rgba(88, 83, 118, .12), transparent 55%); }
