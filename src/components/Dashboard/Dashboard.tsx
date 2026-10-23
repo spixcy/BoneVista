@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, AlignCenter, Bone, ImageUp, Layers3, ShieldCheck } from 'lucide-react';
+import { ArrowDown, ArrowRight, AlignCenter, Bone, Dumbbell, ImageUp, Layers3, ShieldCheck } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
 
 const actions = [
   { page: 'viewer', title: '3D Anatomy', detail: 'Explore the segmented reference atlas', icon: Bone, art: '/branding/bonevista-mascot.webp', tone: 'blue' },
+  { page: 'muscles', title: 'Muscle Explorer', detail: 'Explore superficial and deep muscle layers', icon: Dumbbell, art: undefined, tone: 'indigo' },
   { page: 'spine', title: 'Spine Explorer', detail: 'Browse 26 individually named meshes', icon: AlignCenter, art: undefined, tone: 'teal' },
   { page: 'xray', title: 'X-Ray Workspace', detail: 'Preview AP and lateral images locally', icon: ImageUp, art: undefined, tone: 'violet' },
 ] as const;

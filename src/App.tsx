@@ -4,6 +4,7 @@ import { ArrowDown, ArrowRight, Bone, Maximize2, Minimize2, Moon, Search, Sun } 
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
+import MuscleExplorerHost from './components/MuscleExplorer/MuscleExplorerHost';
 import { useAppStore } from './store/appStore';
 import styles from './App.module.css';
 import landing from './LandingPage.module.css';
@@ -53,6 +54,8 @@ const PageSkeleton: React.FC = () => (
 const App: React.FC = () => {
   const { activePage, rightPanelOpen, setAnatomyStructures, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
+  const isMuscleExplorer = activePage === 'muscles';
+  const isAnatomyWorkspace = isViewer || isMuscleExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
   const siteRef = useRef<HTMLDivElement>(null);
@@ -82,7 +85,7 @@ const App: React.FC = () => {
     return () => site.removeEventListener('pointermove', moveBackground);
   }, []);
 
-  useEffect(() => { if (isViewer) setHasVisitedViewer(true); }, [isViewer]);
+  useEffect(() => { if (isAnatomyWorkspace) setHasVisitedViewer(true); }, [isAnatomyWorkspace]);
 
   useEffect(() => {
     if (!workspaceMaximized) return;
@@ -159,9 +162,6 @@ const App: React.FC = () => {
             <p>Scroll into the working BoneVista app. Use its sidebar, search, atlas, and viewing tools here.</p>
           </div>
           <div className={`${landing.workspaceFrame} ${workspaceMaximized ? landing.workspaceMaximized : ''}`}>
-            <button className={landing.workspaceMaximize} onClick={() => setWorkspaceMaximized((maximized) => !maximized)} aria-label={workspaceMaximized ? 'Restore workspace size' : 'Maximize workspace'} title={workspaceMaximized ? 'Restore workspace size (Esc)' : 'Maximize workspace'}>
-              {workspaceMaximized ? <Minimize2 size={18}/> : <Maximize2 size={18}/>}
-            </button>
             <div className={styles.app}>
       <Sidebar />
 
@@ -177,15 +177,19 @@ const App: React.FC = () => {
             <button className={styles.themeToggle} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
             </button>
+            <button className={styles.themeToggle} onClick={() => setWorkspaceMaximized((maximized) => !maximized)} aria-label={workspaceMaximized ? 'Restore workspace size' : 'Maximize workspace'} title={workspaceMaximized ? 'Restore workspace size (Esc)' : 'Maximize workspace'}>
+              {workspaceMaximized ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+            </button>
           </div>
         </header>
 
         {/* Content */}
         <div className={styles.content}>
-          {hasVisitedViewer && <div className={`${styles.viewerPage} ${isViewer ? styles.viewerPageActive : ''}`} aria-hidden={!isViewer}>
+          {(hasVisitedViewer || isMuscleExplorer) && <div className={`${styles.viewerPage} ${isAnatomyWorkspace ? styles.viewerPageActive : ''}`} aria-hidden={!isAnatomyWorkspace}>
             <div className={styles.viewerLayout}>
-              <div className={styles.viewportWrap}><Viewport3D active={isViewer} /></div>
-              {rightPanelOpen && <div className={styles.rightPanel}><AnatomyPanel /></div>}
+              <div className={styles.viewportWrap}><Viewport3D active={isAnatomyWorkspace} /></div>
+              {rightPanelOpen && isViewer && <div className={styles.rightPanel}><AnatomyPanel /></div>}
+              {rightPanelOpen && isMuscleExplorer && <div className={styles.rightPanel}><MuscleExplorerHost /></div>}
             </div>
             {isViewer && <div className={styles.modeOverlay} hidden={viewMode !== 'xray'} aria-hidden={viewMode !== 'xray'}><Suspense fallback={<PageSkeleton />}><XrayWorkspace /></Suspense></div>}
             {isViewer && <div className={`${styles.modeOverlay} ${styles.stressModeOverlay}`} hidden={viewMode !== 'stress'} aria-hidden={viewMode !== 'stress'}><Suspense fallback={<PageSkeleton />}><StressAnalysis /></Suspense></div>}
@@ -253,7 +257,7 @@ const SettingsPlaceholder: React.FC = () => {
 
 function pageName(page: string): string {
   const map: Record<string, string> = {
-    dashboard: 'Home', viewer: '3D Anatomy', spine: 'Spine Explorer',
+    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', spine: 'Spine Explorer',
     xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings',
   };
   return map[page] ?? page;
@@ -261,14 +265,16 @@ function pageName(page: string): string {
 
 const HeaderSearch: React.FC = () => {
   const [query, setQuery] = useState('');
-  const { anatomyStructures, selectedBones, toggleBoneSelection, setActivePage } = useAppStore();
+  const { anatomyStructures, muscleStructures, selectedBones, toggleBoneSelection, clearMuscleSelection, setActivePage, setMusclePreset, setMuscleQuery, setViewMode, activePage } = useAppStore();
   const matches = query.trim() ? anatomyStructures.filter((item) => `${item.name_en} ${item.ta2_latin}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
+  const muscleMatches = query.trim() ? muscleStructures.filter((item) => `${item.name} ${item.fmaId ?? ''} ${item.side}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
   return <div className={styles.searchWrap}>
     <Search size={16} aria-hidden="true" />
-    <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search anatomy structures…" aria-label="Search anatomy structures" />
+    <input value={query} onChange={(event) => { setQuery(event.target.value); if (activePage === 'muscles') setMuscleQuery(event.target.value); }} placeholder="Search anatomy structures…" aria-label="Search anatomy structures" />
     {query && <div className={styles.searchResults} role="listbox" aria-label="Anatomy search results">
-      {matches.map((item) => <button key={item.organ_id} role="option" aria-selected="false" onClick={() => { if (!selectedBones.has(item.organ_id)) toggleBoneSelection(item.organ_id); setActivePage('viewer'); setQuery(''); }}><span>{item.name_en}</span><small>{item.ta2_latin}</small></button>)}
-      {!matches.length && <p>{anatomyStructures.length ? 'No matching anatomy structures.' : 'Loading atlas labels…'}</p>}
+      {matches.map((item) => <button key={item.organ_id} role="option" aria-selected="false" onClick={() => { if (activePage === 'muscles') clearMuscleSelection(); if (!selectedBones.has(item.organ_id)) toggleBoneSelection(item.organ_id); setActivePage('viewer'); setViewMode('bone'); setQuery(''); }}><span>{item.name_en}</span><small>{item.ta2_latin}</small></button>)}
+      {muscleMatches.map((item) => <button key={item.id} role="option" aria-selected="false" onClick={() => { if (!selectedBones.has(item.id)) toggleBoneSelection(item.id); setMusclePreset(item.kind === 'bone' ? 'combined' : item.layer ?? 'superficial'); setMuscleQuery(''); setViewMode('bone'); setActivePage('muscles'); setQuery(''); }}><span>{item.name}</span><small>{item.fmaId ?? item.side} · {item.layer ?? 'Écorché skeleton'}</small></button>)}
+      {!matches.length && !muscleMatches.length && <p>{anatomyStructures.length ? 'No matching anatomy structures.' : 'Loading atlas labels…'}</p>}
     </div>}
   </div>;
 };

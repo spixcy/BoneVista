@@ -4,6 +4,20 @@ export type ViewMode = 'bone' | 'stress' | 'xray';
 export type Theme = 'dark' | 'light';
 export type AnatomicalView = 'anterior' | 'posterior' | 'lateral-l' | 'lateral-r' | 'superior' | 'inferior';
 export type SpineRegion = 'cervical' | 'thoracic' | 'lumbar' | 'sacral' | 'all';
+export type MuscleLayerPreset = 'bones' | 'superficial' | 'deep' | 'combined';
+export type MuscleExplorerStatus = 'idle' | 'loading' | 'ready' | 'error';
+
+export interface MuscleAtlasStructure {
+  id: string;
+  name: string;
+  kind: 'bone' | 'muscle';
+  layer?: 'superficial' | 'deep';
+  side: 'left' | 'right' | 'midline' | 'bilateral' | 'unknown';
+  region?: string;
+  source: string;
+  fmaId?: string;
+  meshNames: string[];
+}
 
 export interface BoneInfo {
   id: string;
@@ -57,18 +71,31 @@ interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   // Navigation
-  activePage: 'dashboard' | 'viewer' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
+  activePage: 'dashboard' | 'viewer' | 'muscles' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
   setActivePage: (page: AppState['activePage']) => void;
 
   // 3D Viewer
   anatomyStructures: AnatomyStructure[];
   setAnatomyStructures: (structures: AnatomyStructure[]) => void;
+  muscleStructures: MuscleAtlasStructure[];
+  setMuscleStructures: (structures: MuscleAtlasStructure[]) => void;
+  muscleStatus: MuscleExplorerStatus;
+  setMuscleStatus: (status: MuscleExplorerStatus) => void;
+  muscleError: string | null;
+  setMuscleError: (message: string | null) => void;
+  muscleLoadRequest: number;
+  retryMuscleAtlas: () => void;
+  musclePreset: MuscleLayerPreset;
+  setMusclePreset: (preset: MuscleLayerPreset) => void;
+  muscleQuery: string;
+  setMuscleQuery: (query: string) => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   anatomicalView: AnatomicalView;
   setAnatomicalView: (view: AnatomicalView) => void;
   selectedBones: Set<string>;
   toggleBoneSelection: (id: string) => void;
+  clearMuscleSelection: () => void;
   stressTargetId: string | null;
   setStressTargetId: (id: string | null) => void;
   stressResultMPa: number | null;
@@ -129,6 +156,18 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   anatomyStructures: [],
   setAnatomyStructures: (structures) => set({ anatomyStructures: structures }),
+  muscleStructures: [],
+  setMuscleStructures: (structures) => set({ muscleStructures: structures }),
+  muscleStatus: 'idle',
+  setMuscleStatus: (status) => set({ muscleStatus: status, muscleError: status === 'error' ? get().muscleError : null }),
+  muscleError: null,
+  setMuscleError: (message) => set({ muscleError: message, muscleStatus: message ? 'error' : get().muscleStatus }),
+  muscleLoadRequest: 0,
+  retryMuscleAtlas: () => set((state) => ({ muscleLoadRequest: state.muscleLoadRequest + 1, muscleError: null, muscleStatus: 'loading' })),
+  musclePreset: 'bones',
+  setMusclePreset: (preset) => set({ musclePreset: preset, isolationMode: false }),
+  muscleQuery: '',
+  setMuscleQuery: (query) => set({ muscleQuery: query }),
   viewMode: 'bone',
   setViewMode: (mode) => set({ viewMode: mode }),
   anatomicalView: 'anterior',
@@ -139,6 +178,13 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (next.has(id)) next.delete(id); else next.add(id);
     set({ selectedBones: next });
   },
+  clearMuscleSelection: () => set((state) => {
+    const muscleIds = new Set(state.muscleStructures.map((structure) => structure.id));
+    return {
+      selectedBones: new Set([...state.selectedBones].filter((id) => !muscleIds.has(id))),
+      isolationMode: false,
+    };
+  }),
   stressTargetId: null,
   setStressTargetId: (id) => set({ stressTargetId: id, selectedBones: id ? new Set([id]) : new Set(), stressResultMPa: null }),
   stressResultMPa: null,
@@ -152,7 +198,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   isolationMode: false,
   setIsolationMode: (v) => set({ isolationMode: v }),
-  isRotating: false,
+  isRotating: true,
   setIsRotating: (v) => set({ isRotating: v }),
 
   spineRegion: 'all',

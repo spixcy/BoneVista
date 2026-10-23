@@ -18,10 +18,14 @@ test('BoneVista landing page scrolls into the working app and remembers day/nigh
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 });
   await openWorkspace(page);
   await expect(page.getByRole('heading', { name: 'Explore human anatomy' })).toBeVisible();
-  const mascot = page.getByAltText("BoneVista's waving hooded skeleton mascot");
+  const mascot = page.getByAltText('BoneVista mascot learning anatomy');
   await expect(mascot).toBeVisible();
   expect(await mascot.evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
   await expect(page.getByText(/335 named atlas structures/)).toBeVisible();
+  await page.getByRole('button', { name: 'Maximize workspace' }).click();
+  await expect(page.getByRole('button', { name: 'Restore workspace size' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Maximize workspace' })).toBeVisible();
   await page.getByRole('button', { name: 'Switch to light mode' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await page.reload();
@@ -134,5 +138,27 @@ test('exports a binary GLB reference model', async ({ page }) => {
   const bytes = await readFile(path);
   expect(bytes.subarray(0, 4).toString()).toBe('glTF');
   expect(bytes.readUInt32LE(8)).toBe(bytes.length);
+});
+
+test('muscle explorer loads local layered anatomy and shares selection with global search', async ({ page }) => {
+  await page.goto('/');
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'Muscle Explorer', exact: true }).click();
+  await expect(page.getByTestId('muscle-explorer-host')).toBeVisible();
+  await expect(page.getByText('Select an anatomical structure from the 3D model or list to inspect verified atlas details.')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole('tab', { name: 'Superficial layer (Outer)' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('[class*=assetCount]')).toContainText('199');
+
+  const search = page.getByRole('textbox', { name: 'Search anatomy structures' });
+  await search.fill('External intercostal muscle');
+  await page.getByRole('option', { name: /External intercostal muscle/ }).click();
+  await expect(page.getByRole('tab', { name: 'Deep layer (Intrinsic)' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByLabel('Details for External intercostal muscle')).toBeVisible();
+
+  await page.getByRole('tab', { name: 'Combined layer (Bones+Muscles)' }).click();
+  await expect(page.getByRole('tab', { name: 'Combined layer (Bones+Muscles)' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('[class*=assetCount]')).toContainText('556');
+  await page.getByRole('tab', { name: 'Bones layer (Skeleton)' }).click();
+  await expect(page.locator('[class*=assetCount]')).toContainText('335', { timeout: 30_000 });
 });
 
