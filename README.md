@@ -14,6 +14,7 @@ BoneVista is a browser-based anatomy learning and exploration workspace. It comb
 - [3D Anatomy viewer](#3d-anatomy-viewer)
 - [Atlas Structures panel](#atlas-structures-panel)
 - [Muscle Explorer](#muscle-explorer)
+- [Neuro & Brain Explorer](#neuro--brain-explorer)
 - [Spine Explorer](#spine-explorer)
 - [X-Ray Workspace](#x-ray-workspace)
 - [Stress Analysis](#stress-analysis)
@@ -204,6 +205,28 @@ Muscle Explorer uses a second, locally bundled GLB at `public/muscle-atlas/ecorc
 - The source GLB's skeleton layer also contains cartilage, teeth, and eye meshes. BoneVista exposes only entries marked as bone tissue in the paired combined view.
 
 The Écorché asset is from Charleeh/ecorche commit `320805e06aee51e2e6f6b22533eb2a59d43f2d4d`, licensed CC BY-SA 4.0, and derived from BodyParts3D / DBCLS and Z-Anatomy. Its full attribution and license are included under `public/muscle-atlas/`. BoneVista keeps its original atlas and its separate license notices intact.
+
+## Neuro & Brain Explorer
+
+BoneVista features an integrated **Neuro & Brain Explorer** that supports multiscale neurological exploration across three distinct anatomical levels:
+
+- **Whole Nervous System (Macroscopic):** Full-body brain, spinal cord, and 525 authentic cranial and peripheral spinal nerves indexed from the verified Z-Anatomy atlas under CC BY-SA 4.0.
+- **Brain Atlas (Organ Scale):** Detailed organ-level brain navigation covering cerebral lobes, cerebellum, brainstem, ventricles, and deep nuclei with regional groupings and laterality tags.
+- **Neuron Lab (Microscopic Cellular Scale):** Cell-level view of a multipolar neuron (soma, dendrites, axon hillock, axon, myelin sheath, nodes of Ranvier, synaptic terminals) and an illustrative signal path animation. Procedural and animated elements are strictly labelled as educational visualizations, not clinical biophysical simulations.
+
+### Workspace Controls & Features
+
+- **Mode switching:** Switch between Whole Nervous System, Brain Atlas, and Neuron Lab with automatic camera and layer adaptation.
+- **Layer visibility & opacity:** Independent toggle and opacity control for Central, Cranial, Peripheral, and Skeletal reference layers.
+- **Structure catalogue & search:** Fast indexed search by English or Latin names, categorized hierarchy, left/right laterality chips, and individual visibility controls.
+- **Selection & isolation:** Isolate selected structures, clear selection, and focus camera framing.
+- **Detail panel:** Latin nomenclature, anatomical region, category, laterality, and attribution details.
+
+### Parallel Architecture & Neuron Branch Compatibility
+
+- **UI & Presentation (Antigravity Flash High):** Responsive page layout, mode tabs, layer toggles, structure catalogue, detail cards, accessible controls, and custom model adapter hook (useNeuroExplorerModel).
+- **Scene & Asset Core (Codex Luna High):** Mesh loading, coordinate normalization, WebGL Three.js viewport integration, and licensing verification.
+- **Neuron Branch Compatibility:** Built cleanly to ensure forward compatibility with the user's independently developed Neuron Lab without branch collisions or regressions.
 
 ## Spine Explorer
 

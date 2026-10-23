@@ -71,7 +71,8 @@ interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   // Navigation
-  activePage: 'dashboard' | 'viewer' | 'muscles' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
+  // 'neuro' added for Neuro & Brain Explorer — Antigravity Flash High (UI); Codex Luna High (scene)
+  activePage: 'dashboard' | 'viewer' | 'muscles' | 'neuro' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
   setActivePage: (page: AppState['activePage']) => void;
 
   // 3D Viewer

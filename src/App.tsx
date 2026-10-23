@@ -16,6 +16,8 @@ const XrayWorkspace  = lazy(() => import('./components/XrayWorkspace/XrayWorkspa
 const StressAnalysis = lazy(() => import('./components/StressAnalysis/StressAnalysis'));
 const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
 const LandingBone    = lazy(() => import('./components/LandingBone'));
+const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage')); // Neuro & Brain — UI: Antigravity Flash High; scene: Codex Luna High
+
 
 const boneField = {
   hero: [
@@ -55,6 +57,7 @@ const App: React.FC = () => {
   const { activePage, rightPanelOpen, setAnatomyStructures, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const isMuscleExplorer = activePage === 'muscles';
+  const isNeuro = activePage === 'neuro';
   const isAnatomyWorkspace = isViewer || isMuscleExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
@@ -85,7 +88,7 @@ const App: React.FC = () => {
     return () => site.removeEventListener('pointermove', moveBackground);
   }, []);
 
-  useEffect(() => { if (isAnatomyWorkspace) setHasVisitedViewer(true); }, [isAnatomyWorkspace]);
+  useEffect(() => { if (isAnatomyWorkspace || isNeuro) setHasVisitedViewer(true); }, [isAnatomyWorkspace, isNeuro]);
 
   useEffect(() => {
     if (!workspaceMaximized) return;
@@ -208,6 +211,7 @@ const App: React.FC = () => {
                 {activePage === 'spine'     && <div className={styles.scrollPage}><SpineExplorer /></div>}
                 {activePage === 'xray'      && <div className={styles.scrollPage}><XrayWorkspace /></div>}
                 {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
+                {activePage === 'neuro'      && <NeuroExplorerPage />}
                 {activePage === 'studies'   && <StudiesPlaceholder />}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
               </Suspense>
@@ -258,6 +262,7 @@ const SettingsPlaceholder: React.FC = () => {
 function pageName(page: string): string {
   const map: Record<string, string> = {
     dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', spine: 'Spine Explorer',
+    neuro: 'Neuro & Brain',
     xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings',
   };
   return map[page] ?? page;

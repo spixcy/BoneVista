@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Bone, Dumbbell, AlignCenter, Upload, Activity, ClipboardList, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Bone, Dumbbell, Brain, AlignCenter, Upload, Activity, ClipboardList, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Sidebar.module.css';
 
@@ -8,6 +8,9 @@ const navItems = [
   { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
   { id: 'viewer', label: '3D Anatomy', icon: Bone },
   { id: 'muscles', label: 'Muscle Explorer', icon: Dumbbell },
+  // Neuro & Brain Explorer entry — UI owner: Antigravity Flash High
+  // 3D scene / asset integration owner: Codex Luna High
+  { id: 'neuro', label: 'Neuro & Brain', icon: Brain },
   { id: 'spine', label: 'Spine Explorer', icon: AlignCenter },
   { id: 'xray', label: 'X-Ray Workspace', icon: Upload },
   { id: 'stress', label: 'Stress Analysis', icon: Activity },
@@ -31,7 +34,7 @@ const Sidebar: React.FC = () => {
     </div>
     <nav className={styles.nav} aria-label="Main navigation">
       {!sidebarCollapsed && <span className={styles.navLabel}>WORKSPACE</span>}
-      {navItems.map(({ id, label, icon: Icon }) => <button key={id} className={`${styles.navItem} ${activePage === id ? styles.active : ''}`} onClick={() => { if (activePage === 'muscles' && id !== 'muscles') clearMuscleSelection(); if (id === 'viewer') setViewMode('bone'); if (id === 'muscles' && muscleStatus === 'idle') setMusclePreset('superficial'); if (id === 'xray') setViewMode('xray'); if (id === 'stress') setViewMode('stress'); setActivePage(id); }} aria-current={activePage === id ? 'page' : undefined} title={sidebarCollapsed ? label : undefined}>
+      {navItems.map(({ id, label, icon: Icon }) => <button key={id} className={`${styles.navItem} ${activePage === id ? styles.active : ''}`} onClick={() => { if (activePage === 'muscles' && id !== 'muscles') clearMuscleSelection(); if (id === 'viewer') setViewMode('bone'); if (id === 'muscles' && muscleStatus === 'idle') setMusclePreset('superficial'); if (id === 'xray') setViewMode('xray'); if (id === 'stress') setViewMode('stress'); setActivePage(id as Parameters<typeof setActivePage>[0]); }} aria-current={activePage === id ? 'page' : undefined} title={sidebarCollapsed ? label : undefined}>
         <Icon size={18} /><span className={styles.navText}>{!sidebarCollapsed && label}</span>{activePage === id && <motion.div layoutId="nav-indicator" className={styles.indicator} />}
       </button>)}
       <div className={styles.navDivider} />

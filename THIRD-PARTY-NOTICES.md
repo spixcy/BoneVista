@@ -15,3 +15,11 @@ Three.js is distributed under the MIT License. The Draco decoder files under `pu
 ## jsPDF
 
 jsPDF is distributed under the MIT License. Its license is included in the installed package and available at [parallax/jsPDF](https://github.com/parallax/jsPDF).
+
+## Nervous System Anatomy & Brain Atlas
+
+The nervous system anatomical data (525 structures covering the brain, spinal cord, cranial nerves, and peripheral spinal nerves) is indexed from public/anatomy/manifest.json. This data is licensed under CC BY-SA 4.0, adapted from Z-Anatomy (Gauthier Kervyn) and BodyParts3D / DBCLS (CC BY-SA 2.1 Japan). See public/anatomy/NOTICE and public/anatomy/LICENSE for complete attribution.
+
+## Neuron Lab (Cellular Scale)
+
+The Neuron Lab provides an illustrative microscopic single-neuron schematic and educational signal-path animation (soma, dendrites, axon hillock, axon, myelin sheath, nodes of Ranvier, and axon terminals). In accordance with the project contract, procedural/generated geometries and animations are strictly educational and illustrative, and are not represented as biophysical, electrophysiological, or patient-specific action-potential simulations.
