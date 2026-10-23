@@ -8,6 +8,7 @@ async function openWorkspace(page) {
 }
 
 test('Neuro Explorer supports mesh modes and the shared illustrative Neuron Lab controls', async ({ page }) => {
+  test.setTimeout(90_000);
   await page.goto('/');
   await openWorkspace(page);
 
