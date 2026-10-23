@@ -1,0 +1,210 @@
+/**
+ * BoneVista Neuro & Brain Explorer — Scene Viewport Styles
+ * Owner: Antigravity Flash High
+ */
+
+.viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  background: var(--color-bg-base, #080d18);
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+/* ── HUD Top Left ─────────────────────────────────────────────────── */
+
+.hudTopLeft {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.hudMode {
+  font: 700 13px/1.2 var(--font-sans, sans-serif);
+  color: var(--color-text-primary, #eef3ff);
+  letter-spacing: 0.02em;
+}
+
+.hudScale {
+  font: 600 9.5px/1.2 var(--font-mono, monospace);
+  color: var(--color-accent, #7da2ff);
+  letter-spacing: 0.12em;
+}
+
+/* ── HUD Top Right ────────────────────────────────────────────────── */
+
+.hudTopRight {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 10;
+}
+
+.controlsGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  background: rgba(14, 22, 37, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.controlBtn {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--color-text-secondary, #a2afc6);
+  cursor: pointer;
+  transition: all 0.13s ease;
+}
+
+.controlBtn:hover {
+  background: var(--color-bg-hover, #1a2940);
+  color: var(--color-text-primary, #eef3ff);
+}
+
+.controlBtnActive {
+  background: var(--color-accent-dim, rgba(94, 132, 245, 0.2));
+  color: var(--color-accent, #7da2ff);
+}
+
+/* ── Overlays ─────────────────────────────────────────────────────── */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(8, 13, 24, 0.8);
+  backdrop-filter: blur(4px);
+  color: var(--color-text-tertiary, #71809a);
+  font: 500 12px/1.4 var(--font-mono, monospace);
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(125, 162, 255, 0.2);
+  border-top-color: var(--color-accent, #7da2ff);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.errorOverlay {
+  color: var(--color-error, #f87171);
+}
+
+.errorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-error, #f87171);
+}
+
+/* ── Canvas & Diagrams ────────────────────────────────────────────── */
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  transform-origin: center center;
+}
+
+.diagramSvg {
+  width: min(85%, 520px);
+  height: min(85%, 580px);
+  overflow: visible;
+}
+
+.diagramElement {
+  cursor: pointer;
+  transition: opacity 0.15s ease, filter 0.15s ease, stroke-width 0.15s ease;
+}
+
+.diagramElement:hover {
+  filter: drop-shadow(0 0 6px rgba(125, 162, 255, 0.8));
+}
+
+.selectedElement {
+  filter: drop-shadow(0 0 10px rgba(125, 162, 255, 1.0)) !important;
+}
+
+.selectedElement path,
+.selectedElement rect,
+.selectedElement line,
+.selectedElement polygon {
+  stroke: #ffffff !important;
+  stroke-width: 3.5px !important;
+}
+
+/* ── HUD Bottom ───────────────────────────────────────────────────── */
+
+.hudBottom {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.sourceTag {
+  font: 450 9.5px/1.3 var(--font-mono, monospace);
+  color: var(--color-text-tertiary, #71809a);
+}
+
+.illustrativeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-warning, #fbbf24);
+  font-weight: 550;
+  background: rgba(251, 191, 36, 0.08);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.interactiveHint {
+  font: 450 9.5px/1.3 var(--font-mono, monospace);
+  color: var(--color-text-tertiary, #71809a);
+  opacity: 0.65;
+}
+
+@media (max-width: 600px) {
+  .interactiveHint {
+    display: none;
+  }
+}

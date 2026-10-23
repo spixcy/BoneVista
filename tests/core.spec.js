@@ -45,6 +45,44 @@ test('global anatomy search selects the actual C1 atlas mesh', async ({ page }) 
   await expect(page.getByText(/Z-Anatomy/)).toBeVisible();
 });
 
+test('Neuro Explorer loads the licensed whole-body nerves scene and opens brain atlas search results', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto('/');
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'Neuro & Brain Explorer', exact: true }).click();
+  const assetCount = page.locator('[class*=assetCount]');
+  await expect(assetCount).toContainText('44 nerve structures', { timeout: 30_000 });
+  await expect(assetCount).toContainText('spinal cord unavailable');
+  await expect(page.getByTestId('neuro-explorer-panel')).toBeVisible();
+  await expect(page.getByTestId('neuro-3d-viewport')).toHaveAttribute('data-model-state', 'ready', { timeout: 30_000 });
+  const neuroCanvas = page.getByTestId('neuro-3d-viewport').locator('canvas');
+  await expect(neuroCanvas).toBeVisible();
+  await neuroCanvas.screenshot({ path: 'test-results/neuro-nervous-system-canvas.png' });
+  const medianNerve = page.getByRole('searchbox', { name: 'Search neuro structures' });
+  await medianNerve.fill('Median nerve');
+  await page.getByRole('button', { name: /Median nerve/ }).first().click();
+  await expect(page.locator('[class*=selectionCount]')).toContainText('1 selected');
+  await page.getByRole('tab', { name: 'Brain Atlas' }).click();
+  await expect(assetCount).toContainText('437 brain structures', { timeout: 30_000 });
+  await expect(page.getByTestId('neuro-3d-viewport')).toHaveAttribute('data-model-state', 'ready', { timeout: 30_000 });
+  await neuroCanvas.screenshot({ path: 'test-results/neuro-brain-atlas-canvas.png' });
+  const brainSearch = page.getByRole('searchbox', { name: 'Search neuro structures' });
+  await brainSearch.fill('cerebellum');
+  await page.getByRole('button', { name: 'Anterior quadrangular lobule L' }).click();
+  await expect(page.locator('[class*=selectionCount]')).toContainText('1 selected');
+  await expect(page.getByText('Anterior quadrangular lobule', { exact: true }).last()).toBeVisible();
+  await page.getByRole('button', { name: 'Focus camera on selected structures' }).click();
+  await page.getByRole('button', { name: 'Reset camera view' }).click();
+  await page.getByRole('button', { name: 'Hide Cerebellum', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Show Cerebellum', exact: true })).toBeVisible();
+  const canvasBounds = await neuroCanvas.boundingBox();
+  if (!canvasBounds) throw new Error('Neuro 3D canvas has no visible bounds.');
+  await page.mouse.move(canvasBounds.x + canvasBounds.width * 0.5, canvasBounds.y + canvasBounds.height * 0.5);
+  await page.mouse.down();
+  await page.mouse.move(canvasBounds.x + canvasBounds.width * 0.62, canvasBounds.y + canvasBounds.height * 0.46, { steps: 6 });
+  await page.mouse.up();
+});
+
 test('spine filters show individually named vertebrae from the atlas', async ({ page }) => {
   await page.goto('/');
   await openWorkspace(page);

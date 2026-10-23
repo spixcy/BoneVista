@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { NeuroManifest, NeuroMode } from '../data/neuroAtlas';
 
 export type ViewMode = 'bone' | 'stress' | 'xray';
 export type Theme = 'dark' | 'light';
@@ -71,7 +72,7 @@ interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   // Navigation
-  activePage: 'dashboard' | 'viewer' | 'muscles' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
+  activePage: 'dashboard' | 'viewer' | 'muscles' | 'neuro' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
   setActivePage: (page: AppState['activePage']) => void;
 
   // 3D Viewer
@@ -89,6 +90,32 @@ interface AppState {
   setMusclePreset: (preset: MuscleLayerPreset) => void;
   muscleQuery: string;
   setMuscleQuery: (query: string) => void;
+  neuroMode: NeuroMode;
+  setNeuroMode: (mode: NeuroMode) => void;
+  neuroQuery: string;
+  setNeuroQuery: (query: string) => void;
+  neuroBrainManifest: NeuroManifest | null;
+  neuroNervesManifest: NeuroManifest | null;
+  setNeuroManifests: (brain: NeuroManifest, nerves: NeuroManifest) => void;
+  neuroStatus: MuscleExplorerStatus;
+  neuroError: string | null;
+  setNeuroStatus: (status: MuscleExplorerStatus, error?: string | null) => void;
+  neuroLoadRequest: number;
+  retryNeuroLoad: () => void;
+  selectedNeuroStructures: Set<string>;
+  toggleNeuroStructure: (id: string) => void;
+  clearNeuroSelection: () => void;
+  hiddenNeuroStructures: Set<string>;
+  toggleNeuroStructureVisibility: (id: string) => void;
+  hiddenNeuroLayers: Set<string>;
+  toggleNeuroLayer: (id: string) => void;
+  neuroLayerOpacity: Record<string, number>;
+  setNeuroLayerOpacity: (id: string, opacity: number) => void;
+  neuroIsolationMode: boolean;
+  toggleNeuroIsolation: () => void;
+  neuroCameraAction: { type: 'focus' | 'fit'; sequence: number };
+  focusNeuroSelection: () => void;
+  resetNeuroView: () => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   anatomicalView: AnatomicalView;
@@ -168,6 +195,52 @@ export const useAppStore = create<AppState>((set, get) => ({
   setMusclePreset: (preset) => set({ musclePreset: preset, isolationMode: false }),
   muscleQuery: '',
   setMuscleQuery: (query) => set({ muscleQuery: query }),
+  neuroMode: 'nervous-system',
+  setNeuroMode: (mode) => set((state) => ({
+    neuroMode: mode,
+    neuroStatus: mode === 'neuron-lab' ? 'ready' : 'loading',
+    neuroError: null,
+    hiddenNeuroLayers: mode === 'brain-atlas' ? new Set(['neuro:brain:cranial_nerves']) : new Set(),
+    neuroIsolationMode: false,
+    selectedNeuroStructures: new Set(),
+    neuroCameraAction: { type: 'fit', sequence: state.neuroCameraAction.sequence + 1 },
+  })),
+  neuroQuery: '',
+  setNeuroQuery: (query) => set({ neuroQuery: query }),
+  neuroBrainManifest: null,
+  neuroNervesManifest: null,
+  setNeuroManifests: (brain, nerves) => set({ neuroBrainManifest: brain, neuroNervesManifest: nerves }),
+  neuroStatus: 'idle',
+  neuroError: null,
+  setNeuroStatus: (status, error = null) => set({ neuroStatus: status, neuroError: status === 'error' ? error : null }),
+  neuroLoadRequest: 0,
+  retryNeuroLoad: () => set((state) => ({ neuroLoadRequest: state.neuroLoadRequest + 1, neuroStatus: 'loading', neuroError: null })),
+  selectedNeuroStructures: new Set(),
+  toggleNeuroStructure: (id) => set((state) => {
+    const selected = new Set(state.selectedNeuroStructures);
+    if (selected.has(id)) selected.delete(id); else selected.add(id);
+    return { selectedNeuroStructures: selected };
+  }),
+  clearNeuroSelection: () => set({ selectedNeuroStructures: new Set(), neuroIsolationMode: false }),
+  hiddenNeuroStructures: new Set(),
+  toggleNeuroStructureVisibility: (id) => set((state) => {
+    const hidden = new Set(state.hiddenNeuroStructures);
+    if (hidden.has(id)) hidden.delete(id); else hidden.add(id);
+    return { hiddenNeuroStructures: hidden };
+  }),
+  hiddenNeuroLayers: new Set(),
+  toggleNeuroLayer: (id) => set((state) => {
+    const hidden = new Set(state.hiddenNeuroLayers);
+    if (hidden.has(id)) hidden.delete(id); else hidden.add(id);
+    return { hiddenNeuroLayers: hidden };
+  }),
+  neuroLayerOpacity: {},
+  setNeuroLayerOpacity: (id, opacity) => set((state) => ({ neuroLayerOpacity: { ...state.neuroLayerOpacity, [id]: Math.max(0, Math.min(1, opacity)) } })),
+  neuroIsolationMode: false,
+  toggleNeuroIsolation: () => set((state) => ({ neuroIsolationMode: !state.neuroIsolationMode })),
+  neuroCameraAction: { type: 'fit', sequence: 0 },
+  focusNeuroSelection: () => set((state) => ({ neuroCameraAction: { type: 'focus', sequence: state.neuroCameraAction.sequence + 1 } })),
+  resetNeuroView: () => set((state) => ({ neuroCameraAction: { type: 'fit', sequence: state.neuroCameraAction.sequence + 1 } })),
   viewMode: 'bone',
   setViewMode: (mode) => set({ viewMode: mode }),
   anatomicalView: 'anterior',

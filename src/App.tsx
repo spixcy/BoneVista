@@ -1,10 +1,13 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+﻿import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown, ArrowRight, Bone, Maximize2, Minimize2, Moon, Search, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
 import MuscleExplorerHost from './components/MuscleExplorer/MuscleExplorerHost';
+import NeuroExplorerDataHost from './components/NeuroExplorer/NeuroExplorerDataHost';
+import NeuroExplorerPage from './components/NeuroExplorer/NeuroExplorerPage';
+import { filterNeuroStructures } from './data/neuroAtlas';
 import { useAppStore } from './store/appStore';
 import styles from './App.module.css';
 import landing from './LandingPage.module.css';
@@ -55,7 +58,8 @@ const App: React.FC = () => {
   const { activePage, rightPanelOpen, setAnatomyStructures, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const isMuscleExplorer = activePage === 'muscles';
-  const isAnatomyWorkspace = isViewer || isMuscleExplorer;
+  const isNeuroExplorer = activePage === 'neuro';
+  const isAnatomyWorkspace = isViewer || isMuscleExplorer || isNeuroExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
   const siteRef = useRef<HTMLDivElement>(null);
@@ -185,9 +189,13 @@ const App: React.FC = () => {
 
         {/* Content */}
         <div className={styles.content}>
-          {(hasVisitedViewer || isMuscleExplorer) && <div className={`${styles.viewerPage} ${isAnatomyWorkspace ? styles.viewerPageActive : ''}`} aria-hidden={!isAnatomyWorkspace}>
+          {(hasVisitedViewer || isMuscleExplorer || isNeuroExplorer) && <div className={`${styles.viewerPage} ${isAnatomyWorkspace ? styles.viewerPageActive : ''}`} aria-hidden={!isAnatomyWorkspace}>
             <div className={styles.viewerLayout}>
-              <div className={styles.viewportWrap}><Viewport3D active={isAnatomyWorkspace} /></div>
+              <div className={styles.viewportWrap}>
+                {isNeuroExplorer
+                  ? <NeuroExplorerDataHost><NeuroExplorerPage /></NeuroExplorerDataHost>
+                  : <Viewport3D active={isAnatomyWorkspace} />}
+              </div>
               {rightPanelOpen && isViewer && <div className={styles.rightPanel}><AnatomyPanel /></div>}
               {rightPanelOpen && isMuscleExplorer && <div className={styles.rightPanel}><MuscleExplorerHost /></div>}
             </div>
@@ -257,7 +265,7 @@ const SettingsPlaceholder: React.FC = () => {
 
 function pageName(page: string): string {
   const map: Record<string, string> = {
-    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', spine: 'Spine Explorer',
+    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro & Brain Explorer', spine: 'Spine Explorer',
     xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings',
   };
   return map[page] ?? page;
@@ -265,16 +273,19 @@ function pageName(page: string): string {
 
 const HeaderSearch: React.FC = () => {
   const [query, setQuery] = useState('');
-  const { anatomyStructures, muscleStructures, selectedBones, toggleBoneSelection, clearMuscleSelection, setActivePage, setMusclePreset, setMuscleQuery, setViewMode, activePage } = useAppStore();
+  const { anatomyStructures, muscleStructures, neuroBrainManifest, neuroNervesManifest, selectedBones, selectedNeuroStructures, toggleBoneSelection, toggleNeuroStructure, clearMuscleSelection, setActivePage, setMusclePreset, setMuscleQuery, setNeuroMode, setViewMode, activePage } = useAppStore();
   const matches = query.trim() ? anatomyStructures.filter((item) => `${item.name_en} ${item.ta2_latin}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
   const muscleMatches = query.trim() ? muscleStructures.filter((item) => `${item.name} ${item.fmaId ?? ''} ${item.side}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
+  const neuroStructures = [...(neuroBrainManifest?.structures ?? []), ...(neuroNervesManifest?.structures ?? [])];
+  const neuroMatches = query.trim() ? filterNeuroStructures(neuroStructures, query).slice(0, 6) : [];
   return <div className={styles.searchWrap}>
     <Search size={16} aria-hidden="true" />
     <input value={query} onChange={(event) => { setQuery(event.target.value); if (activePage === 'muscles') setMuscleQuery(event.target.value); }} placeholder="Search anatomy structures…" aria-label="Search anatomy structures" />
     {query && <div className={styles.searchResults} role="listbox" aria-label="Anatomy search results">
       {matches.map((item) => <button key={item.organ_id} role="option" aria-selected="false" onClick={() => { if (activePage === 'muscles') clearMuscleSelection(); if (!selectedBones.has(item.organ_id)) toggleBoneSelection(item.organ_id); setActivePage('viewer'); setViewMode('bone'); setQuery(''); }}><span>{item.name_en}</span><small>{item.ta2_latin}</small></button>)}
       {muscleMatches.map((item) => <button key={item.id} role="option" aria-selected="false" onClick={() => { if (!selectedBones.has(item.id)) toggleBoneSelection(item.id); setMusclePreset(item.kind === 'bone' ? 'combined' : item.layer ?? 'superficial'); setMuscleQuery(''); setViewMode('bone'); setActivePage('muscles'); setQuery(''); }}><span>{item.name}</span><small>{item.fmaId ?? item.side} · {item.layer ?? 'Écorché skeleton'}</small></button>)}
-      {!matches.length && !muscleMatches.length && <p>{anatomyStructures.length ? 'No matching anatomy structures.' : 'Loading atlas labels…'}</p>}
+      {neuroMatches.map((item) => <button key={item.id} role="option" aria-selected={selectedNeuroStructures.has(item.id)} onClick={() => { setNeuroMode(item.id.startsWith('neuro:brain:') ? 'brain-atlas' : 'nervous-system'); if (!selectedNeuroStructures.has(item.id)) toggleNeuroStructure(item.id); setActivePage('neuro'); setQuery(''); }}><span>{item.name}</span><small>{item.category} · {item.region ?? item.side}</small></button>)}
+      {!matches.length && !muscleMatches.length && !neuroMatches.length && <p>{anatomyStructures.length ? 'No matching anatomy structures.' : 'Loading atlas labels…'}</p>}
     </div>}
   </div>;
 };

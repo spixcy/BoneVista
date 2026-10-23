@@ -1,0 +1,276 @@
+/**
+ * BoneVista Neuro & Brain Explorer — Structure List Styles
+ * Owner: Antigravity Flash High
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Search ────────────────────────────────────────────────────────── */
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 10px 4px;
+  padding: 6px 9px;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 7px;
+  background: var(--color-bg-elevated, #131e30);
+  flex-shrink: 0;
+  transition: border-color 0.13s ease;
+}
+
+.searchRow:focus-within {
+  border-color: var(--color-accent, #7da2ff);
+  box-shadow: 0 0 0 2px var(--color-accent-dim, rgba(94, 132, 245, 0.15));
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary, #71809a);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text-primary, #eef3ff);
+  font: 12px/1 var(--font-sans, sans-serif);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-tertiary, #71809a);
+}
+
+/* Remove browser-native clear X on search inputs */
+.searchInput::-webkit-search-cancel-button { display: none; }
+
+.clearBtn {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-bg-hover, #1a2940);
+  color: var(--color-text-tertiary, #71809a);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.clearBtn:hover {
+  background: var(--color-accent-dim);
+  color: var(--color-accent, #7da2ff);
+}
+
+/* ── Count row ─────────────────────────────────────────────────────── */
+
+.countRow {
+  padding: 2px 12px 6px;
+  flex-shrink: 0;
+}
+
+.countText {
+  font: 450 9.5px/1 var(--font-mono, monospace);
+  color: var(--color-text-tertiary, #71809a);
+  letter-spacing: 0.03em;
+}
+
+/* ── Group list ────────────────────────────────────────────────────── */
+
+.groupList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 8px;
+}
+
+.groupList::-webkit-scrollbar { width: 4px; }
+.groupList::-webkit-scrollbar-track { background: transparent; }
+.groupList::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong, rgba(255, 255, 255, 0.16));
+  border-radius: 2px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 5px 10px 5px 8px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-text-tertiary, #71809a);
+}
+
+.groupHeader:hover {
+  color: var(--color-text-secondary, #a2afc6);
+}
+
+.groupHeader:focus-visible {
+  outline: 2px solid var(--color-accent, #7da2ff);
+  outline-offset: -2px;
+}
+
+.groupLabel {
+  flex: 1;
+  font: 700 9.5px/1 var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupCount {
+  font: 600 9px/1 var(--font-mono, monospace);
+  color: var(--color-accent, #7da2ff);
+  opacity: 0.7;
+}
+
+/* ── Item list ─────────────────────────────────────────────────────── */
+
+.itemList {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px 0 18px;
+}
+
+.item:hover .visBtn {
+  opacity: 1;
+}
+
+.itemSelected {
+  background: var(--color-accent-dim, rgba(94, 132, 245, 0.12));
+  border-radius: 6px;
+  margin: 1px 4px;
+  padding-left: 14px;
+}
+
+.itemMetaOnly {
+  opacity: 0.6;
+}
+
+.itemBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  padding: 5px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary, #a2afc6);
+  cursor: pointer;
+  text-align: left;
+  border-radius: 5px;
+  min-width: 0;
+}
+
+.itemBtn:hover:not(:disabled) {
+  color: var(--color-text-primary, #eef3ff);
+}
+
+.itemBtn:disabled {
+  cursor: default;
+  color: var(--color-text-tertiary, #71809a);
+}
+
+.itemBtn:focus-visible {
+  outline: 2px solid var(--color-accent, #7da2ff);
+  outline-offset: -1px;
+}
+
+.itemSelected .itemBtn {
+  color: var(--color-accent, #7da2ff);
+}
+
+.itemName {
+  font: 500 11.5px/1.2 var(--font-sans, sans-serif);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemSide {
+  flex-shrink: 0;
+  font: 600 9px/1 var(--font-mono, monospace);
+  color: var(--color-text-tertiary, #71809a);
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+}
+
+.itemSelected .itemSide {
+  border-color: rgba(125, 162, 255, 0.3);
+  color: var(--color-accent, #7da2ff);
+}
+
+.itemMetaBadge {
+  font-size: 16px;
+  color: var(--color-text-tertiary, #71809a);
+  line-height: 0.5;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.visBtn {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-tertiary, #71809a);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, color 0.12s ease;
+}
+
+.visBtn:hover {
+  color: var(--color-accent, #7da2ff);
+}
+
+.visBtn:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--color-accent, #7da2ff);
+  outline-offset: 1px;
+}
+
+.visBtnHidden {
+  opacity: 1;
+  color: var(--color-text-tertiary, #71809a);
+}
+
+.emptyRow {
+  padding: 20px 14px;
+  font: 450 11px/1.5 var(--font-mono, monospace);
+  color: var(--color-text-tertiary, #71809a);
+  text-align: center;
+}
