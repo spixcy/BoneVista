@@ -1,12 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, AlignCenter, Bone, ImageUp, Layers3, ShieldCheck } from 'lucide-react';
+import { ArrowDown, ArrowRight, Bone, Layers3, ShieldCheck } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
 
 const actions = [
   { page: 'viewer', title: '3D Anatomy', detail: 'Explore the segmented reference atlas', icon: Bone, art: '/branding/bonevista-mascot.webp', tone: 'blue' },
-  { page: 'spine', title: 'Spine Explorer', detail: 'Browse 26 individually named meshes', icon: AlignCenter, art: '/branding/spine-guide.webp', tone: 'teal' },
-  { page: 'xray', title: 'X-Ray Workspace', detail: 'Preview AP and lateral images locally', icon: ImageUp, art: '/branding/xray-guide.webp', tone: 'violet' },
 ] as const;
 
 const Dashboard: React.FC = () => {
@@ -20,11 +18,12 @@ const Dashboard: React.FC = () => {
   }}>
     <div className={styles.scrollProgress} role="progressbar" aria-label="Home page scroll progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={scrollProgress}><span style={{ height: `${scrollProgress}%` }} /></div>
     <section className={styles.intro}>
-      <img className={styles.introBanner} src="/branding/anatomy-workspace-banner.png" alt="" aria-hidden="true" />
+      <img className={styles.introBanner} src="/branding/anatomy-hero-banner.png" alt="" aria-hidden="true" />
       <div className={styles.introCopy}>
         <span className={styles.eyebrow}>YOUR ANATOMY WORKSPACE</span>
         <h1>Explore human anatomy</h1>
         <p>Learn from a segmented skeletal atlas, inspect the spine, and preview radiographs in one workspace.</p>
+        <div className={styles.introMeta}><span><Layers3 size={15}/>{ anatomyStructures.length || '…'} named atlas structures</span><span><ShieldCheck size={15}/>Images stay in this browser</span></div>
         <button className={styles.primaryButton} onClick={() => setActivePage('viewer')}>Open 3D Anatomy <ArrowRight size={16}/></button>
         <button className={styles.scrollCue} onClick={() => exploreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>SCROLL TO EXPLORE <ArrowDown size={13}/></button>
       </div>
