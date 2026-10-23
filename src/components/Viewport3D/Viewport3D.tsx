@@ -24,8 +24,9 @@ const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>
     const bounds = new THREE.Box3().setFromObject(clone);
     const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
-    clone.position.sub(center);
-    clone.scale.multiplyScalar(3 / Math.max(size.x, size.y, size.z));
+    const scale = 3 / Math.max(size.x, size.y, size.z);
+    clone.scale.multiplyScalar(scale);
+    clone.position.copy(center).multiplyScalar(-scale);
     return clone;
   }, [scene]);
   const { anatomyStructures, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView, viewMode, stressTargetId, stressResultMPa } = useAppStore();
@@ -111,8 +112,9 @@ const MuscleAtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl |
     const bounds = new THREE.Box3().setFromObject(clone);
     const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
-    clone.position.sub(center);
-    clone.scale.multiplyScalar(3 / Math.max(size.x, size.y, size.z));
+    const scale = 3 / Math.max(size.x, size.y, size.z);
+    clone.scale.multiplyScalar(scale);
+    clone.position.copy(center).multiplyScalar(-scale);
     return clone;
   }, [scene]);
   const { muscleStructures, musclePreset, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView } = useAppStore();

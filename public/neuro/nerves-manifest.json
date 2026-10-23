@@ -1,0 +1,825 @@
+{
+  "source": "SeemaBansal1/3d-human-body-anatomy",
+  "sourceCommit": "28912432581accd7a1c62129d55f0e9758221d48",
+  "structures": [
+    {
+      "id": "neuro:system:olfactory-nerve",
+      "name": "Olfactory nerve (CN I)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Smell nerve"
+      ],
+      "meshNames": [
+        "Olfactory nerve (I).l",
+        "Olfactory nerve (I).r"
+      ]
+    },
+    {
+      "id": "neuro:system:optic-nerve",
+      "name": "Optic nerve (CN II), optic chiasm and optic tract",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Eye nerve"
+      ],
+      "meshNames": [
+        "Optic nerve (II).l",
+        "Optic nerve (II).r",
+        "Optic chiasm.l",
+        "Optic chiasm.r",
+        "Optic tract.l",
+        "Optic tract.r"
+      ]
+    },
+    {
+      "id": "neuro:system:oculomotor-nerve",
+      "name": "Oculomotor nerve (CN III)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Main eye-movement nerve"
+      ],
+      "meshNames": [
+        "Oculomotor nerve (III).l",
+        "Oculomotor nerve (III).r"
+      ]
+    },
+    {
+      "id": "neuro:system:trochlear-nerve",
+      "name": "Trochlear nerve (CN IV)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Eye-rotating nerve"
+      ],
+      "meshNames": [
+        "Trochlear nerve (IV).l",
+        "Trochlear nerve (IV).r"
+      ]
+    },
+    {
+      "id": "neuro:system:trigeminal-nerve",
+      "name": "Trigeminal nerve (CN V)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Face sensation nerve"
+      ],
+      "meshNames": [
+        "Trigeminal nerve (V).l",
+        "Trigeminal nerve (V).r",
+        "Ophthalmic nerve.l",
+        "Ophthalmic nerve.r",
+        "Maxillary nerve.l",
+        "Maxillary nerve.r",
+        "Meningeal branch of maxillary nerve.l",
+        "Meningeal branch of maxillary nerve.r",
+        "Motor root of trigeminal nerve.l",
+        "Motor root of trigeminal nerve.r",
+        "Anterior division of mandibular nerve.l",
+        "Anterior division of mandibular nerve.r",
+        "Posterior division of mandibular nerve.l",
+        "Posterior division of mandibular nerve.r",
+        "Buccal nerve.l",
+        "Buccal nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:inferior-alveolar-nerve",
+      "name": "Inferior alveolar nerve",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Lower teeth nerve"
+      ],
+      "meshNames": [
+        "Inferior alveolar nerve.l",
+        "Inferior alveolar nerve.r",
+        "Mental nerve.l",
+        "Mental nerve.r",
+        "Nerve to mylohyoid muscle.l",
+        "Nerve to mylohyoid muscle.r"
+      ]
+    },
+    {
+      "id": "neuro:system:lingual-nerve",
+      "name": "Lingual nerve",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Tongue nerve"
+      ],
+      "meshNames": [
+        "Lingual nerve.l",
+        "Lingual nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:abducens-nerve",
+      "name": "Abducens nerve (CN VI)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Sideways-gaze nerve"
+      ],
+      "meshNames": [
+        "Abducens nerve (VI).l",
+        "Abducens nerve (VI).r"
+      ]
+    },
+    {
+      "id": "neuro:system:facial-nerve",
+      "name": "Facial nerve (CN VII)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Facial expression nerve"
+      ],
+      "meshNames": [
+        "Facial nerve (VII).l",
+        "Facial nerve (VII).r",
+        "Chorda tympani.l",
+        "Chorda tympani.r"
+      ]
+    },
+    {
+      "id": "neuro:system:vestibulocochlear-nerve",
+      "name": "Vestibulocochlear nerve (CN VIII)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Hearing and balance nerve"
+      ],
+      "meshNames": [
+        "Vestibulocochlear nerve (VIII).l",
+        "Vestibulocochlear nerve (VIII).r",
+        "Cochlear nerve.l",
+        "Cochlear nerve",
+        "Vestibular nerve.l",
+        "Vestibular nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:glossopharyngeal-nerve",
+      "name": "Glossopharyngeal nerve (CN IX)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Throat and tongue nerve"
+      ],
+      "meshNames": [
+        "Glossopharyngeal nerve (IX).l",
+        "Glossopharyngeal nerve (IX).r"
+      ]
+    },
+    {
+      "id": "neuro:system:vagus-nerve",
+      "name": "Vagus nerve (CN X)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Vagus nerve"
+      ],
+      "meshNames": [
+        "Vagus nerve (X).l",
+        "Vagus nerve (X).r"
+      ]
+    },
+    {
+      "id": "neuro:system:accessory-nerve",
+      "name": "Accessory nerve (CN XI)",
+      "category": "Cranial nerves",
+      "side": "unknown",
+      "region": "Cranial nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Shoulder-shrug nerve"
+      ],
+      "meshNames": [
+        "Accessory nerve (XI).l",
+        "Accessory nerve (XI).r"
+      ]
+    },
+    {
+      "id": "neuro:system:brachial-plexus",
+      "name": "Brachial plexus",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Arm nerve network"
+      ],
+      "meshNames": [
+        "Roots of brachial plexus.l",
+        "Roots of brachial plexus.r",
+        "Superior trunk of brachial plexus.l",
+        "Superior trunk of brachial plexus.r",
+        "Middle trunk of brachial plexus.l",
+        "Middle trunk of brachial plexus.r",
+        "Inferior trunk of brachial plexus.l",
+        "Inferior trunk of brachial plexus.r",
+        "Anterior division of superior trunk of brachial plexus.l",
+        "Anterior division of superior trunk of brachial plexus.r",
+        "Posterior division of superior trunk of brachial plexus.l",
+        "Posterior division of superior trunk of brachial plexus.r",
+        "Anterior division of middle trunk of brachial plexus.l",
+        "Anterior division of middle trunk of brachial plexus.r",
+        "Posterior division of middle trunk of brachial plexus.l",
+        "Posterior division of middle trunk of brachial plexus.r",
+        "Anterior division of inferior trunk of brachial plexus.l",
+        "Anterior division of inferior trunk of brachial plexus.r",
+        "Posterior division of inferior trunk of brachial plexus.l",
+        "Posterior division of inferior trunk of brachial plexus.r",
+        "Posterior cord of brachial plexus.l",
+        "Posterior cord of brachial plexus.r"
+      ]
+    },
+    {
+      "id": "neuro:system:long-thoracic-nerve",
+      "name": "Long thoracic nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Winged-scapula nerve"
+      ],
+      "meshNames": [
+        "Long thoracic nerve.l",
+        "Long thoracic nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:dorsal-scapular-nerve",
+      "name": "Dorsal scapular nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Rhomboid nerve"
+      ],
+      "meshNames": [
+        "Dorsal scapular nerve.l",
+        "Dorsal scapular nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:suprascapular-nerve",
+      "name": "Suprascapular nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Shoulder-blade top nerve"
+      ],
+      "meshNames": [
+        "Suprascapular nerve.l",
+        "Suprascapular nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:subclavian-nerve",
+      "name": "Nerve to subclavius (subclavian nerve)",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Subclavius nerve"
+      ],
+      "meshNames": [
+        "Subclavian nerve.l",
+        "Subclavian nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:pectoral-nerves",
+      "name": "Lateral and medial pectoral nerves",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Chest muscle nerves"
+      ],
+      "meshNames": [
+        "Lateral pectoral nerve.l",
+        "Lateral pectoral nerve.r",
+        "Medial pectoral nerve.l",
+        "Medial pectoral nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:subscapular-nerves",
+      "name": "Superior and inferior subscapular nerves",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Upper and lower subscapular nerves"
+      ],
+      "meshNames": [
+        "Superior subscapular nerve.l",
+        "Superior subscapular nerve.r",
+        "Inferior subscapular nerve.l",
+        "Inferior subscapular nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:thoracodorsal-nerve",
+      "name": "Thoracodorsal nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Latissimus dorsi nerve"
+      ],
+      "meshNames": [
+        "Thoracodorsal nerve.l",
+        "Thoracodorsal nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:medial-cutaneous-nerves-arm-forearm",
+      "name": "Medial brachial and medial antebrachial cutaneous nerves",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Inner arm skin nerves"
+      ],
+      "meshNames": [
+        "Medial brachial cutaneous nerve.l",
+        "Medial brachial cutaneous nerve.r",
+        "Medial antebrachial cutaneous nerve.l",
+        "Medial antebrachial cutaneous nerve.r",
+        "Anterior branch of medial antebrachial cutaneous nerve.l",
+        "Anterior branch of medial antebrachial cutaneous nerve.r",
+        "Posterior branch of medial antebrachial cutaneous nerve.l",
+        "Posterior branch of medial antebrachial cutaneous nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:musculocutaneous-nerve",
+      "name": "Musculocutaneous nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Front-of-arm nerve"
+      ],
+      "meshNames": [
+        "Musculocutaneous nerve.l",
+        "Musculocutaneous nerve.r",
+        "Lateral antebrachial cutaneous nerve.l",
+        "Lateral antebrachial cutaneous nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:axillary-nerve",
+      "name": "Axillary nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Shoulder (deltoid) nerve"
+      ],
+      "meshNames": [
+        "Axillary nerve.l",
+        "Axillary nerve.r",
+        "Muscular branches of axillary nerve.l",
+        "Muscular branches of axillary nerve.r",
+        "Superior lateral brachial cutaneous nerve.l",
+        "Superior lateral brachial cutaneous nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:radial-nerve",
+      "name": "Radial nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Back-of-arm nerve"
+      ],
+      "meshNames": [
+        "Radial nerve.l",
+        "Radial nerve.r",
+        "Muscular branches of radial nerve.l",
+        "Muscular branches of radial nerve.r",
+        "Inferior lateral brachial cutaneous nerve.l",
+        "Inferior lateral brachial cutaneous nerve.r",
+        "Posterior antebrachial cutaneous nerve.l",
+        "Posterior antebrachial cutaneous nerve.r",
+        "Deep branch of radial nerve.l",
+        "Deep branch of radial nerve.r",
+        "Superficial branch of radial nerve.l",
+        "Superficial branch of radial nerve.r",
+        "Posterior interosseous nerve of forearm.l",
+        "Posterior interosseous nerve of forearm.r",
+        "Dorsal digital branches of radial nerve.l",
+        "Dorsal digital branches of radial nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:median-nerve",
+      "name": "Median nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Carpal tunnel nerve"
+      ],
+      "meshNames": [
+        "Median nerve.l",
+        "Median nerve.r",
+        "Muscular branches of median nerve.l",
+        "Muscular branches of median nerve.r",
+        "Anterior interosseous nerve of forearm.l",
+        "Anterior interosseous nerve of forearm.r",
+        "Palmar branch of median nerve.l",
+        "Palmar branch of median nerve.r",
+        "Common palmar digital branches of median nerve.l",
+        "Common palmar digital branches of median nerve.r",
+        "Proper palmar digital branches of median nerve.l",
+        "Proper palmar digital branches of median nerve.r",
+        "(Communicating branch of median nerve with ulnar nerve).l",
+        "(Communicating branch of median nerve with ulnar nerve).r"
+      ]
+    },
+    {
+      "id": "neuro:system:ulnar-nerve",
+      "name": "Ulnar nerve",
+      "category": "Upper limb",
+      "side": "unknown",
+      "region": "Upper limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Funny bone nerve"
+      ],
+      "meshNames": [
+        "Ulnar nerve.l",
+        "Ulnar nerve.r",
+        "Muscular branches of ulnar nerve.l",
+        "Muscular branches of ulnar nerve.r",
+        "Dorsal branch of ulnar nerve.l",
+        "Dorsal branch of ulnar nerve.r",
+        "Palmar branch of ulnar nerve.l",
+        "Palmar branch of ulnar nerve.r",
+        "Superficial branch of ulnar nerve.l",
+        "Superficial branch of ulnar nerve.r",
+        "Deep branch of ulnar nerve.l",
+        "Deep branch of ulnar nerve.r",
+        "Common palmar digital branches of ulnar nerve.l",
+        "Common palmar digital branches of ulnar nerve.r",
+        "Proper palmar digital branches of ulnar nerve.l",
+        "Proper palmar digital branches of ulnar nerve.r",
+        "Dorsal digital branches of ulnar nerve.l",
+        "Dorsal digital branches of ulnar nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:intercostal-nerves",
+      "name": "Intercostal nerves",
+      "category": "Trunk",
+      "side": "unknown",
+      "region": "Trunk",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Rib nerves"
+      ],
+      "meshNames": [
+        "Intercostal nerves.l",
+        "Intercostal nerves.r"
+      ]
+    },
+    {
+      "id": "neuro:system:sympathetic-trunk",
+      "name": "Sympathetic trunk",
+      "category": "Autonomic",
+      "side": "unknown",
+      "region": "Autonomic",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Sympathetic chain"
+      ],
+      "meshNames": [
+        "Sympathetic trunk.l",
+        "Sympathetic trunk.r",
+        "Ganglia of sympathetic trunk.l",
+        "Ganglia of sympathetic trunk.r",
+        "Sympathetic nerves.l",
+        "Sympathetic nerves.r"
+      ]
+    },
+    {
+      "id": "neuro:system:spinal-nerve-roots",
+      "name": "Roots of spinal nerve and spinal ganglion",
+      "category": "Spinal nerves",
+      "side": "unknown",
+      "region": "Spinal nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Spinal nerve roots"
+      ],
+      "meshNames": [
+        "Anterior root of spinal nerve.l",
+        "Anterior root of spinal nerve.r",
+        "Posterior root of spinal nerve.l",
+        "Posterior root of spinal nerve.r",
+        "Spinal ganglion.l",
+        "Spinal ganglion.r"
+      ]
+    },
+    {
+      "id": "neuro:system:cauda-equina",
+      "name": "Cauda equina",
+      "category": "Spinal nerves",
+      "side": "midline",
+      "region": "Spinal nerves",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Horse's tail nerve roots"
+      ],
+      "meshNames": [
+        "Cauda equina"
+      ]
+    },
+    {
+      "id": "neuro:system:femoral-nerve",
+      "name": "Femoral nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Front thigh nerve"
+      ],
+      "meshNames": [
+        "Femoral nerve.l",
+        "Femoral nerve.r",
+        "Anterior cutaneous branches of femoral nerve.l",
+        "Anterior cutaneous branches of femoral nerve.r",
+        "Saphenous nerve.l",
+        "Saphenous nerve.r",
+        "Infrapatellar branch of saphenous nerve.l",
+        "Infrapatellar branch of saphenous nerve.r",
+        "Medial crural cutaneous branches of saphenous nerve.l",
+        "Medial crural cutaneous branches of saphenous nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:groin-nerves",
+      "name": "Iliohypogastric, ilio-inguinal and genitofemoral nerves",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Groin nerves"
+      ],
+      "meshNames": [
+        "Iliohypogastric nerve.l",
+        "Iliohypogastric nerve.r",
+        "Ilio-inguinal nerve.l",
+        "Ilio-inguinal nerve.r",
+        "Genitofemoral nerve.l",
+        "Genitofemoral nerve.r",
+        "Femoral branch of genitofemoral nerve.l",
+        "Femoral branch of genitofemoral nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:lateral-femoral-cutaneous-nerve",
+      "name": "Lateral femoral cutaneous nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Outer thigh skin nerve"
+      ],
+      "meshNames": [
+        "Lateral femoral cutaneous nerve.l",
+        "Lateral femoral cutaneous nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:obturator-nerve",
+      "name": "Obturator nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Inner thigh nerve"
+      ],
+      "meshNames": [
+        "Obturator nerve.l",
+        "Obturator nerve.r",
+        "Anterior branch of obturator nerve.l",
+        "Anterior branch of obturator nerve.r",
+        "Posterior branch of obturator nerve.l",
+        "Posterior branch of obturator nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:sciatic-nerve",
+      "name": "Sciatic nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Sciatic nerve"
+      ],
+      "meshNames": [
+        "Sciatic nerve.l",
+        "Sciatic nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:tibial-nerve",
+      "name": "Tibial nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Calf and sole nerve"
+      ],
+      "meshNames": [
+        "Tibial nerve.l",
+        "Tibial nerve.r",
+        "Medial sural cutaneous nerve.l",
+        "Medial sural cutaneous nerve.r",
+        "Medial plantar nerve.l",
+        "Medial plantar nerve.r",
+        "Lateral plantar nerve.l",
+        "Lateral plantar nerve.r",
+        "Common plantar digital branches of medial plantar nerve.l",
+        "Common plantar digital branches of medial plantar nerve",
+        "Common plantar digital branches of lateral plantar nerve.l",
+        "Common plantar digital branches of lateral plantar nerve.r",
+        "Proper plantar digital branches of medial plantar nerve.l",
+        "Proper plantar digital branches of medial plantar nerve.r",
+        "Proper plantar digital branches of lateral plantar nerve.l",
+        "Proper plantar digital branches of lateral plantar nerve.r",
+        "Sural nerve.l",
+        "Sural nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:common-fibular-nerve",
+      "name": "Common fibular nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Peroneal (foot-drop) nerve"
+      ],
+      "meshNames": [
+        "Common fibular nerve.l",
+        "Common fibular nerve.r",
+        "Sural communicating branch of common fibular nerve.l",
+        "Sural communicating branch of common fibular nerve.r",
+        "Superficial fibular nerve.l",
+        "Superficial fibular nerve.r",
+        "Deep fibular nerve.l",
+        "Deep fibular nerve.r",
+        "Muscular branches of deep fibular nerve.l",
+        "Muscular branches of deep fibular nerve.r",
+        "Dorsal digital branches of deep fibular nerve.l",
+        "Dorsal digital branches of deep fibular nerve.r",
+        "Medial dorsal cutaneous nerve of foot.l",
+        "Medial dorsal cutaneous nerve of foot.r",
+        "Intermediate dorsal cutaneous nerve of foot.l",
+        "Intermediate dorsal cutaneous nerve of foot.r",
+        "Dorsal digital branches of superficial fibular nerve.l",
+        "Dorsal digital branches of superficial fibular nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:pudendal-nerve",
+      "name": "Pudendal nerve",
+      "category": "Pelvis",
+      "side": "unknown",
+      "region": "Pelvis",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Pelvic floor nerve"
+      ],
+      "meshNames": [
+        "Pudendal nerve.l",
+        "Pudendal nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:superior-gluteal-nerve",
+      "name": "Superior gluteal nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Hip-stabiliser nerve"
+      ],
+      "meshNames": [
+        "Superior gluteal nerve.l",
+        "Superior gluteal nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:posterior-femoral-cutaneous-nerve",
+      "name": "Posterior femoral cutaneous nerve",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Back of thigh skin nerve"
+      ],
+      "meshNames": [
+        "Posterior femoral cutaneous nerve.l",
+        "Posterior femoral cutaneous nerve.r",
+        "Anterior root of posterior femoral cutaneous nerve.l",
+        "Anterior root of posterior femoral cutaneous nerve.r",
+        "Posterior root of posterior femoral cutaneous nerve.l",
+        "Posterior root of posterior femoral cutaneous nerve.r"
+      ]
+    },
+    {
+      "id": "neuro:system:hip-rotator-nerves",
+      "name": "Nerve to piriformis and nerve to quadratus femoris",
+      "category": "Lower limb",
+      "side": "unknown",
+      "region": "Lower limb",
+      "source": "Z-Anatomy / BodyParts3D",
+      "aliases": [
+        "Small hip-rotator nerves"
+      ],
+      "meshNames": [
+        "Nerve to piriformis muscle.l",
+        "Nerve to piriformis muscle.r",
+        "Nerve to quadratus femoris muscle.l",
+        "Nerve to quadratus femoris muscle.r"
+      ]
+    },
+    {
+      "id": "neuro:system:mesh:stria-terminalis-l",
+      "name": "Stria terminalis.l",
+      "category": "Nerve structures",
+      "side": "left",
+      "source": "Z-Anatomy / BodyParts3D",
+      "meshNames": [
+        "Stria terminalis.l"
+      ]
+    },
+    {
+      "id": "neuro:system:mesh:stria-terminalis-r",
+      "name": "Stria terminalis.r",
+      "category": "Nerve structures",
+      "side": "right",
+      "source": "Z-Anatomy / BodyParts3D",
+      "meshNames": [
+        "Stria terminalis.r"
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ BoneVista is a browser-based anatomy learning and exploration workspace. It comb
 - [3D Anatomy viewer](#3d-anatomy-viewer)
 - [Atlas Structures panel](#atlas-structures-panel)
 - [Muscle Explorer](#muscle-explorer)
+- [Neuro & Brain Explorer](#neuro--brain-explorer)
 - [Spine Explorer](#spine-explorer)
 - [X-Ray Workspace](#x-ray-workspace)
 - [Stress Analysis](#stress-analysis)
@@ -28,6 +29,7 @@ BoneVista is a browser-based anatomy learning and exploration workspace. It comb
 
 - Displays a generalized, interactive 3D skeletal reference model with named atlas structures.
 - Adds superficial and deep muscle layers, stable structure selection, visibility, isolation, and a paired skeleton-plus-muscles view in Muscle Explorer.
+- Provides detailed brain and full-body nerve scenes with searchable, selectable structures in Neuro & Brain Explorer.
 - Lets you search, select, hide, and isolate structures, and view the model from six anatomical directions.
 - Provides a spine page to browse named atlas meshes for cervical, thoracic, lumbar, sacral, and coccygeal regions.
 - Opens AP and lateral radiograph images from JPEG, PNG, and WebP files for local viewing and display adjustments.
@@ -56,10 +58,11 @@ npm run preview
 1. Open **Launch App** and wait for the atlas model and its labels to load. Use the maximize control on the embedded workspace when you want it to fill the screen; press **Esc** or use the restore control to return to the landing page.
 2. Select a bone by clicking it in the 3D view, choosing it in the **Atlas Structures** list, or searching the global anatomy search.
 3. Open **Muscle Explorer** to switch between the original BoneVista bones, superficial muscles, deep muscles, and the paired Écorché bones-plus-muscles view. Search from the global anatomy field or select a mesh in the viewport.
-4. Use **Spine Explorer** to browse vertebrae by region.
-5. Use **X-Ray Workspace** to load an image or click **Load real AP + lateral sample X-rays**. Switch AP/Lateral and adjust the display.
-6. To see the educational stress example, associate an atlas structure with the X-ray (if starting there), open stress mapping, set the model inputs, and click **Run simulation**.
-7. Read the model assumptions and limits shown beside the results. The image is not used as a solver input.
+4. Open **Neuro & Brain Explorer**. Switch between the detailed Brain Atlas and the full-body nerve scene; search the catalogue and select or hide structures.
+5. Use **Spine Explorer** to browse vertebrae by region.
+6. Use **X-Ray Workspace** to load an image or click **Load real AP + lateral sample X-rays**. Switch AP/Lateral and adjust the display.
+7. To see the educational stress example, associate an atlas structure with the X-ray (if starting there), open stress mapping, set the model inputs, and click **Run simulation**.
+8. Read the model assumptions and limits shown beside the results. The image is not used as a solver input.
 
 ## How the features connect
 
@@ -71,6 +74,8 @@ flowchart LR
   Atlas --> Viewer[3D Anatomy and structure panel]
   MuscleAtlas[Écorché local GLB and mesh metadata] --> Muscle[Muscle Explorer layers]
   MuscleAtlas --> Search
+  NeuroModels[Brain and nerve GLBs with source manifests] --> Neuro[Neuro & Brain Explorer]
+  Neuro --> Search
   MuscleAtlas --> Muscle
   Atlas --> Spine[Spine Explorer]
   Dashboard[Home dashboard] --> Viewer
@@ -107,6 +112,7 @@ The left sidebar stays available while browsing workspace pages. On narrow scree
 - **Home**: opens the dashboard, its atlas counts, feature cards, and local-use information.
 - **3D Anatomy**: opens the main 3D viewer in Bone mode.
 - **Muscle Explorer**: opens the local Écorché atlas in BoneVista's existing 3D canvas. Switch between the original BoneVista bones, superficial muscles, deep muscles, and the paired Écorché skeleton with both muscle layers.
+- **Neuro & Brain Explorer**: opens the brain and full-body nerve scenes in the existing 3D workspace. Its panel provides mode tabs, layer visibility, structure search, selection, isolation, focus, reset, and details.
 - **Spine Explorer**: opens the region-filtered vertebra browser.
 - **X-Ray Workspace**: opens the two-view image viewer.
 - **Stress Analysis**: opens the educational axial bar solver.
@@ -117,6 +123,7 @@ The left sidebar stays available while browsing workspace pages. On narrow scree
 At the top of the workspace:
 
 - **Search anatomy structures**: searches the loaded atlas by English or Latin name. Up to six matching results are shown. Choosing a result selects it and opens the 3D viewer. Search is for the atlas, not for image contents.
+- Neuro results open the corresponding Brain Atlas or Whole Nervous System mode and select their namespaced structure IDs.
 - **Theme button** (sun/moon): switches between day and night appearance. The choice is saved in this browser.
 
 ## Home page
@@ -204,6 +211,14 @@ Muscle Explorer uses a second, locally bundled GLB at `public/muscle-atlas/ecorc
 - The source GLB's skeleton layer also contains cartilage, teeth, and eye meshes. BoneVista exposes only entries marked as bone tissue in the paired combined view.
 
 The Écorché asset is from Charleeh/ecorche commit `320805e06aee51e2e6f6b22533eb2a59d43f2d4d`, licensed CC BY-SA 4.0, and derived from BodyParts3D / DBCLS and Z-Anatomy. Its full attribution and license are included under `public/muscle-atlas/`. BoneVista keeps its original atlas and its separate license notices intact.
+
+## Neuro & Brain Explorer
+
+The Brain Atlas loads a locally bundled, detailed 3D brain with 437 named structures. The Whole Nervous System scene combines that brain with the locally bundled full-body nerve model; 44 grouped catalogue entries map to all 255 named nerve meshes. Mesh selection, catalogue selection, layer visibility, per-structure visibility, isolation, focus, camera reset and search use namespaced neuro IDs in BoneVista's shared state. Cranial nerves are hidden by default in Brain Atlas to keep the brain framed; their layer can be enabled from the panel.
+
+The selected brain asset is `public/neuro/brain.glb` from Brain Project, and the nerve asset is `public/neuro/nerves.glb` from 3D Human Body Anatomy. Both are distributed under CC BY-SA 4.0 with source-specific attribution and third-party credits recorded in [`public/neuro/NOTICE.md`](public/neuro/NOTICE.md). The nerve source has no spinal cord mesh, so the spinal-cord layer is unavailable. Its 3D model is not fabricated from the skeletal atlas.
+
+Neuron Lab remains a separate microscopic mode and is not part of the brain or whole-body mesh scenes. Any neuron diagram or signal animation shown there is illustrative, not a validated physiological simulation. Integration of the separately developed Neuron Lab remains pending.
 
 ## Spine Explorer
 
@@ -341,7 +356,7 @@ npm run preview   # serve the production build locally
 npm run test:e2e  # run Playwright end-to-end tests
 ```
 
-The Playwright suite covers landing/navigation, theme persistence, atlas search, spine filters, local image controls and input validation, the educational stress calculation and mapping flow, and GLB export. Playwright may require its browser installation and a running/available local test server according to `playwright.config.js`.
+The Playwright suite covers landing/navigation, theme persistence, atlas and neuro search/selection, neuro mesh loading and layer controls, spine filters, local image controls and input validation, the educational stress calculation and mapping flow, and GLB export. Playwright may require its browser installation and a running/available local test server according to `playwright.config.js`.
 
 ## Anatomy model, sample images, and licenses
 
