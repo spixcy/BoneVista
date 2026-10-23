@@ -218,7 +218,7 @@ The Brain Atlas loads a locally bundled, detailed 3D brain with 437 named struct
 
 The selected brain asset is `public/neuro/brain.glb` from Brain Project, and the nerve asset is `public/neuro/nerves.glb` from 3D Human Body Anatomy. Both are distributed under CC BY-SA 4.0 with source-specific attribution and third-party credits recorded in [`public/neuro/NOTICE.md`](public/neuro/NOTICE.md). The nerve source has no spinal cord mesh, so the spinal-cord layer is unavailable. Its 3D model is not fabricated from the skeletal atlas.
 
-Neuron Lab remains a separate microscopic mode and is not part of the brain or whole-body mesh scenes. Any neuron diagram or signal animation shown there is illustrative, not a validated physiological simulation. Integration of the separately developed Neuron Lab remains pending.
+Neuron Lab is a separate microscopic mode with an illustrative neuron diagram. Its shapes and signal animation are educational visuals, not an empirical reconstruction or a validated physiological simulation. A verified neuronal dataset can be integrated later.
 
 ## Spine Explorer
 

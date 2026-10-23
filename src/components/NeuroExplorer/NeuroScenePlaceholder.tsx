@@ -220,7 +220,7 @@ export const NeuroScenePlaceholder: React.FC<NeuroScenePlaceholderProps> = ({
         <div className={styles.sourceTag}>
           {activeMode === 'neuron-lab' ? (
             <span className={styles.illustrativeTag}>
-              <Activity size={12} /> Illustrative schematic · Pending Neuron Lab branch integration
+              <Activity size={12} /> Illustrative schematic · Educational visualization only
             </span>
           ) : (
             <span>Reference anatomy · Z-Anatomy / BodyParts3D · CC BY-SA 4.0</span>

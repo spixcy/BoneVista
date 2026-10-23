@@ -19,3 +19,7 @@ Three.js is distributed under the MIT License. The Draco decoder files under `pu
 ## jsPDF
 
 jsPDF is distributed under the MIT License. Its license is included in the installed package and available at [parallax/jsPDF](https://github.com/parallax/jsPDF).
+
+## Neuron Lab (Cellular Scale)
+
+The Neuron Lab provides an illustrative microscopic single-neuron schematic and educational signal-path animation (soma, dendrites, axon hillock, axon, myelin sheath, nodes of Ranvier, and axon terminals). In accordance with the project contract, procedural/generated geometries and animations are strictly educational and illustrative, and are not represented as biophysical, electrophysiological, or patient-specific action-potential simulations.

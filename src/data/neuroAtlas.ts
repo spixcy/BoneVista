@@ -7,6 +7,8 @@ export interface NeuroStructure {
   side?: 'left' | 'right' | 'midline' | 'unknown';
   region?: string;
   source?: string;
+  latinName?: string;
+  description?: string;
   aliases?: string[];
   meshNames: string[];
   sourceId?: string | number;
@@ -24,6 +26,8 @@ export interface NeuroStructureView {
   side?: 'left' | 'right' | 'midline' | 'unknown';
   region?: string;
   source?: string;
+  latinName?: string;
+  description?: string;
   selectable: boolean;
 }
 

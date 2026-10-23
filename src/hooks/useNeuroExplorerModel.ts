@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import type { NeuroExplorerViewProps, NeuroLayerView, NeuroMode, NeuroStructure } from '../data/neuroAtlas';
 import { useAppStore } from '../store/appStore';
+import { NEURON_LAB_LAYERS, NEURON_LAB_STRUCTURES } from '../data/neuronLab';
 
 function asViews(structures: NeuroStructure[]) {
-  return structures.map(({ id, name, category, side, region, source }) => ({
-    id, name, category, side, region, source,
+  return structures.map(({ id, name, category, side, region, source, latinName, description }) => ({
+    id, name, category, side, region, source, latinName, description,
     selectable: true,
   }));
 }
@@ -12,7 +13,7 @@ function asViews(structures: NeuroStructure[]) {
 export function useNeuroExplorerModel(): NeuroExplorerViewProps {
   const state = useAppStore();
   const structures = useMemo(() => {
-    if (state.neuroMode === 'neuron-lab') return [];
+    if (state.neuroMode === 'neuron-lab') return NEURON_LAB_STRUCTURES;
     if (!state.neuroBrainManifest || !state.neuroNervesManifest) return [];
     return state.neuroMode === 'brain-atlas'
       ? state.neuroBrainManifest.structures
@@ -35,7 +36,7 @@ export function useNeuroExplorerModel(): NeuroExplorerViewProps {
         layer(`neuro:brain:${id}`, category.label),
       );
     }
-    return [layer('neuro:neuron-lab:integration', 'Neuron Lab anatomy', false)];
+    return NEURON_LAB_LAYERS.map(({ id, label, available }) => layer(id, label, available));
   }, [state.neuroMode, state.neuroBrainManifest, state.hiddenNeuroLayers, state.neuroLayerOpacity]);
 
   const onModeChange = useCallback((mode: NeuroMode) => state.setNeuroMode(mode), [state.setNeuroMode]);
