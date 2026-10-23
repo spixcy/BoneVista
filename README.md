@@ -7,6 +7,7 @@ BoneVista is a browser-based anatomy learning and exploration workspace. It comb
 - [What BoneVista does](#what-bonevista-does)
 - [Start the app](#start-the-app)
 - [First-time walkthrough](#first-time-walkthrough)
+- [How the features connect](#how-the-features-connect)
 - [Landing page controls](#landing-page-controls)
 - [Workspace navigation](#workspace-navigation)
 - [Home page](#home-page)
@@ -50,12 +51,37 @@ npm run preview
 
 ## First-time walkthrough
 
-1. Open **Launch App** and wait for the atlas model and its labels to load.
+1. Open **Launch App** and wait for the atlas model and its labels to load. Use the maximize control on the embedded workspace when you want it to fill the screen; press **Esc** or use the restore control to return to the landing page.
 2. Select a bone by clicking it in the 3D view, choosing it in the **Atlas Structures** list, or searching the global anatomy search.
 3. Use **Spine Explorer** to browse vertebrae by region.
 4. Use **X-Ray Workspace** to load an image or click **Load real AP + lateral sample X-rays**. Switch AP/Lateral and adjust the display.
 5. To see the educational stress example, associate an atlas structure with the X-ray (if starting there), open stress mapping, set the model inputs, and click **Run simulation**.
 6. Read the model assumptions and limits shown beside the results. The image is not used as a solver input.
+
+## How the features connect
+
+BoneVista uses one shared reference atlas and one shared workspace state to link its pages. The atlas label manifest supplies names and identifiers; the GLB supplies the 3D meshes. Choosing a structure in one feature can carry that selection into another.
+
+```mermaid
+flowchart LR
+  Atlas[Atlas manifest and 3D model] --> Search[Global anatomy search]
+  Atlas --> Viewer[3D Anatomy and structure panel]
+  Atlas --> Spine[Spine Explorer]
+  Dashboard[Home dashboard] --> Viewer
+  Dashboard --> Spine
+  Dashboard --> Xray[X-Ray Workspace]
+  Search -->|selects structure| Viewer
+  Spine -->|selects vertebra mesh| Viewer
+  Xray -->|manual atlas association| Stress[Stress Analysis]
+  Stress -->|scalar stress color for selected mesh| Viewer
+  Xray -.->|reference thumbnails only| Stress
+```
+
+- **Home** is the entry point. Its 3D Anatomy, Spine Explorer, and X-Ray Workspace cards open the same pages as the sidebar. The **Open 3D Anatomy** button goes directly to the viewer.
+- **Global search**, the **Atlas Structures** panel, and **Spine Explorer** all use the same atlas labels and structure identifiers. Selecting a vertebra in Spine Explorer selects the matching mesh in the 3D viewer.
+- **X-Ray Workspace** holds AP and lateral previews in shared in-memory app state. You can choose an atlas structure manually as the image association, then open Stress Analysis with that target selected.
+- **Stress Analysis** uses only the numeric load and material inputs. After a successful calculation, the viewer colors the chosen atlas mesh with one scalar result. X-ray thumbnails may appear as reference, but image pixels do not enter the calculation.
+- The top **Bone**, **X-Ray**, and **Stress** view tabs switch the workspace view; the sidebar pages provide direct navigation. Image files and calculation inputs/results remain available while moving between these pages during the current browser session.
 
 ## Landing page controls
 
@@ -71,7 +97,7 @@ The landing page is a scrollable introduction to the application. Its decorative
 
 The left sidebar stays available while browsing workspace pages. On narrow screens it starts collapsed to icons.
 
-- **Home**: opens the dashboard and quick links.
+- **Home**: opens the dashboard, its atlas counts, feature cards, and local-use information.
 - **3D Anatomy**: opens the main 3D viewer in Bone mode.
 - **Spine Explorer**: opens the region-filtered vertebra browser.
 - **X-Ray Workspace**: opens the two-view image viewer.
@@ -84,15 +110,15 @@ At the top of the workspace:
 
 - **Search anatomy structures**: searches the loaded atlas by English or Latin name. Up to six matching results are shown. Choosing a result selects it and opens the 3D viewer. Search is for the atlas, not for image contents.
 - **Theme button** (sun/moon): switches between day and night appearance. The choice is saved in this browser.
-- **BV**: brand badge; it is not an account or profile control.
 
 ## Home page
 
 - **Open 3D Anatomy**: opens the segmented reference skeleton.
-- **Scroll to Explore**: moves to the quick-access cards.
+- **Scroll to Explore**: moves to the feature cards.
 - **3D Anatomy**, **Spine Explorer**, and **X-Ray Workspace** cards: open those pages.
-- **Preview X-Ray**, **Explore 3D model**, and **Open Spine Explorer** quick actions: alternate shortcuts to the same pages.
 - **Open X-Ray Workspace** in the empty Studies card: opens the image viewer.
+- The wide banner introduces the anatomy workspace; it is decorative and does not show an uploaded or interactive patient scan.
+- The guide and privacy cards provide static guidance about the prototype and local image handling.
 - Scroll progress indicator: shows how far through the Home page you have scrolled.
 - The atlas counts report structures and spine labels available in the loaded reference data. They are not measurements from a person.
 
@@ -128,6 +154,7 @@ These presets reposition the camera around the reference skeleton. They do not c
 - **Isolate selected** (focus corners): hides other labeled structures so the selected structure(s) are easier to inspect. It is unavailable until at least one structure is selected. Toggle again to restore the rest.
 - **Clear selection** (reset arrow): clears the selected structures. It is disabled when nothing is selected.
 - **Selection count badge**: shows how many structures are currently selected.
+- **Maximize workspace** (diagonal arrows at the embedded app's upper right): expands the workspace over the landing page. Use the restore button or **Esc** to return.
 
 The atlas panel can be hidden only when the application state requests it; in the standard workspace it is shown on the right.
 
