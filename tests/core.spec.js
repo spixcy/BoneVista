@@ -12,7 +12,7 @@ async function openWorkspace(page) {
 }
 
 test('BoneVista landing page scrolls into the working app and remembers day/night mode', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle('BoneVista');
   await expect(page.getByRole('heading', { name: /THE ANATOMY WORKSPACE FOR BONE/ })).toBeVisible();
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 });
@@ -35,7 +35,7 @@ test('BoneVista landing page scrolls into the working app and remembers day/nigh
 });
 
 test('global anatomy search selects the actual C1 atlas mesh', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   const search = page.getByRole('textbox', { name: 'Search anatomy structures' });
   await search.fill('Atlas (C1)');
@@ -47,7 +47,7 @@ test('global anatomy search selects the actual C1 atlas mesh', async ({ page }) 
 
 test('Neuro Explorer loads the licensed whole-body nerves scene and opens brain atlas search results', async ({ page }) => {
   test.setTimeout(60_000);
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: 'Neuro & Brain Explorer', exact: true }).click();
   const assetCount = page.locator('[class*=assetCount]');
@@ -84,7 +84,7 @@ test('Neuro Explorer loads the licensed whole-body nerves scene and opens brain 
 });
 
 test('spine filters show individually named vertebrae from the atlas', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: 'Spine Explorer', exact: true }).click();
   await expect(page.getByTestId('spine-vertebra-grid').locator('button').first()).toHaveText('C1', { timeout: 30_000 });
@@ -99,7 +99,7 @@ test('spine filters show individually named vertebrae from the atlas', async ({ 
 });
 
 test('views local AP and lateral images with working controls and no claimed inference', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
   await expect(page.getByRole('region', { name: '3D reconstruction status' })).toBeVisible();
@@ -126,7 +126,7 @@ test('views local AP and lateral images with working controls and no claimed inf
 });
 
 test('runs the educational finite-element stress model and validates invalid inputs', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: '3D Anatomy', exact: true }).click();
   await page.getByRole('tab', { name: 'Stress' }).click();
@@ -141,7 +141,7 @@ test('runs the educational finite-element stress model and validates invalid inp
 });
 
 test('toolbar X-Ray and Stress modes remain in the 3D anatomy viewer', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: '3D Anatomy', exact: true }).click();
   await expect(page.locator('[class*=assetCount]')).toContainText('335', { timeout: 30_000 });
@@ -164,7 +164,7 @@ test('toolbar X-Ray and Stress modes remain in the 3D anatomy viewer', async ({ 
 });
 
 test('exports a binary GLB reference model', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: '3D Anatomy', exact: true }).click();
   await expect(page.locator('[class*=assetCount]')).toContainText('335', { timeout: 30_000 });
@@ -179,7 +179,7 @@ test('exports a binary GLB reference model', async ({ page }) => {
 });
 
 test('muscle explorer loads local layered anatomy and shares selection with global search', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: 'Muscle Explorer', exact: true }).click();
   await expect(page.getByTestId('muscle-explorer-host')).toBeVisible();
