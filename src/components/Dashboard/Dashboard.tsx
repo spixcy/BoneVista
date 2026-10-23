@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, Bone, Layers3, ShieldCheck } from 'lucide-react';
+import { ArrowDown, ArrowRight, AlignCenter, Bone, ImageUp, Layers3, ShieldCheck } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
 
 const actions = [
   { page: 'viewer', title: '3D Anatomy', detail: 'Explore the segmented reference atlas', icon: Bone, art: '/branding/bonevista-mascot.webp', tone: 'blue' },
+  { page: 'spine', title: 'Spine Explorer', detail: 'Browse 26 individually named meshes', icon: AlignCenter, art: undefined, tone: 'teal' },
+  { page: 'xray', title: 'X-Ray Workspace', detail: 'Preview AP and lateral images locally', icon: ImageUp, art: undefined, tone: 'violet' },
 ] as const;
 
 const Dashboard: React.FC = () => {
@@ -35,7 +37,7 @@ const Dashboard: React.FC = () => {
           <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>QUICK ACCESS</span><h2>Pick up where you want to explore</h2></div></div>
           <div className={styles.actionGrid}>{actions.map(({ page, title, detail, icon: Icon, art, tone }) => <button key={page} className={`${styles.actionCard} ${styles[tone]}`} onClick={() => setActivePage(page)}>
             <div className={styles.actionText}><span className={styles.actionIcon}><Icon size={17}/></span><strong>{title}</strong><span>{detail}</span><span className={styles.actionArrow}><ArrowRight size={15}/></span></div>
-            <img src={art} alt="" aria-hidden="true"/>
+            {art && <img src={art} alt="" aria-hidden="true"/>}
           </button>)}</div>
         </section>
 
