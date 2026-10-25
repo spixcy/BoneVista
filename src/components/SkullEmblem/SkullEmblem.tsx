@@ -46,7 +46,7 @@ const SkullEmblem: React.FC<Props> = ({ className }) => {
       <motion.div className={styles.tilt} style={{ rotateX, rotateY }}>
         <svg className={styles.svg} viewBox="0 0 400 510" fill="none">
           <defs>
-            <linearGradient id="bvGold" x1="0" y1="0" x2="1" y2="1">
+            <linearGradient id="bvGold" gradientUnits="userSpaceOnUse" x1="40" y1="30" x2="360" y2="480">
               <stop offset="0%" stopColor="#fff3c4" />
               <stop offset="38%" stopColor="#e3c25a" />
               <stop offset="68%" stopColor="#b08a2e" />
