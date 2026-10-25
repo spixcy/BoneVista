@@ -6,6 +6,7 @@ import {
   getReconstructionCapabilities,
   getReconstructionHealth,
   getReconstructionJobStatus,
+  fetchReconstructionModel,
   reconstructionApiBaseUrl,
   resolveModelGlbUrl,
   submitReconstructionJob,
@@ -13,10 +14,13 @@ import {
   type ReconstructionHealth,
   type ReconstructionJobStatusResponse,
 } from '../../services/xrayReconstructionApi';
+import ReconstructionModelViewer from './ReconstructionModelViewer';
 import styles from './XrayWorkspace.module.css';
 
 const ACCEPTED = { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'], 'image/webp': ['.webp'] };
 const MAX_SIZE = 25 * 1024 * 1024;
+const JOB_TIMEOUT_MS = 5 * 60 * 1000;
+const POLL_INTERVAL_MS = 1500;
 type View = 'ap' | 'lateral';
 type BackendStatus =
   | { kind: 'checking' }
@@ -72,20 +76,27 @@ export default function XrayWorkspace() {
   const [submittingJob, setSubmittingJob] = useState(false);
   const [jobState, setJobState] = useState<{
     id: string | null;
-    status: 'idle' | 'queued' | 'processing' | 'succeeded' | 'failed';
+    status: 'idle' | 'queued' | 'processing' | 'succeeded' | 'failed' | 'cancelled' | 'timed_out';
     progress: number | null;
     message: string;
     modelUrl: string | null;
+    modelType: string | null;
   }>({
     id: null,
     status: 'idle',
     progress: null,
     message: '',
     modelUrl: null,
+    modelType: null,
   });
   const [jobError, setJobError] = useState<string | null>(null);
+  const [modelObjectUrl, setModelObjectUrl] = useState<string | null>(null);
+  const [modelDownloadState, setModelDownloadState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const pollTimerRef = useRef<number | null>(null);
+  const timeoutTimerRef = useRef<number | null>(null);
   const jobAbortControllerRef = useRef<AbortController | null>(null);
+  const jobStartedAtRef = useRef<number | null>(null);
+  const submittedInputsRef = useRef<{ ap: File; lateral: File } | null>(null);
   const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const file = view === 'ap' ? xrayUpload.ap : xrayUpload.lateral;
@@ -147,12 +158,42 @@ export default function XrayWorkspace() {
         window.clearTimeout(pollTimerRef.current);
         pollTimerRef.current = null;
       }
+      if (timeoutTimerRef.current !== null) {
+        window.clearTimeout(timeoutTimerRef.current);
+        timeoutTimerRef.current = null;
+      }
       if (jobAbortControllerRef.current) {
         jobAbortControllerRef.current.abort();
         jobAbortControllerRef.current = null;
       }
     };
   }, []);
+
+  const cancelActiveJob = useCallback((status: 'cancelled' | 'timed_out' = 'cancelled') => {
+    if (pollTimerRef.current !== null) {
+      window.clearTimeout(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+    if (timeoutTimerRef.current !== null) {
+      window.clearTimeout(timeoutTimerRef.current);
+      timeoutTimerRef.current = null;
+    }
+    jobAbortControllerRef.current?.abort();
+    jobAbortControllerRef.current = null;
+    setSubmittingJob(false);
+    setJobState((previous) => previous.status === 'queued' || previous.status === 'processing'
+      ? { ...previous, status, message: status === 'timed_out' ? 'The client stopped waiting after 5 minutes; the server may still be processing the job.' : 'Stopped waiting in this browser. The server may continue processing the job.' }
+      : previous);
+    if (status === 'timed_out') setJobError('The service did not finish within 5 minutes. Check the service before submitting again.');
+  }, []);
+
+  useEffect(() => {
+    const submitted = submittedInputsRef.current;
+    if (submitted && (submitted.ap !== xrayUpload.ap || submitted.lateral !== xrayUpload.lateral)) {
+      cancelActiveJob();
+      submittedInputsRef.current = null;
+    }
+  }, [xrayUpload.ap, xrayUpload.lateral, cancelActiveJob]);
 
   const handleStartReconstruction = useCallback(async () => {
     if (!xrayUpload.ap || !xrayUpload.lateral || !reconstructionAnatomyTarget) return;
@@ -167,6 +208,9 @@ export default function XrayWorkspace() {
 
     const controller = new AbortController();
     jobAbortControllerRef.current = controller;
+    jobStartedAtRef.current = Date.now();
+    submittedInputsRef.current = { ap: xrayUpload.ap, lateral: xrayUpload.lateral };
+    timeoutTimerRef.current = window.setTimeout(() => cancelActiveJob('timed_out'), JOB_TIMEOUT_MS);
     setSubmittingJob(true);
     setJobError(null);
     setJobState({
@@ -175,6 +219,7 @@ export default function XrayWorkspace() {
       progress: null,
       message: 'Submitting reconstruction job…',
       modelUrl: null,
+      modelType: null,
     });
 
     try {
@@ -185,6 +230,8 @@ export default function XrayWorkspace() {
         controller.signal
       );
 
+      if (controller.signal.aborted) return;
+
       setSubmittingJob(false);
       setJobState({
         id: submitRes.job_id,
@@ -192,15 +239,24 @@ export default function XrayWorkspace() {
         progress: null,
         message: 'Job queued on server…',
         modelUrl: null,
+        modelType: null,
       });
 
       // Begin polling job status
       const poll = async (jobId: string) => {
+        if (controller.signal.aborted) return;
+        if (jobStartedAtRef.current !== null && Date.now() - jobStartedAtRef.current >= JOB_TIMEOUT_MS) {
+          cancelActiveJob('timed_out');
+          return;
+        }
         try {
           const statusRes: ReconstructionJobStatusResponse = await getReconstructionJobStatus(
             jobId,
             controller.signal
           );
+
+          if (controller.signal.aborted) return;
+          if (statusRes.job_id !== jobId) throw new Error('The service returned a status for a different job.');
 
           setJobState({
             id: statusRes.job_id,
@@ -208,15 +264,26 @@ export default function XrayWorkspace() {
             progress: statusRes.progress,
             message: statusRes.message,
             modelUrl: statusRes.model_url ? resolveModelGlbUrl(statusRes.model_url) : null,
+            modelType: statusRes.model_type,
           });
 
           if (statusRes.status === 'queued' || statusRes.status === 'processing') {
-            pollTimerRef.current = window.setTimeout(() => void poll(jobId), 1500);
+            pollTimerRef.current = window.setTimeout(() => void poll(jobId), POLL_INTERVAL_MS);
+          } else {
+            if (timeoutTimerRef.current !== null) window.clearTimeout(timeoutTimerRef.current);
+            timeoutTimerRef.current = null;
+            jobAbortControllerRef.current = null;
+            submittedInputsRef.current = null;
+            if (statusRes.status === 'failed') setJobError(statusRes.message || 'The reconstruction failed.');
           }
         } catch (err) {
           if (!controller.signal.aborted) {
             setJobState((prev) => ({ ...prev, status: 'failed', message: 'Polling error' }));
             setJobError(err instanceof Error ? err.message : 'Error polling reconstruction job.');
+            jobAbortControllerRef.current = null;
+            if (timeoutTimerRef.current !== null) window.clearTimeout(timeoutTimerRef.current);
+            timeoutTimerRef.current = null;
+            submittedInputsRef.current = null;
           }
         }
       };
@@ -227,9 +294,46 @@ export default function XrayWorkspace() {
       if (!controller.signal.aborted) {
         setJobState((prev) => ({ ...prev, status: 'failed', message: 'Submission rejected' }));
         setJobError(err instanceof Error ? err.message : 'Failed to submit reconstruction job.');
+        jobAbortControllerRef.current = null;
+        if (timeoutTimerRef.current !== null) window.clearTimeout(timeoutTimerRef.current);
+        timeoutTimerRef.current = null;
+        submittedInputsRef.current = null;
       }
     }
-  }, [xrayUpload.ap, xrayUpload.lateral, reconstructionAnatomyTarget]);
+  }, [xrayUpload.ap, xrayUpload.lateral, reconstructionAnatomyTarget, cancelActiveJob]);
+
+  useEffect(() => {
+    if (jobState.status !== 'succeeded' || !jobState.modelUrl) {
+      setModelObjectUrl(null);
+      setModelDownloadState('idle');
+      return;
+    }
+    const controller = new AbortController();
+    let active = true;
+    let createdUrl: string | null = null;
+    setModelObjectUrl(null);
+    setModelDownloadState('loading');
+    void fetchReconstructionModel(jobState.modelUrl, controller.signal).then((blob) => {
+      if (!active) return;
+      createdUrl = URL.createObjectURL(blob);
+      setModelObjectUrl(createdUrl);
+    }).catch((error) => {
+      if (!active || controller.signal.aborted) return;
+      setModelDownloadState('error');
+      setJobError(error instanceof Error ? error.message : 'The returned model could not be downloaded.');
+    });
+    return () => {
+      active = false;
+      controller.abort();
+      if (createdUrl) URL.revokeObjectURL(createdUrl);
+    };
+  }, [jobState.status, jobState.modelUrl]);
+
+  const handleModelLoaded = useCallback(() => setModelDownloadState('ready'), []);
+  const handleModelLoadError = useCallback(() => {
+    setModelDownloadState('error');
+    setJobError('The returned GLB could not be parsed by the viewer.');
+  }, []);
 
   useEffect(() => {
     setDimensions(null);
@@ -338,17 +442,20 @@ export default function XrayWorkspace() {
           <p className={styles.jobMessage}>{jobState.message}</p>
           {jobState.status === 'succeeded' && jobState.modelUrl && (
             <div className={styles.jobSuccessAction}>
-              <span>Estimated 3D bone mesh generated (AI research estimate · not clinically validated).</span>
-              <a href={jobState.modelUrl} download="reconstructed_bone.glb" className={styles.downloadGlbBtn}>
+              <span>AI-estimated educational/research reconstruction — not clinically validated. Output: {jobState.modelType ?? 'model type not specified'}.</span>
+              {modelDownloadState === 'loading' && <span>Downloading and validating the returned GLB…</span>}
+              {modelDownloadState === 'ready' && modelObjectUrl && <a href={modelObjectUrl} download="reconstructed_bone.glb" className={styles.downloadGlbBtn}>
                 Download GLB mesh
-              </a>
+              </a>}
             </div>
           )}
         </div>
       )}
 
+      {(submittingJob || jobState.status === 'queued' || jobState.status === 'processing') && <button type="button" className={styles.cancelJobBtn} onClick={() => cancelActiveJob()}>Stop waiting</button>}
+      {jobState.status === 'succeeded' && modelObjectUrl && <ReconstructionModelViewer url={modelObjectUrl} onLoad={handleModelLoaded} onError={handleModelLoadError} />}
       <button
-        className={readyForSubmission && !submittingJob && (jobState.status === 'idle' || jobState.status === 'failed' || jobState.status === 'succeeded') ? styles.reconstructBtn : styles.reconstructDisabled}
+        className={readyForSubmission && !submittingJob && !['queued', 'processing'].includes(jobState.status) ? styles.reconstructBtn : styles.reconstructDisabled}
         disabled={!readyForSubmission || submittingJob || jobState.status === 'queued' || jobState.status === 'processing'}
         onClick={handleStartReconstruction}
         title={readyForSubmission ? 'Submit AP + lateral pair to local reconstruction service' : 'The backend must be available with a supported target and both valid views'}

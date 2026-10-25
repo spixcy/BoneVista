@@ -92,6 +92,26 @@ export interface ReconstructionJobStatusResponse {
   model_type: string | null;
 }
 
+export async function fetchReconstructionModel(url: string, signal?: AbortSignal): Promise<Blob> {
+  let response: Response;
+  try {
+    response = await fetch(resolveModelGlbUrl(url), { signal });
+  } catch {
+    if (signal?.aborted) throw new ReconstructionApiError('Model download was cancelled.');
+    throw new ReconstructionApiError('Could not download the reconstruction model from the local service.');
+  }
+  if (!response.ok) throw new ReconstructionApiError(`The model download returned HTTP ${response.status}.`);
+
+  let bytes: ArrayBuffer;
+  try { bytes = await response.arrayBuffer(); }
+  catch { throw new ReconstructionApiError('The service returned an unreadable model file.'); }
+  const header = new DataView(bytes);
+  if (bytes.byteLength < 20 || header.getUint32(0, true) !== 0x46546c67 || header.getUint32(4, true) !== 2 || header.getUint32(8, true) !== bytes.byteLength) {
+    throw new ReconstructionApiError('The service response is not a valid binary GLB file.');
+  }
+  return new Blob([bytes], { type: 'model/gltf-binary' });
+}
+
 export interface ReconstructionErrorPayload {
   error: {
     code: string;
@@ -153,7 +173,12 @@ export async function getReconstructionJobStatus(
     typeof value.job_id !== 'string' ||
     typeof value.status !== 'string' ||
     !['queued', 'processing', 'succeeded', 'failed'].includes(value.status as string) ||
-    typeof value.message !== 'string'
+    typeof value.message !== 'string' ||
+    !(value.progress === null || (typeof value.progress === 'number' && Number.isFinite(value.progress) && value.progress >= 0 && value.progress <= 100)) ||
+    !(value.model_url === null || typeof value.model_url === 'string') ||
+    !(value.model_type === null || typeof value.model_type === 'string') ||
+    (value.status === 'succeeded' && (typeof value.model_url !== 'string' || !value.model_url.trim())) ||
+    (value.status !== 'succeeded' && value.model_url !== null)
   ) {
     throw new ReconstructionApiError('The service returned an invalid job status response.');
   }
@@ -162,10 +187,14 @@ export async function getReconstructionJobStatus(
 }
 
 export function resolveModelGlbUrl(relativeOrAbsoluteUrl: string): string {
-  if (relativeOrAbsoluteUrl.startsWith('http://') || relativeOrAbsoluteUrl.startsWith('https://')) {
-    return relativeOrAbsoluteUrl;
+  try {
+    const base = new URL(`${reconstructionApiBaseUrl}/`);
+    const resolved = new URL(relativeOrAbsoluteUrl, base);
+    if (resolved.protocol !== 'http:' && resolved.protocol !== 'https:') throw new Error();
+    if (resolved.origin !== base.origin) throw new Error();
+    return resolved.toString();
+  } catch {
+    throw new ReconstructionApiError('The service returned an invalid model URL.');
   }
-  const cleanPath = relativeOrAbsoluteUrl.startsWith('/') ? relativeOrAbsoluteUrl : `/${relativeOrAbsoluteUrl}`;
-  return `${reconstructionApiBaseUrl}${cleanPath}`;
 }
 

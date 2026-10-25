@@ -12,7 +12,7 @@ test('Neuro Explorer supports mesh modes and the shared illustrative Neuron Lab 
   await page.goto('/');
   await openWorkspace(page);
 
-  await page.getByRole('button', { name: /Neuro & Brain/ }).click();
+  await page.getByRole('button', { name: 'Neuro & Brain Explorer', exact: true }).click();
   const panel = page.getByTestId('neuro-explorer-panel');
   await expect(page.getByTestId('neuro-explorer-page')).toBeVisible();
   await expect(panel).toBeVisible();

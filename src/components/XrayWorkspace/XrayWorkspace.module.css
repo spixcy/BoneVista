@@ -377,3 +377,12 @@
   text-decoration: underline;
 }
 
+.cancelJobBtn, .resultViewerHeader button { align-self: flex-start; padding: 7px 10px; border: 1px solid var(--color-border-strong); border-radius: 6px; background: var(--color-bg-elevated); color: var(--color-text-secondary); font: 600 10px var(--font-sans); cursor: pointer; }
+.resultViewer { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--color-border-strong); border-radius: 8px; background: var(--color-bg-elevated); }
+.resultViewerHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.resultViewerHeader > div { display: flex; flex-direction: column; gap: 4px; color: var(--color-text-primary); font: 600 11px var(--font-sans); }
+.resultViewerHeader span { color: var(--color-text-tertiary); font: 10px/1.4 var(--font-sans); }
+.resultCanvas { height: 340px; overflow: hidden; border-radius: 7px; background: #080d10; }
+.modelError { padding: 9px 12px; border: 1px solid var(--color-border-strong); border-radius: 6px; background: var(--color-bg-surface); color: #fbbf24; font: 11px/1.5 var(--font-sans); }
+@media (max-width: 640px) { .resultViewerHeader { align-items: flex-start; flex-direction: column; } .resultCanvas { height: 260px; } }
+

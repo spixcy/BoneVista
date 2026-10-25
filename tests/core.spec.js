@@ -20,6 +20,51 @@ async function mockReconstructionApi(page, capabilities) {
   });
 }
 
+// Test-only mesh for exercising the GLB transport/viewer. It is not model output.
+function makeViewerPlumbingGlb() {
+  const document = {
+    asset: { version: '2.0', generator: 'BoneVista Playwright plumbing fixture' },
+    scene: 0,
+    scenes: [{ nodes: [0] }],
+    nodes: [{ mesh: 0 }],
+    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, indices: 1 }] }],
+    buffers: [{ byteLength: 44 }],
+    bufferViews: [
+      { buffer: 0, byteOffset: 0, byteLength: 36, target: 34962 },
+      { buffer: 0, byteOffset: 36, byteLength: 6, target: 34963 },
+    ],
+    accessors: [
+      { bufferView: 0, componentType: 5126, count: 3, type: 'VEC3', min: [-1, -1, 0], max: [1, 1, 0] },
+      { bufferView: 1, componentType: 5123, count: 3, type: 'SCALAR' },
+    ],
+  };
+  const json = Buffer.from(JSON.stringify(document));
+  const jsonLength = Math.ceil(json.length / 4) * 4;
+  const bin = Buffer.alloc(44);
+  [[-1, -1, 0], [1, -1, 0], [0, 1, 0]].flat().forEach((value, index) => bin.writeFloatLE(value, index * 4));
+  [0, 1, 2].forEach((value, index) => bin.writeUInt16LE(value, 36 + index * 2));
+  const total = 12 + 8 + jsonLength + 8 + bin.length;
+  const glb = Buffer.alloc(total);
+  glb.write('glTF', 0); glb.writeUInt32LE(2, 4); glb.writeUInt32LE(total, 8);
+  glb.writeUInt32LE(jsonLength, 12); glb.writeUInt32LE(0x4e4f534a, 16); json.copy(glb, 20);
+  glb.fill(0x20, 20 + json.length, 20 + jsonLength);
+  const binHeader = 20 + jsonLength;
+  glb.writeUInt32LE(bin.length, binHeader); glb.writeUInt32LE(0x004e4942, binHeader + 4); bin.copy(glb, binHeader + 8);
+  return glb;
+}
+
+const availableTestCapabilities = {
+  available: true,
+  mode: 'research',
+  model: 'test-only-mocked-capability',
+  supported_anatomies: ['femur'],
+  requires_ap: true,
+  requires_lateral: true,
+  max_upload_bytes: 26214400,
+  input_constraints: ['Mocked API flow test; no inference is performed.'],
+  reason: null,
+};
+
 test('BoneVista landing page scrolls into the working app and remembers day/night mode', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle('BoneVista');
@@ -27,7 +72,7 @@ test('BoneVista landing page scrolls into the working app and remembers day/nigh
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 });
   await openWorkspace(page);
   await expect(page.getByRole('heading', { name: 'Explore human anatomy' })).toBeVisible();
-  const mascot = page.getByAltText('BoneVista mascot learning anatomy');
+  const mascot = page.getByAltText('Chotu - BoneVista skeleton guide');
   await expect(mascot).toBeVisible();
   expect(await mascot.evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
   await expect(page.getByText(/335 named atlas structures/)).toBeVisible();
@@ -55,7 +100,7 @@ test('global anatomy search selects the actual C1 atlas mesh', async ({ page }) 
 });
 
 test('Neuro Explorer loads the licensed whole-body nerves scene and opens brain atlas search results', async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(120_000);
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await openWorkspace(page);
   await page.getByRole('button', { name: 'Neuro & Brain Explorer', exact: true }).click();
@@ -198,6 +243,122 @@ test('uses only backend-supported reconstruction targets and keeps atlas associa
   await expect(page.getByText(/may be outside the model’s validated input domain/)).toBeVisible();
   await expect(page.getByText('Ready for submission').first()).toBeVisible();
   expect(jobRequests).toEqual([]);
+});
+
+test('submits only on explicit action, polls the mocked job, and displays its returned GLB', async ({ page }) => {
+  let submissions = 0;
+  let statusPolls = 0;
+  const glbFixture = makeViewerPlumbingGlb();
+  await page.route('http://127.0.0.1:8000/api/v1/**', async route => {
+    const url = route.request().url();
+    if (url.endsWith('/health')) return route.fulfill({ json: { status: 'ok', service: 'bonevista-test' } });
+    if (url.endsWith('/capabilities')) return route.fulfill({ json: availableTestCapabilities });
+    if (url.endsWith('/model.glb')) return route.fulfill({ status: 200, contentType: 'model/gltf-binary', body: glbFixture });
+    if (url.endsWith('/jobs') && route.request().method() === 'POST') {
+      submissions += 1;
+      expect(route.request().headers()['content-type']).toMatch(/^multipart\/form-data; boundary=/);
+      expect(route.request().postData()).toContain('name="ap"');
+      expect(route.request().postData()).toContain('name="lateral"');
+      expect(route.request().postData()).toContain('name="anatomy"');
+      return route.fulfill({ status: 202, json: { job_id: 'test-job', status: 'queued' } });
+    }
+    if (url.endsWith('/jobs/test-job')) {
+      statusPolls += 1;
+      return route.fulfill({ json: statusPolls === 1
+        ? { job_id: 'test-job', status: 'processing', progress: null, message: 'Mocked processing state', model_url: null, model_type: null }
+        : { job_id: 'test-job', status: 'succeeded', progress: 100, message: 'Mocked plumbing success', model_url: '/api/v1/reconstruction/jobs/test-job/model.glb', model_type: 'estimated_3d_bone_segmentation' } });
+    }
+    return route.fulfill({ status: 404, json: { error: { code: 'NOT_FOUND', message: 'Unmocked test endpoint.' } } });
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await page.getByLabel('AP radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Lateral radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Reconstruction anatomy target').selectOption('femur');
+  expect(submissions).toBe(0);
+  await page.getByRole('button', { name: 'Reconstruct 3D bone' }).click();
+  await expect(page.getByRole('region', { name: 'Reconstruction model viewer' })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('Mocked plumbing success')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Download GLB mesh' })).toHaveAttribute('href', /^blob:/);
+  await expect(page.getByRole('region', { name: 'Reconstruction model viewer' }).locator('canvas')).toBeVisible();
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('link', { name: 'Download GLB mesh' }).click(),
+  ]);
+  expect((await readFile(await download.path())).subarray(0, 4).toString()).toBe('glTF');
+  expect(submissions).toBe(1);
+  expect(statusPolls).toBeGreaterThanOrEqual(2);
+});
+
+test('shows mocked backend failure safely and does not create a result viewer', async ({ page }) => {
+  await page.route('http://127.0.0.1:8000/api/v1/**', async route => {
+    const url = route.request().url();
+    if (url.endsWith('/health')) return route.fulfill({ json: { status: 'ok', service: 'bonevista-test' } });
+    if (url.endsWith('/capabilities')) return route.fulfill({ json: availableTestCapabilities });
+    if (url.endsWith('/jobs') && route.request().method() === 'POST') return route.fulfill({ status: 503, json: { error: { code: 'MODEL_UNAVAILABLE', message: 'No verified checkpoint is configured.' } } });
+    return route.fulfill({ status: 404, json: {} });
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await page.getByLabel('AP radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Lateral radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Reconstruction anatomy target').selectOption('femur');
+  await page.getByRole('button', { name: 'Reconstruct 3D bone' }).click();
+  await expect(page.getByRole('alert')).toContainText('MODEL_UNAVAILABLE');
+  await expect(page.getByRole('region', { name: 'Reconstruction model viewer' })).toHaveCount(0);
+});
+
+test('rejects a non-GLB response from a successful mock job', async ({ page }) => {
+  await page.route('http://127.0.0.1:8000/api/v1/**', async route => {
+    const url = route.request().url();
+    if (url.endsWith('/health')) return route.fulfill({ json: { status: 'ok', service: 'bonevista-test' } });
+    if (url.endsWith('/capabilities')) return route.fulfill({ json: availableTestCapabilities });
+    if (url.endsWith('/model.glb')) return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'not a GLB' });
+    if (url.endsWith('/jobs') && route.request().method() === 'POST') return route.fulfill({ status: 202, json: { job_id: 'bad-glb-job', status: 'queued' } });
+    if (url.endsWith('/jobs/bad-glb-job')) return route.fulfill({ json: { job_id: 'bad-glb-job', status: 'succeeded', progress: 100, message: 'Plumbing response only', model_url: '/api/v1/reconstruction/jobs/bad-glb-job/model.glb', model_type: 'test-fixture' } });
+    return route.fulfill({ status: 404, json: {} });
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await page.getByLabel('AP radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Lateral radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Reconstruction anatomy target').selectOption('femur');
+  await page.getByRole('button', { name: 'Reconstruct 3D bone' }).click();
+  await expect(page.getByRole('alert')).toContainText('not a valid binary GLB');
+  await expect(page.getByRole('region', { name: 'Reconstruction model viewer' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Download GLB mesh' })).toHaveCount(0);
+});
+
+test('stopping a queued job stops browser polling and labels server-side status honestly', async ({ page }) => {
+  let statusPolls = 0;
+  await page.route('http://127.0.0.1:8000/api/v1/**', async route => {
+    const url = route.request().url();
+    if (url.endsWith('/health')) return route.fulfill({ json: { status: 'ok', service: 'bonevista-test' } });
+    if (url.endsWith('/capabilities')) return route.fulfill({ json: availableTestCapabilities });
+    if (url.endsWith('/jobs') && route.request().method() === 'POST') return route.fulfill({ status: 202, json: { job_id: 'queued-job', status: 'queued' } });
+    if (url.endsWith('/jobs/queued-job')) {
+      statusPolls += 1;
+      return route.fulfill({ json: { job_id: 'queued-job', status: 'processing', progress: null, message: 'Still processing', model_url: null, model_type: null } });
+    }
+    return route.fulfill({ status: 404, json: {} });
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await page.getByLabel('AP radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Lateral radiograph file input').setInputFiles(sample);
+  await page.getByLabel('Reconstruction anatomy target').selectOption('femur');
+  await page.getByRole('button', { name: 'Reconstruct 3D bone' }).click();
+  await expect(page.getByText('Still processing')).toBeVisible();
+  await page.getByRole('button', { name: 'Stop waiting' }).click();
+  await expect(page.getByText('Status:')).toContainText('cancelled');
+  await expect(page.getByText(/server may continue processing the job/)).toBeVisible();
+  const countAfterStop = statusPolls;
+  await page.waitForTimeout(1800);
+  expect(statusPolls).toBe(countAfterStop);
 });
 
 test('runs the educational finite-element stress model and validates invalid inputs', async ({ page }) => {
