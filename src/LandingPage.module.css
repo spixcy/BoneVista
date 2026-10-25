@@ -131,8 +131,10 @@ main { position: relative; z-index: 1; }
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  padding-right: .12em;
-  margin-right: -.06em;
+  /* background-clip: text only paints inside the box, so pad it past the italic
+     overhangs and descenders (the g in "gold") and cancel the padding with margins. */
+  padding: .06em .14em .26em .1em;
+  margin: -.06em -.08em -.26em -.1em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -221,7 +223,7 @@ main { position: relative; z-index: 1; }
   letter-spacing: -.03em;
 }
 /* Extra bottom room so descenders (the g in "gold") are not clipped by the reveal mask. */
-.lineMask { display: block; overflow: hidden; padding: 0 .08em .2em 0; margin-bottom: -.14em; white-space: nowrap; }
+.lineMask { display: block; overflow: hidden; padding: 0 .1em .32em .1em; margin: 0 -.1em -.26em -.1em; white-space: nowrap; }
 .lineMask > span { display: inline-block; }
 .heroDescription { max-width: 540px; margin-bottom: 38px; color: var(--lp-muted); font: 300 clamp(15px, 1.2vw, 18px)/1.75 var(--font-sans); }
 .heroActions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
