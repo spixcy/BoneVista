@@ -283,3 +283,17 @@
   .metadata { width: 100%; align-items: flex-start; margin-left: 0; text-align: left; }
   .association{grid-template-columns:1fr}.association small{grid-column:auto}.association button{width:100%}.reconstructDisabled{align-self:stretch}
 }
+
+.availableBadge { padding: 5px 9px; border: 1px solid rgba(34,197,94,.35); border-radius: 999px; background: rgba(34,197,94,.08); color: #86efac; font: 600 10px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
+.reconstructionTarget { display: grid; grid-template-columns: minmax(150px,.7fr) minmax(220px,1fr); align-items: center; gap: 10px; color: var(--color-text-secondary); font: 600 11px var(--font-sans); }
+.reconstructionTarget select { height: 36px; min-width: 0; padding: 0 9px; border: 1px solid var(--color-border-strong); border-radius: 6px; background: var(--color-bg-elevated); color: var(--color-text-primary); font: 11px var(--font-sans); }
+.inputConstraints { margin: 0; padding: 0 0 0 18px; color: var(--color-text-tertiary); font: 11px/1.5 var(--font-sans); }
+.statusWarning { margin: 0; padding: 9px 11px; border: 1px solid rgba(245,158,11,.25); border-radius: 7px; background: rgba(245,158,11,.07); color: #fbbf24; font: 11px/1.5 var(--font-sans); }
+.capabilityActions { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--color-text-tertiary); font: 10px/1.4 var(--font-sans); }
+.capabilityActions button, .capabilityRetry { padding: 7px 10px; border: 1px solid var(--color-border-strong); border-radius: 6px; background: var(--color-bg-elevated); color: var(--color-text-secondary); font: 600 10px var(--font-sans); cursor: pointer; }
+.capabilityActions button:disabled, .capabilityRetry:disabled { opacity: .5; cursor: wait; }
+.capabilityRetry { align-self: flex-start; }
+@media (max-width: 640px) {
+  .reconstructionTarget { grid-template-columns: 1fr; }
+  .capabilityActions { align-items: flex-start; flex-direction: column; }
+}

@@ -11,6 +11,15 @@ async function openWorkspace(page) {
   await expect(page.getByRole('button', { name: 'Home', exact: true })).toBeVisible();
 }
 
+async function mockReconstructionApi(page, capabilities) {
+  await page.route('http://127.0.0.1:8000/api/v1/**', async route => {
+    const body = route.request().url().endsWith('/health')
+      ? { status: 'ok', service: 'bonevista-xray-reconstruction' }
+      : capabilities;
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
+  });
+}
+
 test('BoneVista landing page scrolls into the working app and remembers day/night mode', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle('BoneVista');
@@ -126,6 +135,49 @@ test('views local AP and lateral images with working controls and no claimed inf
   await page.getByLabel('AP radiograph file input').setInputFiles({ name: 'corrupt.png', mimeType: 'image/png', buffer: Buffer.from('not an image') });
   await expect(page.getByRole('alert')).toContainText('could not be decoded as a JPEG, PNG, or WebP image');
   await expect(page.getByText('AP input').locator('..')).toContainText('Waiting for image');
+});
+
+test('reports an offline reconstruction API while keeping local image viewing available', async ({ page }) => {
+  await page.route('http://127.0.0.1:8000/api/v1/**', route => route.abort());
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await expect(page.getByText('API offline')).toBeVisible();
+  await expect(page.getByText(/Local image viewing remains available/)).toBeVisible();
+  await expect(page.getByLabel('AP radiograph file input')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
+});
+
+test('uses only backend-supported reconstruction targets and keeps atlas association separate', async ({ page }) => {
+  const jobRequests = [];
+  page.on('request', request => { if (request.url().includes('/api/v1/reconstruction/jobs')) jobRequests.push(request.method()); });
+  await mockReconstructionApi(page, {
+    available: true,
+    mode: 'research',
+    model: 'verified-research-checkpoint',
+    supported_anatomies: ['vertebra', 'femur'],
+    requires_ap: true,
+    requires_lateral: true,
+    max_upload_bytes: 26214400,
+    input_constraints: ['Use paired orthogonal AP and lateral views.'],
+    reason: null,
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  const reconstructionTarget = page.getByLabel('Reconstruction anatomy target');
+  await expect(reconstructionTarget).toBeVisible();
+  await expect(reconstructionTarget.locator('option')).toHaveCount(3);
+  await expect(reconstructionTarget.locator('option').nth(1)).toHaveValue('vertebra');
+  await expect(reconstructionTarget.locator('option').nth(2)).toHaveValue('femur');
+  await reconstructionTarget.selectOption('vertebra');
+  await page.getByLabel('Bone associated with radiographs').selectOption('femur_l');
+  await expect(reconstructionTarget).toHaveValue('vertebra');
+  await page.getByRole('button', { name: 'Load real AP + lateral sample X-rays' }).click();
+  await expect(page.getByText(/may be outside the model’s validated input domain/)).toBeVisible();
+  await expect(page.getByText('Ready for submission').first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
+  expect(jobRequests).toEqual([]);
 });
 
 test('runs the educational finite-element stress model and validates invalid inputs', async ({ page }) => {

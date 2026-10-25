@@ -198,7 +198,7 @@ export default function XrayWorkspace() {
         Reconstruction anatomy
         <select id="xray-reconstruction-target" aria-label="Reconstruction anatomy target" value={reconstructionAnatomyTarget ?? ''} onChange={(event) => setReconstructionAnatomyTarget(event.target.value || null)}>
           <option value="">Choose a supported anatomy…</option>
-          {supportedAnatomies.map((anatomy) => <option key={anatomy} value={anatomy}>{anatomy.replaceAll(/[-_]+/g, ' ')}</option>)}
+          {supportedAnatomies.map((anatomy) => <option key={anatomy} value={anatomy}>{anatomy.replace(/[-_]+/g, ' ')}</option>)}
         </select>
       </label>}
       {capabilities?.input_constraints?.length ? <ul className={styles.inputConstraints}>{capabilities.input_constraints.map((constraint) => <li key={constraint}>{constraint}</li>)}</ul> : null}
@@ -248,6 +248,6 @@ export default function XrayWorkspace() {
       </button>
       <small>The image is a reference only. Stress is calculated from the educational load/material inputs; it is not inferred from the X-ray.</small>
     </div>
-    <div className={styles.info}><Info size={14}/><span>Images remain in this browser during service checks. Brightness, contrast, pan, zoom, and rotation are viewing adjustments only. DICOM files are not supported in this version.</span></div>
+    <div className={styles.info}><Info size={14}/><span>Images remain in this browser during service checks. No AI analysis, diagnosis, or 3D reconstruction is performed by checking service status. Brightness, contrast, pan, zoom, and rotation are viewing adjustments only. DICOM files are not supported in this version.</span></div>
   </div>;
 }
