@@ -161,6 +161,37 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.regionTabs {
+  flex-basis: 100%;
+  display: flex;
+  gap: 14px;
+  margin-bottom: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.regionTab {
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: #8a8478;
+  font: 600 9.5px var(--font-mono, monospace);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.regionTab:hover { color: #f6f3eb; }
+
+.regionTabActive {
+  color: #d4af37;
+  border-bottom-color: #d4af37;
 }
 
 .boneChip {
@@ -177,8 +208,8 @@
 
 .boneChip:hover {
   border-color: rgba(212, 175, 55, 0.5);
-  color: #e2e8f0;
-  background: rgba(30, 41, 59, 0.85);
+  color: #f6f3eb;
+  background: rgba(212, 175, 55, 0.08);
 }
 
 .boneChipActive {

@@ -211,9 +211,9 @@ const App: React.FC = () => {
           <Reveal className={landing.scannerCopy}>
             <span className={landing.eyebrow}>02 · Try it</span>
             <h2 className={landing.displayTitle}>One atlas. <em>Every angle.</em></h2>
-            <p className={landing.bodyCopy}>Drag the bone to orbit it, switch between specimens and toggle a wireframe view. This is a small preview of what the full workspace can do.</p>
+            <p className={landing.bodyCopy}>Pick a body region, choose a bone, then drag to orbit it or toggle a wireframe view. This is a small preview of what the full workspace can do.</p>
             <ul className={landing.checkList}>
-              <li>Named in English and Latin, with FMA identifiers</li>
+              <li>19 bones across the limbs, spine, trunk and head</li>
               <li>Smooth orbit, zoom and auto-rotate controls</li>
               <li>Solid and wireframe display modes</li>
             </ul>

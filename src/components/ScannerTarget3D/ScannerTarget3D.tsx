@@ -11,15 +11,33 @@ interface TargetBoneDef {
   label: string;
   name: string;
   latin: string;
-  code: string;
+  region: Region;
   scaleFactor: number;
 }
 
+type Region = 'Lower limb' | 'Upper limb' | 'Spine & trunk' | 'Head';
+const REGIONS: Region[] = ['Lower limb', 'Upper limb', 'Spine & trunk', 'Head'];
+
 const TARGET_BONES: TargetBoneDef[] = [
-  { id: 'Femur.r', label: 'Femur', name: 'Right Femur', latin: 'Os femoris dexter', code: 'FMA 24494', scaleFactor: 2.3 },
-  { id: 'Scapula.r', label: 'Scapula', name: 'Right Scapula', latin: 'Scapula dextra', code: 'FMA 13397', scaleFactor: 2.0 },
-  { id: 'Humerus.r', label: 'Humerus', name: 'Right Humerus', latin: 'Humerus dexter', code: 'FMA 23298', scaleFactor: 2.2 },
-  { id: 'Mandible', label: 'Mandible', name: 'Mandible', latin: 'Mandibula', code: 'FMA 52748', scaleFactor: 1.85 },
+  { id: 'Femur.r', label: 'Femur', name: 'Right Femur', latin: 'Os femoris dexter', region: 'Lower limb', scaleFactor: 2.3 },
+  { id: 'Tibia.r', label: 'Tibia', name: 'Right Tibia', latin: 'Tibia dextra', region: 'Lower limb', scaleFactor: 2.3 },
+  { id: 'Fibula.r', label: 'Fibula', name: 'Right Fibula', latin: 'Fibula dextra', region: 'Lower limb', scaleFactor: 2.3 },
+  { id: 'Patella.r', label: 'Patella', name: 'Right Patella', latin: 'Patella dextra', region: 'Lower limb', scaleFactor: 1.5 },
+  { id: 'Calcaneus.r', label: 'Calcaneus', name: 'Right Calcaneus', latin: 'Calcaneus dexter', region: 'Lower limb', scaleFactor: 1.45 },
+  { id: 'Humerus.r', label: 'Humerus', name: 'Right Humerus', latin: 'Humerus dexter', region: 'Upper limb', scaleFactor: 2.2 },
+  { id: 'Radius.r', label: 'Radius', name: 'Right Radius', latin: 'Radius dexter', region: 'Upper limb', scaleFactor: 2.1 },
+  { id: 'Ulna.r', label: 'Ulna', name: 'Right Ulna', latin: 'Ulna dextra', region: 'Upper limb', scaleFactor: 2.1 },
+  { id: 'Scapula.r', label: 'Scapula', name: 'Right Scapula', latin: 'Scapula dextra', region: 'Upper limb', scaleFactor: 2.0 },
+  { id: 'Clavicle.r', label: 'Clavicle', name: 'Right Clavicle', latin: 'Clavicula dextra', region: 'Upper limb', scaleFactor: 2.0 },
+  { id: 'Hip bone.r', label: 'Hip bone', name: 'Right Hip Bone', latin: 'Os coxae dextrum', region: 'Spine & trunk', scaleFactor: 1.8 },
+  { id: 'Sacrum', label: 'Sacrum', name: 'Sacrum', latin: 'Os sacrum', region: 'Spine & trunk', scaleFactor: 1.55 },
+  { id: 'Vertebra L3', label: 'L3', name: 'Lumbar Vertebra L3', latin: 'Vertebra lumborum III', region: 'Spine & trunk', scaleFactor: 1.3 },
+  { id: 'Atlas (C1)', label: 'Atlas C1', name: 'Atlas (C1)', latin: 'Atlas', region: 'Spine & trunk', scaleFactor: 1.35 },
+  { id: 'First rib.r', label: '1st rib', name: 'Right First Rib', latin: 'Costa prima dextra', region: 'Spine & trunk', scaleFactor: 1.8 },
+  { id: 'Mandible', label: 'Mandible', name: 'Mandible', latin: 'Mandibula', region: 'Head', scaleFactor: 1.85 },
+  { id: 'Frontal bone', label: 'Frontal', name: 'Frontal Bone', latin: 'Os frontale', region: 'Head', scaleFactor: 1.5 },
+  { id: 'Occipital bone', label: 'Occipital', name: 'Occipital Bone', latin: 'Os occipitale', region: 'Head', scaleFactor: 1.5 },
+  { id: 'Hyoid bone', label: 'Hyoid', name: 'Hyoid Bone', latin: 'Os hyoideum', region: 'Head', scaleFactor: 1.5 },
 ];
 
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -115,6 +133,7 @@ const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, yawRef, pitch
 
 export const ScannerTarget3D: React.FC = () => {
   const [selectedBone, setSelectedBone] = useState<TargetBoneDef>(TARGET_BONES[0]);
+  const [region, setRegion] = useState<Region>(TARGET_BONES[0].region);
   const [isWireframe, setIsWireframe] = useState<boolean>(false);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -139,7 +158,7 @@ export const ScannerTarget3D: React.FC = () => {
         <div className={styles.hudTargetInfo}>
           <span>ANATOMY:</span>
           <span className={styles.targetNameHighlight}>{selectedBone.name.toUpperCase()}</span>
-          <span style={{ color: '#d4af37', marginLeft: 8 }}>[{selectedBone.code}]</span>
+          <span style={{ color: '#d4af37', marginLeft: 8 }}>[{selectedBone.region.toUpperCase()}]</span>
         </div>
       </div>
 
@@ -236,7 +255,21 @@ export const ScannerTarget3D: React.FC = () => {
         <div className={styles.controlsRow}>
           {/* Target Anatomy Switcher */}
           <div className={styles.boneChips}>
-            {TARGET_BONES.map((bone) => (
+            <div className={styles.regionTabs} role="tablist" aria-label="Body region">
+              {REGIONS.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  role="tab"
+                  aria-selected={region === r}
+                  className={`${styles.regionTab} ${region === r ? styles.regionTabActive : ''}`}
+                  onClick={() => { setRegion(r); setSelectedBone(TARGET_BONES.find((bone) => bone.region === r)!); }}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+            {TARGET_BONES.filter((bone) => bone.region === region).map((bone) => (
               <button
                 key={bone.id}
                 type="button"
