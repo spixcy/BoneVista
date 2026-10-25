@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
-import { ArrowLeft, Brain, Check, Pause, Play, Sparkles, X } from 'lucide-react';
+import { ArrowLeft, Brain, Check, ChevronDown, Pause, Play, Sparkles, X } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import NeuralNetworkCanvas from './NeuralNetworkCanvas';
 import { NEET_TOPICS, type NeetTopic } from './content';
@@ -11,7 +11,7 @@ export const NEET_HASH = '#/neet-pg';
 const SPEEDS = [0.5, 1, 1.5];
 const EASE = [0.22, 0.8, 0.24, 1] as const;
 
-const topicFromHash = () => NEET_TOPICS.find((t) => window.location.hash === `${NEET_HASH}/${t.id}`)?.id ?? NEET_TOPICS[0].id;
+const topicFromHash = () => NEET_TOPICS.find((t) => window.location.hash === `${NEET_HASH}/${t.id}`)?.id ?? null;
 
 /** Animated diagram with play/pause, speed control and clickable step captions. */
 const Stage: React.FC<{ topic: NeetTopic }> = ({ topic }) => {
@@ -90,38 +90,32 @@ const Quiz: React.FC<{ topic: NeetTopic }> = ({ topic }) => {
   );
 };
 
+const Reveal: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <motion.div className={className} initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.8, ease: EASE }}>
+    {children}
+  </motion.div>
+);
+
 const NeetPgPage: React.FC = () => {
   const theme = useAppStore((state) => state.theme);
-  const [topicId, setTopicId] = useState(topicFromHash);
-  const topic = NEET_TOPICS.find((t) => t.id === topicId) ?? NEET_TOPICS[0];
-  const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.title = 'NEET PG · Physiology in Motion — BoneVista';
-    window.scrollTo(0, 0);
   }, [theme]);
 
-  // Follow topic links such as #/neet-pg/synapse while the page is open.
+  // Links such as #/neet-pg/synapse scroll straight to that topic.
   useEffect(() => {
-    const onHash = () => setTopicId(topicFromHash());
+    const go = (smooth: boolean) => {
+      const id = topicFromHash();
+      if (!id) { if (!smooth) window.scrollTo(0, 0); return; }
+      document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    };
+    const timer = window.setTimeout(() => go(false), 50);
+    const onHash = () => go(true);
     window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+    return () => { window.clearTimeout(timer); window.removeEventListener('hashchange', onHash); };
   }, []);
-
-  // Keep the active tab visible in the horizontally scrolling tab bar.
-  useEffect(() => {
-    const bar = tabsRef.current;
-    const active = bar?.querySelector<HTMLElement>('[aria-selected="true"]');
-    if (bar && active) bar.scrollTo({ left: active.offsetLeft - (bar.clientWidth - active.offsetWidth) / 2, behavior: 'smooth' });
-  }, [topicId]);
-
-  const choose = (id: string) => {
-    setTopicId(id);
-    window.history.replaceState(null, '', `${NEET_HASH}/${id}`);
-    const top = tabsRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 0 || top > 120) tabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
 
   return (
     <div className={styles.page}>
@@ -142,44 +136,39 @@ const NeetPgPage: React.FC = () => {
             Watch physiology <em>happen.</em>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.25, ease: EASE }}>
-            Neurons wiring together, action potentials racing along axons, vesicles spilling transmitter, sarcomeres sliding and the heart&apos;s electrical relay — six high-yield topics, each as a live, step-by-step motion graphic with exam pearls and a practice MCQ.
+            Neurons wiring together, action potentials racing along axons, vesicles spilling transmitter, sarcomeres sliding and the heart&apos;s electrical relay — six high-yield topics, each as a live, step-by-step motion graphic with exam pearls and a practice MCQ. Scroll down to work through them in order.
           </motion.p>
           <motion.div className={styles.heroStats} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 0.45 }}>
             <span><b>6</b> animated topics</span><span><b>{NEET_TOPICS.reduce((n, t) => n + t.steps.length, 0)}</b> narrated steps</span><span><b>{NEET_TOPICS.reduce((n, t) => n + t.highYield.length, 0)}</b> high-yield facts</span>
           </motion.div>
         </div>
+        <a className={styles.scrollCue} href={`${NEET_HASH}/${NEET_TOPICS[0].id}`} aria-label="Scroll to the first topic"><ChevronDown size={18} /></a>
       </section>
 
-      <div ref={tabsRef} className={styles.tabs} role="tablist" aria-label="Topics">
-        {NEET_TOPICS.map((t, i) => (
-          <button key={t.id} type="button" role="tab" aria-selected={t.id === topic.id} className={t.id === topic.id ? styles.tabActive : styles.tab} onClick={() => choose(t.id)}>
-            <span>{String(i + 1).padStart(2, '0')}</span>{t.tab}
-          </button>
-        ))}
-      </div>
-
-      <AnimatePresence mode="wait">
-        <motion.main
-          key={topic.id}
-          className={styles.layout}
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.4, ease: EASE }}
-        >
-          <Stage topic={topic} />
-          <aside className={styles.notes}>
-            <span className={styles.kicker}>{topic.system}</span>
-            <h2>{topic.title}</h2>
-            <p className={styles.intro}>{topic.intro}</p>
-            <div className={styles.highYield}>
-              <span className={styles.kicker}><Sparkles size={13} /> High-yield for NEET PG</span>
-              <ul>{topic.highYield.map((item) => <li key={item}>{item}</li>)}</ul>
+      <main>
+        {NEET_TOPICS.map((topic, i) => (
+          <section key={topic.id} id={`topic-${topic.id}`} className={styles.topic} aria-labelledby={`title-${topic.id}`}>
+            <Reveal className={styles.topicHead}>
+              <span className={styles.topicNumber}>{String(i + 1).padStart(2, '0')}<small> / {String(NEET_TOPICS.length).padStart(2, '0')}</small></span>
+              <div>
+                <span className={styles.kicker}>{topic.system}</span>
+                <h2 id={`title-${topic.id}`}>{topic.title}</h2>
+              </div>
+            </Reveal>
+            <div className={styles.layout}>
+              <Reveal><Stage topic={topic} /></Reveal>
+              <Reveal className={styles.notes}>
+                <p className={styles.intro}>{topic.intro}</p>
+                <div className={styles.highYield}>
+                  <span className={styles.kicker}><Sparkles size={13} /> High-yield for NEET PG</span>
+                  <ul>{topic.highYield.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+                <Quiz topic={topic} />
+              </Reveal>
             </div>
-            <Quiz key={topic.id} topic={topic} />
-          </aside>
-        </motion.main>
-      </AnimatePresence>
+          </section>
+        ))}
+      </main>
 
       <footer className={styles.footer}>
         Simplified teaching animations, not to scale. Values are typical textbook figures; always confirm with your standard references (Guyton, Ganong) before exams.
