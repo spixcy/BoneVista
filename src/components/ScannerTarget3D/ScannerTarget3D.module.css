@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 480px;
-  height: 480px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   border: 1px solid rgba(212, 175, 55, 0.35);
@@ -274,9 +274,16 @@
   50% { transform: scale(1.35); opacity: 0.4; }
 }
 
+.hudButtonExpand {
+  border-color: #d4af37;
+  background: linear-gradient(135deg, #f7e7a9, #d4af37 55%, #a8832a);
+  color: #0a0a0a;
+  text-decoration: none;
+}
+.hudButtonExpand:hover { filter: brightness(1.08); color: #0a0a0a; }
+
 @media (max-width: 640px) {
   .scannerContainer {
-    height: 420px;
     min-height: 420px;
   }
   .controlsRow {

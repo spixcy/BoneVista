@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls } from '@react-three/drei';
 import { useInView } from 'framer-motion';
 import * as THREE from 'three';
-import { RotateCw, Layers, Crosshair } from 'lucide-react';
+import { RotateCw, Layers, Crosshair, Maximize2 } from 'lucide-react';
 import styles from './ScannerTarget3D.module.css';
 
 interface TargetBoneDef {
@@ -302,6 +302,14 @@ export const ScannerTarget3D: React.FC = () => {
               <RotateCw size={13} />
               <span>{autoRotate ? 'Rotating' : 'Paused'}</span>
             </button>
+            <a
+              className={`${styles.hudButton} ${styles.hudButtonExpand}`}
+              href={`#/bone-explorer/${encodeURIComponent(selectedBone.id)}`}
+              title="Open this bone full screen in the Bone Explorer"
+            >
+              <Maximize2 size={13} />
+              <span>Full screen</span>
+            </a>
           </div>
         </div>
       </div>
