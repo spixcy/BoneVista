@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import {
-  ArrowDown,
   ArrowRight,
   AlignCenter,
   Bone,
@@ -13,6 +12,7 @@ import {
   Sparkles,
   BookOpen,
   Compass,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
@@ -70,7 +70,7 @@ const actions: QuickAction[] = [
   {
     page: 'stress',
     title: 'Stress Analysis',
-    detail: 'Simulate biomechanical axial loading and Von Mises stress gradients',
+    detail: 'Simulate biomechanical axial loading and stress color gradients',
     icon: Activity,
     art: '/branding/card-stress.jpg',
     tone: 'amber',
@@ -141,20 +141,25 @@ const Dashboard: React.FC = () => {
         </div>
         <div className={styles.introCopy}>
           <span className={styles.eyebrow}>YOUR ANATOMY WORKSPACE</span>
-          <h1>Explore human anatomy</h1>
+          <h1>Explore Human Anatomy in 3D</h1>
+          <p>Segmented 3D skeletal atlas, muscle layers, neural pathways, and local radiograph suite in one unified environment.</p>
           <div className={styles.introMeta}>
-            <span><Layers3 size={14}/>{anatomyStructures.length || '335'} named atlas structures</span>
-            <span><Sparkles size={14}/>26 isolated spine vertebrae</span>
+            <span><Layers3 size={13} /> {anatomyStructures.length || '335'} Atlas Structures</span>
+            <span><Sparkles size={13} /> {spineCount || '26'} Isolated Vertebrae</span>
+            <span><ShieldCheck size={13} /> 100% Client-Side Private</span>
           </div>
-          <div className={styles.introButtons}>
-            <button className={styles.primaryButton} onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}>
-              Open 3D Anatomy <ArrowRight size={14}/>
-            </button>
-          </div>
+        </div>
+        <div className={styles.introCtaWrap}>
+          <button
+            className={styles.primaryButton}
+            onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}
+          >
+            Open 3D Anatomy <ArrowRight size={15} />
+          </button>
         </div>
       </section>
 
-      {/* Quick Access Grid: Full Width & Balanced */}
+      {/* Quick Access Grid: Balanced & Comfortable */}
       <section className={styles.section} ref={exploreRef}>
         <div className={styles.sectionHeading}>
           <div>
@@ -171,10 +176,10 @@ const Dashboard: React.FC = () => {
               onClick={() => handleActionClick(page)}
             >
               <div className={styles.actionText}>
-                <span className={styles.actionIcon}><Icon size={18}/></span>
+                <span className={styles.actionIcon}><Icon size={18} /></span>
                 <strong>{title}</strong>
                 <span>{detail}</span>
-                <span className={styles.actionArrow}><ArrowRight size={15}/></span>
+                <span className={styles.actionArrow}><ArrowRight size={14} /></span>
               </div>
               {art && <img src={art} alt="" aria-hidden="true" />}
             </button>
@@ -182,7 +187,7 @@ const Dashboard: React.FC = () => {
         </div>
       </section>
 
-      {/* Chotu Anatomy Companion — compact banner */}
+      {/* Chotu Skeleton Guide & Companion Card */}
       <section className={styles.chotuGuideSection}>
         <div className={styles.chotuCard}>
           <div className={styles.chotuArtWrap}>
@@ -192,65 +197,63 @@ const Dashboard: React.FC = () => {
               className={styles.chotuImg}
             />
             <div className={styles.chotuBadge}>
-              <Sparkles size={13} />
-              <span>Chotu &middot; Anatomy Companion</span>
+              <Sparkles size={12} />
+              <span>Chotu &middot; Companion</span>
             </div>
           </div>
           <div className={styles.chotuContent}>
+            <div className={styles.chotuText}>
+              <span className={styles.chotuEyebrow}>FIELD GUIDE &middot; COMPANION</span>
+              <h3>Meet Chotu, Your Anatomy Companion</h3>
+              <p>
+                Your interactive assistant for 3D exploration, layered biomechanics, and clinical inspection. Guided tours, anatomical quizzes, and interactive learning walkthroughs coming soon!
+              </p>
+            </div>
             <div className={styles.chotuActions}>
               <button className={styles.chotuPrimaryBtn} onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}>
-                <Compass size={15} /> Jump into 3D Atlas
+                <Compass size={14} /> Jump into 3D Atlas
               </button>
               <button className={styles.chotuSecondaryBtn} onClick={() => setActivePage('studies')}>
-                <BookOpen size={15} /> Review Case Studies
+                <BookOpen size={14} /> Review Case Studies
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Structured Overview: Reference Atlas & Studies Combined */}
+      {/* Compact Overview: Reference Atlas & Clinical Studies */}
       <section className={styles.overviewRow}>
         <div className={styles.atlasCard}>
           <div className={styles.overviewHeader}>
-            <div className={styles.overviewIcon}><Layers3 size={20}/></div>
+            <div className={styles.overviewIcon}><Layers3 size={16} /></div>
             <div>
               <span className={styles.eyebrow}>REFERENCE ATLAS</span>
-              <h3>High-Fidelity Segmented Anatomy</h3>
+              <h4>High-Fidelity Segmented Anatomy</h4>
             </div>
           </div>
-          <p>BoneVista uses an anatomically segmented, standard reference skeleton. Each bone, muscle layer, and cranial nerve is indexable and selectable for clinical education and research.</p>
-          <div className={styles.atlasStats}>
-            <div className={styles.statBox}>
-              <strong>{anatomyStructures.length || '335'}</strong>
-              <span>Segmented Structures</span>
-            </div>
-            <div className={styles.statBox}>
-              <strong>{spineCount || '26'}</strong>
-              <span>Named Vertebrae</span>
-            </div>
-            <div className={styles.statBox}>
-              <strong>100%</strong>
-              <span>Client-Side Local</span>
-            </div>
+          <p>Segmented standard reference skeleton with indexed, selectable bone and muscle hierarchies.</p>
+          <div className={styles.atlasStatsCompact}>
+            <span className={styles.statPill}><strong>{anatomyStructures.length || '335'}</strong> Structures</span>
+            <span className={styles.statPill}><strong>{spineCount || '26'}</strong> Vertebrae</span>
+            <span className={styles.statPill}><strong>100%</strong> Local</span>
           </div>
         </div>
 
         <div className={styles.studiesCard}>
           <div className={styles.overviewHeader}>
-            <div className={styles.overviewIconStudies}><ClipboardList size={20}/></div>
+            <div className={styles.overviewIconStudies}><ClipboardList size={16} /></div>
             <div>
               <span className={styles.eyebrow}>STUDIES & CASE MANAGEMENT</span>
-              <h3>Clinical Inspection Dossiers</h3>
+              <h4>Clinical Inspection Dossiers</h4>
             </div>
           </div>
-          <p>Organize radiographs, compare AP and lateral projections, and review biomechanical stress simulations across multiple viewing sessions.</p>
-          <div className={styles.studiesActionRow}>
+          <p>Organize radiographs, compare orthogonal views, and review local stress simulation sessions.</p>
+          <div className={styles.studiesActionRowCompact}>
             <button className={styles.secondaryButton} onClick={() => setActivePage('studies')}>
-              Open Studies Dossier <ArrowRight size={15}/>
+              Open Dossiers <ArrowRight size={13} />
             </button>
             <button className={styles.subtleButton} onClick={() => setActivePage('xray')}>
-              Upload New Radiograph <ArrowRight size={14}/>
+              Upload Radiograph <ArrowRight size={13} />
             </button>
           </div>
         </div>

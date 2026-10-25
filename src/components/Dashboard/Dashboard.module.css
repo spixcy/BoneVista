@@ -1,13 +1,14 @@
 .dashboard {
+  position: relative;
   height: 100%;
   overflow-y: auto;
-  padding: clamp(12px, 2vw, 24px) clamp(14px, 2.5vw, 28px);
+  padding: 22px 28px;
   max-width: 1540px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-strong) transparent;
 }
@@ -18,13 +19,15 @@
   isolation: isolate;
   display: flex;
   align-items: center;
-  min-height: 120px;
-  padding: 16px 22px;
+  justify-content: space-between;
+  min-height: 155px;
+  padding: 22px 28px;
   overflow: hidden;
   border: 1px solid rgba(116, 190, 204, 0.35);
-  border-radius: 14px;
+  border-radius: 16px;
   background: #081122;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+  flex-shrink: 0;
 }
 
 .introBackdrop {
@@ -38,20 +41,20 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 85% center;
+  object-position: right center;
   filter: brightness(0.95) contrast(1.1);
 }
 
 .introVignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(8, 17, 34, 0.95) 0%, rgba(8, 17, 34, 0.75) 45%, rgba(8, 17, 34, 0.15) 85%);
+  background: linear-gradient(90deg, rgba(8, 17, 34, 0.96) 0%, rgba(8, 17, 34, 0.82) 48%, rgba(8, 17, 34, 0.15) 85%);
 }
 
 .introCopy {
   position: relative;
   z-index: 1;
-  max-width: 640px;
+  max-width: 620px;
 }
 
 .eyebrow {
@@ -62,31 +65,33 @@
   text-transform: uppercase;
 }
 
-.intro h1 {
-  margin: 4px 0 6px;
+.introCopy h1 {
+  margin: 6px 0 8px;
   color: var(--color-text-primary);
-  font: 750 clamp(16px, 1.9vw, 24px)/1.15 var(--font-sans);
-  letter-spacing: -0.04em;
+  font: 750 clamp(22px, 2.5vw, 30px)/1.2 var(--font-sans);
+  letter-spacing: -0.03em;
 }
 
-.introCopy > p {
-  max-width: 480px;
+.introCopy p {
+  max-width: 540px;
   color: var(--color-text-secondary);
-  font-size: 11.5px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
 }
 
 .introMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin: 8px 0 12px;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .introMeta span {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #9cb3d8;
   font-size: 12px;
   font-weight: 500;
@@ -96,18 +101,18 @@
   color: var(--color-accent);
 }
 
-.introButtons {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+.introCtaWrap {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  margin-left: 20px;
 }
 
 .primaryButton {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px;
+  padding: 12px 22px;
   border: 1px solid #5178f2;
   border-radius: 9px;
   background: #3568e8;
@@ -116,6 +121,7 @@
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(53, 104, 232, 0.32);
   transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
 }
 
 .primaryButton:hover {
@@ -124,45 +130,14 @@
   box-shadow: 0 12px 28px rgba(53, 104, 232, 0.45);
 }
 
-.scrollCue {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--color-accent);
-  font: 700 10px var(--font-mono);
-  letter-spacing: 0.12em;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-}
-
-.scrollCue:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--color-accent);
-  transform: translateY(-1px);
-}
-
-.scrollCue svg {
-  animation: scrollCueDown 1.3s ease-in-out infinite;
-}
-
-@keyframes scrollCueDown {
-  50% {
-    transform: translateY(3px);
-  }
-}
-
 .scrollProgress {
-  position: sticky;
+  position: absolute;
   top: 12px;
+  right: 6px;
   z-index: 10;
-  align-self: flex-end;
   width: 4px;
-  height: 120px;
-  margin: 0 4px -120px 0;
+  height: 80px;
+  margin: 0;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
   pointer-events: none;
@@ -207,11 +182,11 @@
   font: 600 11px var(--font-mono);
 }
 
-/* 4-column balanced grid that cleanly fills across full screen width */
+/* Responsive balanced grid that cleanly fills across workspace width */
 .actionGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
   width: 100%;
 }
 
@@ -219,12 +194,12 @@
   position: relative;
   display: flex;
   align-items: stretch;
-  min-height: 130px;
-  padding: 14px 16px;
+  min-height: 142px;
+  padding: 16px 18px;
   overflow: hidden;
   text-align: left;
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--color-bg-surface);
   color: var(--color-text-primary);
   cursor: pointer;
@@ -241,8 +216,8 @@
   flex: 1;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  max-width: 58%;
+  gap: 6px;
+  max-width: 64%;
 }
 
 .actionText strong {
@@ -462,39 +437,39 @@
 .chotuCard {
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 16px;
-  padding: 12px 20px;
+  gap: 22px;
+  padding: 16px 22px;
   border: 1px solid rgba(139, 92, 246, 0.35);
-  border-radius: 14px;
+  border-radius: 16px;
   background: linear-gradient(135deg, rgba(20, 24, 45, 0.85) 0%, rgba(13, 18, 36, 0.95) 100%);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(12px);
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .chotuCard:hover {
   border-color: rgba(168, 85, 247, 0.55);
-  box-shadow: 0 12px 28px rgba(139, 92, 246, 0.18);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.2);
 }
 
 .chotuArtWrap {
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .chotuImg {
-  width: 52px;
-  height: 52px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
-  border-radius: 10px;
-  filter: drop-shadow(0 4px 10px rgba(139, 92, 246, 0.4));
+  border-radius: 12px;
+  filter: drop-shadow(0 6px 14px rgba(139, 92, 246, 0.4));
   transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -506,12 +481,12 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border: 1px solid rgba(168, 85, 247, 0.4);
   border-radius: 20px;
   background: rgba(139, 92, 246, 0.15);
   color: #d8b4fe;
-  font: 600 11px var(--font-mono);
+  font: 600 10.5px var(--font-mono);
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
@@ -524,82 +499,43 @@
 .chotuContent {
   flex: 1;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.chotuHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.chotuText {
+  max-width: 560px;
 }
 
 .chotuEyebrow {
   color: #c084fc;
-  font: 700 10px/1.4 var(--font-mono);
+  font: 700 9.5px var(--font-mono);
   letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: block;
 }
 
-.chotuHeader h3 {
+.chotuText h3 {
   color: #f1f5f9;
-  font: 700 20px/1.2 var(--font-sans);
+  font: 650 16px/1.3 var(--font-sans);
   letter-spacing: -0.02em;
+  margin: 3px 0 5px;
 }
 
-.chotuHeader p {
+.chotuText p {
   color: #94a3b8;
-  font-size: 13.5px;
-  line-height: 1.6;
-  margin-top: 2px;
-}
-
-.chotuPillsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.chotuPill {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.chotuCheck {
-  color: #34d399;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.chotuPill div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.chotuPill strong {
   font-size: 12.5px;
-  font-weight: 600;
-  color: #e2e8f0;
-}
-
-.chotuPill span {
-  font-size: 11px;
-  color: #94a3b8;
-  line-height: 1.4;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .chotuActions {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .chotuPrimaryBtn {
@@ -615,6 +551,7 @@
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
   transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
 }
 
 .chotuPrimaryBtn:hover {
@@ -635,6 +572,7 @@
   font: 550 12px var(--font-sans);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
 }
 
 .chotuSecondaryBtn:hover {
@@ -642,105 +580,105 @@
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* ── Structured Overview Row (Reference Atlas & Studies) ── */
+/* ── Compact Structured Overview Row (Reference Atlas & Studies) ── */
 .overviewRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 14px;
   width: 100%;
 }
 
 .atlasCard,
 .studiesCard {
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--color-bg-surface);
-  padding: 24px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .atlasCard:hover,
 .studiesCard:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .overviewHeader {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
-.overviewHeader h3 {
+.overviewHeader h4 {
   color: var(--color-text-primary);
-  font: 650 16px/1.3 var(--font-sans);
-  letter-spacing: -0.015em;
-  margin-top: 3px;
+  font: 650 13.5px/1.2 var(--font-sans);
+  letter-spacing: -0.01em;
+  margin: 2px 0 0;
+}
+
+.overviewIcon,
+.overviewIconStudies {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .overviewIcon {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background: rgba(59, 130, 246, 0.14);
+  background: rgba(59, 130, 246, 0.12);
   color: #60a5fa;
-  flex-shrink: 0;
 }
 
 .overviewIconStudies {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background: rgba(16, 185, 129, 0.14);
+  background: rgba(16, 185, 129, 0.12);
   color: #34d399;
-  flex-shrink: 0;
 }
 
 .atlasCard p,
 .studiesCard p {
   color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 11.5px;
+  line-height: 1.45;
+  margin: 0;
 }
 
-.atlasStats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+.atlasStatsCompact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 8px;
   border-top: 1px solid var(--color-border);
 }
 
-.statBox {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+.statPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  font-size: 11px;
 }
 
-.statBox strong {
-  color: var(--color-text-primary);
-  font: 700 20px var(--font-mono);
+.statPill strong {
+  color: #f1f5f9;
+  margin-right: 4px;
 }
 
-.statBox span {
-  color: var(--color-text-tertiary);
-  font-size: 10.5px;
-}
-
-.studiesActionRow {
+.studiesActionRowCompact {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 8px;
   border-top: 1px solid var(--color-border);
   flex-wrap: wrap;
 }
@@ -748,15 +686,16 @@
 .secondaryButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 6px;
+  padding: 6px 12px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 8px;
+  border-radius: 7px;
   background: var(--color-bg-elevated);
   color: var(--color-text-primary);
-  font: 600 12px var(--font-sans);
+  font: 600 11.5px var(--font-sans);
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
 }
 
 .secondaryButton:hover {
@@ -768,15 +707,16 @@
 .subtleButton {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
+  gap: 5px;
+  padding: 6px 10px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 7px;
   background: transparent;
   color: var(--color-text-secondary);
-  font: 500 12px var(--font-sans);
+  font: 500 11.5px var(--font-sans);
   cursor: pointer;
   transition: color 0.15s ease;
+  white-space: nowrap;
 }
 
 .subtleButton:hover {
@@ -788,46 +728,35 @@
   .chotuCard {
     grid-template-columns: 1fr;
   }
-  .chotuArtWrap {
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 20px;
-  }
-  .chotuPillsGrid {
-    grid-template-columns: 1fr;
-  }
   .overviewRow {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
+  .dashboard {
+    padding: 14px 16px;
+    gap: 16px;
+  }
   .actionGrid {
     grid-template-columns: 1fr;
   }
-  .actionCard {
-    min-height: 145px;
-  }
   .intro {
-    min-height: auto;
-    padding: 24px;
-  }
-  .introButtons {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
   }
-  .primaryButton,
-  .scrollCue {
+  .introCtaWrap {
+    margin-left: 0;
+    width: 100%;
+  }
+  .primaryButton {
     width: 100%;
     justify-content: center;
   }
   .chotuContent {
-    padding: 20px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scrollCue svg {
-    animation: none;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
