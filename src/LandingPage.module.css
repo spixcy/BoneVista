@@ -348,6 +348,20 @@ main { position: relative; z-index: 1; }
 .loadingFigure { min-height: 480px; display: grid; place-items: center; color: var(--lp-gold); font: 500 12px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
 .checkList { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; list-style: none; }
 .checkList li { display: flex; align-items: center; gap: 12px; color: var(--lp-white); font-size: 14px; }
+.explorerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  padding: 13px 22px;
+  border: 1px solid rgba(212, 175, 55, .55);
+  border-radius: 999px;
+  color: var(--lp-gold);
+  font: 600 13px var(--font-sans);
+  text-decoration: none;
+  transition: background .3s, color .3s, box-shadow .3s;
+}
+.explorerLink:hover { background: var(--lp-gold); color: var(--lp-ink); box-shadow: 0 0 28px rgba(212, 175, 55, .3); }
 .checkList li::before { content: '✦'; color: var(--lp-gold); font-size: 11px; }
 
 /* ─── Modules ────────────────────────────────────────── */

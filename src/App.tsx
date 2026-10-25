@@ -111,6 +111,14 @@ const App: React.FC = () => {
     document.title = 'BoneVista — 3D Anatomy Workspace';
   }, [theme]);
 
+  // Returning from the Bone Explorer remounts this page, so jump to the requested section.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id || id.startsWith('/')) return;
+    const timer = window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }), 60);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     let frame = 0;
     const onScroll = () => {
@@ -140,7 +148,7 @@ const App: React.FC = () => {
       <header className={`${landing.nav} ${scrolled ? landing.navScrolled : ''}`}>
         <a className={landing.brand} href="#top"><span className={landing.brandMark}><Bone size={18}/></span><span>Bone<em>Vista</em></span></a>
         <nav className={landing.navLinks} aria-label="Main site navigation">
-          <a href="#about">About</a><a href="#bones">Bones</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
         </nav>
         <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
       </header>
@@ -222,6 +230,7 @@ const App: React.FC = () => {
               <li>Smooth orbit, zoom and auto-rotate controls</li>
               <li>Solid and wireframe display modes</li>
             </ul>
+            <a className={landing.explorerLink} href="#/bone-explorer">Open the full Bone Explorer · all 335 structures <ArrowRight size={15}/></a>
           </Reveal>
           <LazyMount className={landing.scannerFigure} minHeight={480}>
             <Suspense fallback={<div className={landing.loadingFigure}>Preparing 3D preview…</div>}>
