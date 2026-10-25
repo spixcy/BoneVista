@@ -21,7 +21,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
   cursor: pointer;
   text-align: left;
   font: 600 11px/1.2 var(--font-sans, sans-serif);
@@ -31,19 +31,19 @@
 }
 
 .tab:hover {
-  background: var(--color-bg-hover, #1a2940);
-  color: var(--color-text-secondary, #a2afc6);
+  background: var(--color-bg-hover, #1c1a16);
+  color: var(--color-text-secondary, #b5ae9f);
 }
 
 .tab:focus-visible {
-  outline: 2px solid var(--color-accent, #7da2ff);
+  outline: 2px solid var(--color-accent, #d4af37);
   outline-offset: 1px;
 }
 
 .tabActive {
-  background: var(--color-accent-dim, rgba(94, 132, 245, 0.15));
-  border-color: rgba(125, 162, 255, 0.28);
-  color: var(--color-accent, #7da2ff);
+  background: var(--color-accent-dim, rgba(212, 175, 55, 0.15));
+  border-color: rgba(212, 175, 55, 0.28);
+  color: var(--color-accent, #d4af37);
 }
 
 .tabIcon {

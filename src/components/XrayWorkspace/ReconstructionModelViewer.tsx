@@ -45,7 +45,7 @@ export default function ReconstructionModelViewer({ url, onLoad, onError }: { ur
     <ModelErrorBoundary onError={onError}>
       <div className={styles.resultCanvas}>
         <Canvas camera={{ position: [0, 0.2, 4.5], fov: 38, near: 0.01, far: 100 }}>
-          <color attach="background" args={['#080d10']} />
+          <color attach="background" args={['#050505']} />
           <ambientLight intensity={1.4} />
           <directionalLight position={[4, 5, 6]} intensity={2} />
           <Suspense fallback={<mesh><sphereGeometry args={[0.08, 12, 8]} /><meshBasicMaterial color="#8aa6a1" /></mesh>}>

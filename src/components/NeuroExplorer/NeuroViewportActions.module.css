@@ -21,16 +21,16 @@
   padding: 0 5px;
   border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
   border-radius: 5px;
-  background: var(--color-bg-elevated, #131e30);
+  background: var(--color-bg-elevated, #131312);
   font: 600 10px/1 var(--font-mono, monospace);
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
   transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
 }
 
 .badgeActive {
-  border-color: rgba(125, 162, 255, 0.35);
-  background: var(--color-accent-dim, rgba(94, 132, 245, 0.15));
-  color: var(--color-accent, #7da2ff);
+  border-color: rgba(212, 175, 55, 0.35);
+  background: var(--color-accent-dim, rgba(212, 175, 55, 0.15));
+  color: var(--color-accent, #d4af37);
 }
 
 .actionBtn {
@@ -41,19 +41,19 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
 
 .actionBtn:hover:not(:disabled) {
-  background: var(--color-bg-hover, #1a2940);
+  background: var(--color-bg-hover, #1c1a16);
   border-color: var(--color-border, rgba(255, 255, 255, 0.08));
-  color: var(--color-text-primary, #eef3ff);
+  color: var(--color-text-primary, #f6f3eb);
 }
 
 .actionBtn:focus-visible {
-  outline: 2px solid var(--color-accent, #7da2ff);
+  outline: 2px solid var(--color-accent, #d4af37);
   outline-offset: 1px;
 }
 

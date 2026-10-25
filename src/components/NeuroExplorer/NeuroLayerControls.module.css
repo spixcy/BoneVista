@@ -19,7 +19,7 @@
 .sectionLabel {
   display: block;
   font: 700 9.5px/1 var(--font-mono, monospace);
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -51,25 +51,25 @@
   border: 1px solid var(--color-border, rgba(255,255,255,0.08));
   border-radius: 5px;
   background: transparent;
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
   cursor: pointer;
   transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }
 
 .toggleBtn:hover:not(:disabled) {
-  border-color: var(--color-accent, #7da2ff);
-  color: var(--color-accent, #7da2ff);
+  border-color: var(--color-accent, #d4af37);
+  color: var(--color-accent, #d4af37);
 }
 
 .toggleBtn:focus-visible {
-  outline: 2px solid var(--color-accent, #7da2ff);
+  outline: 2px solid var(--color-accent, #d4af37);
   outline-offset: 1px;
 }
 
 .toggleOn {
-  background: var(--color-accent-dim, rgba(94, 132, 245, 0.15));
-  border-color: rgba(125, 162, 255, 0.35);
-  color: var(--color-accent, #7da2ff);
+  background: var(--color-accent-dim, rgba(212, 175, 55, 0.15));
+  border-color: rgba(212, 175, 55, 0.35);
+  color: var(--color-accent, #d4af37);
 }
 
 .unavailable {
@@ -80,7 +80,7 @@
 .layerLabel {
   flex: 1;
   font: 500 11.5px/1.3 var(--font-sans, sans-serif);
-  color: var(--color-text-secondary, #a2afc6);
+  color: var(--color-text-secondary, #b5ae9f);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -88,7 +88,7 @@
 }
 
 .labelUnavailable {
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
   text-decoration: line-through;
   text-decoration-color: rgba(113, 128, 154, 0.4);
 }
@@ -96,13 +96,13 @@
 .badge {
   flex-shrink: 0;
   font: 600 9px/1 var(--font-mono, monospace);
-  color: var(--color-text-tertiary, #71809a);
+  color: var(--color-text-tertiary, #7b7568);
 }
 
 .opacitySlider {
   width: 52px;
   height: 4px;
   flex-shrink: 0;
-  accent-color: var(--color-accent, #7da2ff);
+  accent-color: var(--color-accent, #d4af37);
   cursor: pointer;
 }

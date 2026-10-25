@@ -144,7 +144,7 @@ const App: React.FC = () => {
             <div className={landing.scanLabel}>335 named reference structures · interactive 3D</div>
           </div>
           <div className={landing.scannerFigure}>
-            <Suspense fallback={<div style={{ minHeight: 480, display: 'grid', placeItems: 'center', color: '#12dcc4', font: '600 12px monospace' }}>INITIALIZING 3D SCANNER...</div>}>
+            <Suspense fallback={<div style={{ minHeight: 480, display: 'grid', placeItems: 'center', color: '#d4af37', font: '600 12px monospace' }}>INITIALIZING 3D SCANNER...</div>}>
               <ScannerTarget3D />
             </Suspense>
           </div>
