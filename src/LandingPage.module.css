@@ -220,7 +220,8 @@ main { position: relative; z-index: 1; }
   font: 400 clamp(50px, 6vw, 108px)/.98 var(--font-display);
   letter-spacing: -.03em;
 }
-.lineMask { display: block; overflow: hidden; padding-bottom: .06em; white-space: nowrap; }
+/* Extra bottom room so descenders (the g in "gold") are not clipped by the reveal mask. */
+.lineMask { display: block; overflow: hidden; padding: 0 .08em .2em 0; margin-bottom: -.14em; white-space: nowrap; }
 .lineMask > span { display: inline-block; }
 .heroDescription { max-width: 540px; margin-bottom: 38px; color: var(--lp-muted); font: 300 clamp(15px, 1.2vw, 18px)/1.75 var(--font-sans); }
 .heroActions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
