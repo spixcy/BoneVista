@@ -1,9 +1,10 @@
-# Codex Status — Phase 1 Frontend Foundations
+# Codex Status — Phase 2 Capability Integration
 
 **Date:** 25 October 2026 (Asia/Kolkata)  
-**Current phase:** 1 — frontend foundations  
+**Current phase:** 2 — capability integration  
 **Phase 0 result:** Audit completed and recorded below.  
-**Phase 1 result:** Raster-image decode validation added before file state updates; existing upload controls and local viewing remain in place.
+**Phase 1 result:** Raster-image decode validation added before file state updates; existing upload controls and local viewing remain in place.  
+**Phase 2 result:** Typed API health/capabilities integration and backend-driven reconstruction target choices are in place; job submission remains a later phase.
 
 ## Scope and repository state
 
@@ -100,3 +101,13 @@ After implementation, run both commands and preserve all existing tests. Add moc
 - **Blockers and risks:** The full existing Playwright suite is not green in this checkout. The landing and strict-selector failures align with pre-existing uncommitted Dashboard changes; several scene/UI tests timed out at their configured limits during the full run. The X-ray E2E case passed when run by itself but timed out in the full run. No unrelated dashboard or timeout changes were made. An untracked `xray-reconstruction-service/` directory appeared in the shared checkout; it is outside Codex ownership and was not opened or edited.
 - **Next phase proposed:** Phase 2 only after owner review and explicit approval. Phase 2 adds typed health/capabilities access and capability-driven target selection against the fixed contract; job submission and GLB viewing remain later phases.
 - **Ownership confirmation:** No backend service files, frontend package configuration, shared API contract, atlas viewer, stress solver, or atlas assets were modified. No dependency was installed. Stop for owner approval.
+
+## Phase 2 update — capability integration
+
+- **Files in the Phase 2 implementation:** `src/services/xrayReconstructionApi.ts` provides typed health/capabilities requests, base URL configuration via `VITE_XRAY_RECON_API_URL` with the contract default, response validation, safe request errors, and cancellation support. `src/vite-env.d.ts` declares the public Vite setting. `src/components/XrayWorkspace/XrayWorkspace.tsx` distinguishes API offline, capability read failure, healthy-but-model-unavailable, model available, no supported target, input limit, and ready states; provides refresh; shows only backend-returned anatomy IDs; keeps reconstruction target state separate from `stressTargetId`; shows backend constraints and the teaching-sample caution. `src/store/appStore.ts` holds that independent target across the direct X-Ray page and toolbar overlay. The API status/capability checks do not send image files. `tests/core.spec.js` has mocked offline, healthy-but-unavailable, and available-capability flows and checks that target selection and sample loading make no job request.
+- **Commands and exact outcomes:** `npm run build` passed (TypeScript and Vite); Vite reported its existing >500 kB chunk-size advisory. `npx playwright test tests/core.spec.js --grep "views local AP and lateral|offline reconstruction API|healthy API from an unavailable|only backend-supported"` passed **4/4**. These tests mock health/capabilities; no live service was available (`http://127.0.0.1:8000/api/v1/health` timed out). The current-checkout full suite was not rerun in Phase 2; Phase 1’s full-suite result remains documented above.
+- **Verified versus unverified:** Verified in build and mocked browser flows: unavailable service behavior while local viewing remains available; healthy API separated from unavailable model; backend-only target options; atlas association does not change reconstruction target; sample caution; and no jobs request is made while checking capabilities, changing target, or loading sample files. No live API, real model, job submission, polling, GLB loading, or inference was verified.
+- **Coordination finding:** During Phase 2, additional uncommitted edits appeared in the shared frontend workspace that add job submission, polling, and a downloadable job result. Those are Phase 3 responsibilities and were not authored or adjusted by me. I left these edits untouched. The Phase 2 target test avoids clicking the reconstruction control and only verifies that prior selection/loading actions do not submit a job. Review/coordinate the uncommitted Phase 3 files before treating them as approved work.
+- **Commit/push:** The branch is currently on `origin/main` at `168388e` (`feat(xray-recon): Phase 1 backend service scaffold and Phase 2 capability integration`). My Phase 2 verification/report follow-up will be committed separately with only my report and test changes; the uncommitted job-flow files will remain excluded.
+- **Next phase proposed:** Phase 3 only after owner review and explicit approval. It covers submission, job polling, cancellation/timeout, and safe errors; result viewing remains Phase 4.
+- **Ownership confirmation:** No files under `xray-reconstruction-service/`, the API contract, Stress Analysis, main atlas viewer, or atlas assets were edited. No dependency was installed. Stop for owner approval.
