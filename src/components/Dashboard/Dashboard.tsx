@@ -12,8 +12,6 @@ import {
   Layers3,
   Sparkles,
   BookOpen,
-  Info,
-  CheckCircle2,
   Compass,
 } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
@@ -85,13 +83,6 @@ const actions: QuickAction[] = [
     art: '/branding/card-studies.jpg',
     tone: 'emerald',
   },
-];
-
-const guideHighlights = [
-  { title: 'Interactive 3D Atlas', desc: 'Inspect 335 individual bones with 360° rotation & isolation.' },
-  { title: 'Muscle Layering', desc: 'Toggle superficial and deep muscular fascicles with precision.' },
-  { title: 'Spine Biomechanics', desc: 'Isolate cervical, thoracic, and lumbar vertebrae.' },
-  { title: 'Local X-Ray Tools', desc: 'Evaluate radiographs right in your browser with zero data leaks.' },
 ];
 
 const Dashboard: React.FC = () => {
@@ -198,13 +189,13 @@ const Dashboard: React.FC = () => {
         </div>
       </section>
 
-      {/* Chotu Skeleton Guide & Project Field Companion Card */}
+      {/* Chotu Anatomy Companion — compact banner */}
       <section className={styles.chotuGuideSection}>
         <div className={styles.chotuCard}>
           <div className={styles.chotuArtWrap}>
             <img
               src="/branding/learning-guide.webp"
-              alt="Chotu - BoneVista skeleton guide"
+              alt="Chotu - BoneVista anatomy companion"
               className={styles.chotuImg}
             />
             <div className={styles.chotuBadge}>
@@ -213,24 +204,6 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className={styles.chotuContent}>
-            <div className={styles.chotuHeader}>
-              <span className={styles.chotuEyebrow}>WHAT BONEVISTA DOES &middot; QUICK GUIDE</span>
-              <h3>Explore with Chotu &middot; Learn, Explore, Grow</h3>
-              <p>
-                BoneVista is your personal anatomical laboratory. Built for medical students, researchers, and clinicians to dissect, analyze, and inspect the human body across multiple clinical dimensions:
-              </p>
-            </div>
-            <div className={styles.chotuPillsGrid}>
-              {guideHighlights.map((item, idx) => (
-                <div key={idx} className={styles.chotuPill}>
-                  <CheckCircle2 size={16} className={styles.chotuCheck} />
-                  <div>
-                    <strong>{item.title}</strong>
-                    <span>{item.desc}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
             <div className={styles.chotuActions}>
               <button className={styles.chotuPrimaryBtn} onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}>
                 <Compass size={15} /> Jump into 3D Atlas
