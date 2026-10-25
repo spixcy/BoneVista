@@ -136,7 +136,7 @@ const Dashboard: React.FC = () => {
       {/* Hero Welcome Banner */}
       <section className={styles.intro}>
         <div className={styles.introBackdrop}>
-          <img className={styles.introBanner} src="/branding/anatomy-hero-banner.png" alt="" aria-hidden="true" />
+          <img className={styles.introBanner} decoding="async" src="/branding/anatomy-hero-banner.png" alt="" aria-hidden="true" />
           <div className={styles.introVignette} />
         </div>
         <div className={styles.introCopy}>
@@ -181,7 +181,7 @@ const Dashboard: React.FC = () => {
                 <span>{detail}</span>
                 <span className={styles.actionArrow}><ArrowRight size={14} /></span>
               </div>
-              {art && <img src={art} alt="" aria-hidden="true" />}
+              {art && <img loading="lazy" decoding="async" src={art} alt="" aria-hidden="true" />}
             </button>
           ))}
         </div>

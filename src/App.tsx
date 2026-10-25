@@ -5,11 +5,9 @@ import { Activity, ArrowRight, Bone, BookOpen, Brain, ChevronDown, Cpu, Download
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
-import MuscleExplorerHost from './components/MuscleExplorer/MuscleExplorerHost';
-import NeuroExplorerDataHost from './components/NeuroExplorer/NeuroExplorerDataHost';
-import NeuroExplorerPage from './components/NeuroExplorer/NeuroExplorerPage';
 import SkullEmblem from './components/SkullEmblem/SkullEmblem';
 import { filterNeuroStructures } from './data/neuroAtlas';
+import { WorkspaceVisibleContext } from './hooks/useWorkspaceVisible';
 import { useAppStore } from './store/appStore';
 import styles from './App.module.css';
 import landing from './LandingPage.module.css';
@@ -20,6 +18,9 @@ const SpineExplorer  = lazy(() => import('./components/SpineExplorer/SpineExplor
 const XrayWorkspace  = lazy(() => import('./components/XrayWorkspace/XrayWorkspace'));
 const StressAnalysis = lazy(() => import('./components/StressAnalysis/StressAnalysis'));
 const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
+const MuscleExplorerHost = lazy(() => import('./components/MuscleExplorer/MuscleExplorerHost'));
+const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/NeuroExplorerDataHost'));
+const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
 
 type Page = ReturnType<typeof useAppStore.getState>['activePage'];
@@ -98,7 +99,7 @@ const LazyMount: React.FC<{ children: React.ReactNode; className?: string; minHe
   return <div ref={ref} className={className} style={{ minHeight }}>{near ? children : null}</div>;
 };
 
-const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 const App: React.FC = () => {
   const { setActivePage, setAnatomyStructures, theme } = useAppStore();
@@ -130,7 +131,7 @@ const App: React.FC = () => {
     return () => { active = false; };
   }, [setAnatomyStructures]);
 
-  const openModule = (page: Page) => { setActivePage(page); scrollToId('platform'); };
+  const openModule = (page: Page) => { setActivePage(page); scrollToId('workspace'); };
 
   return (
     <div className={landing.site}>
@@ -320,6 +321,9 @@ const Workspace: React.FC = () => {
   const isAnatomyWorkspace = isViewer || isMuscleExplorer || isNeuroExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const frameInView = useInView(frameRef, { margin: '120px 0px' });
+  const visible = frameInView || workspaceMaximized;
 
   useEffect(() => { if (isAnatomyWorkspace) setHasVisitedViewer(true); }, [isAnatomyWorkspace]);
 
@@ -331,7 +335,8 @@ const Workspace: React.FC = () => {
   }, [workspaceMaximized]);
 
   return (
-          <div className={`${landing.workspaceFrame} ${workspaceMaximized ? landing.workspaceMaximized : ''}`}>
+          <WorkspaceVisibleContext.Provider value={visible}>
+          <div ref={frameRef} id="workspace" className={`${landing.workspaceFrame} ${workspaceMaximized ? landing.workspaceMaximized : ''}`}>
             <div className={styles.app}>
       <Sidebar />
 
@@ -358,12 +363,14 @@ const Workspace: React.FC = () => {
           {(hasVisitedViewer || isMuscleExplorer || isNeuroExplorer) && <div className={`${styles.viewerPage} ${isAnatomyWorkspace ? styles.viewerPageActive : ''}`} aria-hidden={!isAnatomyWorkspace}>
             <div className={styles.viewerLayout}>
               <div className={styles.viewportWrap}>
-                {isNeuroExplorer
-                  ? <NeuroExplorerDataHost><NeuroExplorerPage /></NeuroExplorerDataHost>
-                  : <Viewport3D active={isAnatomyWorkspace} />}
+                <Suspense fallback={<PageSkeleton />}>
+                  {isNeuroExplorer
+                    ? <NeuroExplorerDataHost><NeuroExplorerPage /></NeuroExplorerDataHost>
+                    : <Viewport3D active={isAnatomyWorkspace && visible} />}
+                </Suspense>
               </div>
               {rightPanelOpen && isViewer && <div className={styles.rightPanel}><AnatomyPanel /></div>}
-              {rightPanelOpen && isMuscleExplorer && <div className={styles.rightPanel}><MuscleExplorerHost /></div>}
+              {rightPanelOpen && isMuscleExplorer && <div className={styles.rightPanel}><Suspense fallback={<PageSkeleton />}><MuscleExplorerHost /></Suspense></div>}
             </div>
             {isViewer && <div className={styles.modeOverlay} hidden={viewMode !== 'xray'} aria-hidden={viewMode !== 'xray'}><Suspense fallback={<PageSkeleton />}><XrayWorkspace /></Suspense></div>}
             {isViewer && <div className={`${styles.modeOverlay} ${styles.stressModeOverlay}`} hidden={viewMode !== 'stress'} aria-hidden={viewMode !== 'stress'}><Suspense fallback={<PageSkeleton />}><StressAnalysis /></Suspense></div>}
@@ -391,6 +398,7 @@ const Workspace: React.FC = () => {
       </div>
             </div>
           </div>
+          </WorkspaceVisibleContext.Provider>
   );
 };
 
