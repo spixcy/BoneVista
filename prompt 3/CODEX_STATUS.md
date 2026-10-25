@@ -1,0 +1,102 @@
+# Codex Status — Phase 1 Frontend Foundations
+
+**Date:** 25 October 2026 (Asia/Kolkata)  
+**Current phase:** 1 — frontend foundations  
+**Phase 0 result:** Audit completed and recorded below.  
+**Phase 1 result:** Raster-image decode validation added before file state updates; existing upload controls and local viewing remain in place.
+
+## Scope and repository state
+
+Read the shared `README.md`, `CURRENT_APP_AUDIT.md`, `API_CONTRACT.md`, `PHASE_PLAN.md`, `CODEX_README.md`, and `ANTIGRAVITY_README.md` in the prompt folder, plus the repository root `README.md`. Inspected the source, package and Playwright configuration, tests, reconstruction research notes, relevant assets, and current Git status.
+
+The prompt files exist both at the requested root path `prompt 3/` and in the additional untracked `BoneVista_Prompt_3_Updated/prompt 3/` copy. This report is saved at the explicitly requested `prompt 3/CODEX_STATUS.md`. Both prompt trees already contained untracked files, including `ANTIGRAVITY_STATUS.md`; they were preserved. The checkout also has pre-existing staged additions/changes to branding assets and `src/assets/hero.png`, and staged plus unstaged changes to `src/components/Dashboard/Dashboard.tsx` and its CSS. Those dashboard changes are unrelated to reconstruction and were not altered. No source changes appear in the reconstruction-related paths inspected.
+
+## 1. What already works
+
+- **Application and shared state:** React 19, TypeScript, Vite, and Zustand. The landing page embeds the workspace; sidebar navigation, toolbar view modes, theme, anatomy search, and anatomy/explorer state are already integrated. The root README documents Home, reference Anatomy, Muscle, Neuro & Brain, Spine, X-Ray, Stress, Studies, and Settings.
+- **Reference anatomy:** `public/anatomy/manifest.json` and `public/anatomy/skeletal_male.glb` are present. `src/data/anatomy.ts` contains spine/reference metadata. `src/components/Viewport3D/Viewport3D.tsx` loads the fixed reference GLB through Drei `useGLTF`, clones and normalizes its scene, and applies selection, visibility/isolation, camera and educational stress coloring. It has GLB/OBJ/PDF export actions. `src/components/AnatomyPanel/AnatomyPanel.tsx` lists and filters atlas structures. The reconstruction result must remain separate from this scene and its atlas IDs.
+- **X-ray local viewing:** `src/components/XrayWorkspace/XrayWorkspace.tsx` accepts JPEG/JPG, PNG, and WebP through `react-dropzone`, with one file per AP/lateral slot and a 25 MiB maximum. It supports replace/remove, loading the bundled sample pair, image preview, dimensions and file-size display, brightness/contrast, zoom, fit, pan, 90-degree rotation, and reset. The sample assets exist under `public/test-images/` and the UI links to their source/license information.
+- **File and preview state:** `src/store/appStore.ts` keeps the AP and lateral `File` objects and their object-URL previews in shared, in-memory Zustand state. `setXrayAP` and `setXrayLateral` revoke the previous slot URL when replacing or removing a file, then create a new URL for a new file. The selected local images are not sent anywhere by the current code. I found no app-level store disposal/unmount action that revokes URLs when the whole app/store lifetime ends; replacement/removal cleanup is present.
+- **Current reconstruction behavior:** The store has a placeholder `runReconstruction` that always returns an unavailable error. The X-Ray Workspace presents an unavailable state and disabled reconstruction button. There is no frontend API client, backend URL configuration, capabilities query, multipart submission, job polling, or reconstruction GLB view. The store's older generic reconstruction shape also contains unused metric/demo fields; those are not evidence of measured inference results.
+- **Stress Analysis remains separate:** `src/components/StressAnalysis/StressAnalysis.tsx` calls `solveAxialBar` from `axialFemSolver.ts`, uses the manual `stressTargetId`, and may display X-ray thumbnails for reference. The solver is a 1D uniform axial bar; image pixels and reconstructed geometry are not inputs. The atlas association selector in X-Ray Workspace also writes `stressTargetId`.
+- **Navigation/viewer mounting:** `src/App.tsx` lazy-loads X-Ray Workspace, Stress Analysis, Spine Explorer, Dashboard, and the 3D viewer. X-Ray Workspace can appear as the direct sidebar page (`activePage === 'xray'`) and as an overlay over the viewer when toolbar `viewMode === 'xray'`. These are separate component mounts with separate local display-control state, while sharing the file slots in the store. Sidebar and toolbar mode logic are in `src/components/Sidebar/Sidebar.tsx` and `src/components/ViewerToolbar/ViewerToolbar.tsx`.
+- **Dependencies/configuration:** `package.json` already includes React Three Fiber, Drei, Three.js, Zustand, and Playwright. No additional GLB viewing library is needed for a small result-only Three.js view. Scripts are `dev`, `build` (TypeScript project build plus Vite), `preview`, and `test:e2e`; there are no separate lint or unit-test scripts. `playwright.config.js` starts Vite at `127.0.0.1:4174` and runs one worker.
+
+## 2. What needs changing for X-ray-to-3D
+
+1. **Make backend readiness distinct from model availability.** Replace the static unavailable text with capability/health states from the configured local service. Offline API, healthy-but-unavailable model, unsupported target/input, ready, job states, and safe failures must be distinguishable.
+2. **Add contract-typed frontend API access.** Read `VITE_XRAY_RECON_API_URL` with `http://127.0.0.1:8000` as the default. Use exactly the shared contract routes and fields. Capabilities—not a hardcoded anatomy list—must supply supported target IDs and constraints.
+3. **Keep target IDs separate.** The existing atlas association remains a manual visual association for Stress Analysis and uses `stressTargetId`. Reconstruction submits only the exact `anatomy` target chosen from backend `supported_anatomies`; do not map or reuse an atlas ID implicitly.
+4. **Submit only on explicit user action.** Keep local viewing operational with the API offline. When the user presses the explicit reconstruct control, submit both AP and lateral `File`s plus the chosen anatomy as `multipart/form-data`. Let `fetch` set the multipart boundary. Require both views and obey backend size/input constraints as well as current browser validation. Warn if the bundled hip-replacement teaching pair is selected for inference; it is not a validation sample and may be outside model scope.
+5. **Represent the job lifecycle truthfully.** Track queued/processing/succeeded/failed, poll the returned unpredictable job ID, and stop polling/request work on terminal state, timeout, or unmount. Do not invent progress. Show concise errors and preserve local image controls. Avoid raw stack traces.
+6. **Display only the returned successful model.** Load only `model_url` from a succeeded job, resolving relative URLs against the configured API base. Use an isolated result viewer with loading/error/reset/orbit/zoom and download actions. Never substitute the atlas, fixture, or placeholder geometry, or mutate `Viewport3D`'s reference scene/state. Label it as an AI-estimated educational/research reconstruction, not clinically validated.
+7. **Keep results transient.** No Study/patient persistence, history, database, or image library is in the initial contract. Ensure any later upload/job state and temporary result URLs are cleaned up appropriately.
+
+These requirements follow API Contract v1.1 without proposing endpoint, field, or status changes.
+
+## 3. Likely frontend files by later phase
+
+This is a proposed minimum map; inspect the then-current diff and implementation before editing.
+
+| Phase | Likely files | Scope |
+|---|---|---|
+| 1 — Stabilize foundations | `src/components/XrayWorkspace/XrayWorkspace.tsx`, `src/components/XrayWorkspace/XrayWorkspace.module.css`; `src/store/appStore.ts` only if needed for safe file/URL cleanup | Preserve current validation and controls; verify both X-ray mounts; tighten lifecycle/empty/error behavior without uploads or persistence. No new frontend dependency is currently indicated. Backend service files remain Antigravity-owned. |
+| 2 — Capabilities/API client | New `src/services/xrayReconstructionApi.ts` (or equivalent), `src/vite-env.d.ts`, `src/components/XrayWorkspace/XrayWorkspace.tsx`, its CSS, and possibly `src/store/appStore.ts` for separate capability/target state | Health/capabilities fetch, configurable base URL, typed contract, backend-driven target choices and status UI. Keep `stressTargetId` untouched as an atlas association. Add mocked API/client/UI coverage. |
+| 3 — Submission and job flow | API client, X-Ray Workspace TSX/CSS, and possibly separate transient reconstruction state in `appStore.ts`; new/extended reconstruction-focused tests | Explicit multipart submission, job polling, cancellation/timeout/unmount cleanup, terminal results and safe errors. Preserve local previews and both upload controls. |
+| 4 — GLB result viewer | New isolated result component and CSS (for example under `src/components/ReconstructionResult/`), X-Ray Workspace TSX/CSS, and focused viewer tests | Load the successful job's actual returned GLB using existing `@react-three/fiber`, Drei `useGLTF`/Three.js patterns. Keep it out of `Viewport3D`'s atlas model and shared selection/visibility/stress state. |
+| 5 — Regression/handoff | `tests/core.spec.js`, `tests/neuro.spec.js` only if relevant, new reconstruction tests, root `README.md`, and `docs/` integration notes if needed | Run build and existing e2e suite; add/retain mocks for API state and error paths without replacing existing feature coverage. Document local service configuration, privacy boundary, and limitations. |
+
+`src/components/StressAnalysis/StressAnalysis.tsx`, `src/components/StressAnalysis/axialFemSolver.ts`, `src/components/AnatomyPanel/AnatomyPanel.tsx`, `src/data/anatomy.ts`, `public/anatomy/manifest.json`, and `public/anatomy/skeletal_male.glb` should not need modification for the reconstruction slice. Do not modify the 1D solver, shared API contract, licenses/notices, or backend-owned `xray-reconstruction-service/` from the Codex frontend work.
+
+## 4. Potential regressions and dependencies
+
+- **Atlas/stress coupling:** Reusing `stressTargetId` or selected atlas structure IDs as model anatomy would silently conflate two different identifiers and could alter Stress Analysis behavior. Maintain separate state/types and explicit labels.
+- **Local file privacy and availability:** Uploading during selection, sample loading, or capabilities probing would violate the contract. Only the explicit user action may transmit file bytes. Offline health/capability checks must not disable local viewing.
+- **Dual X-ray mounts:** Direct X-Ray and viewer-overlay instances share files but not local zoom/rotation/pan/view state. API requests and resulting status may otherwise appear inconsistent or duplicate if both render. Decide whether transient job state is shared centrally or panel behavior is scoped deliberately; avoid duplicate polling/submission.
+- **Object URL lifetime:** Current replacement/removal cleanup works, but there is no store teardown cleanup. Later result loading/download should not leak temporary URLs or revoke an image URL while another visible panel still uses it. Do not revoke shared preview URLs merely on one component's unmount.
+- **Polling and navigation:** An in-flight request must be aborted or ignored on unmount, navigation, replacement submission, or timeout. Terminal failures must not leave timers running; stale job responses must not overwrite a newer result.
+- **Network/CORS:** The frontend runs on Vite (default 5173; Playwright uses 4174) while the contract service defaults to port 8000. The local backend must allow the dev origins used in development, and relative model URLs need correct API-base resolution. No frontend proxy or CORS setup is currently present.
+- **Input mismatch/limits:** Browser extension/MIME checks are not proof of image content. Backend validation remains required. Current front end is 25 MiB per image; the contract's default is 26,214,400 bytes (25 MiB), but the UI should honor a smaller live backend limit if reported. AP/lateral order and model-domain constraints must be visible and not guessed.
+- **Sample domain:** The bundled sample is an implant case for UI display, not a reconstruction evaluation set. A completed job on it cannot be described as accuracy evidence.
+- **GLB handling:** A successful HTTP job status alone is insufficient; resolve only the succeeded `model_url`, handle parse/network errors, and never report a viewer-load success if GLB parsing failed. A valid GLB only proves file/viewer integration, not medical validity.
+- **Regression surface:** X-Ray changes should leave theme/navigation, atlas loading/search/selection/visibility/isolation and exports, Muscle, Neuro, Spine, the 1D stress calculation/color map, and current local X-ray controls intact. Do not broaden this task into Studies persistence or patient-specific stress analysis.
+- **Toolchain:** Adding dependencies should not be necessary for UI polling or Three.js display. If a new test runner is considered, first use the existing Playwright setup rather than expanding package configuration without need.
+
+## 5. Frontend integration with Antigravity's backend
+
+Use the service only as defined in `API_CONTRACT.md`:
+
+1. Resolve the public base URL from `VITE_XRAY_RECON_API_URL`, defaulting to `http://127.0.0.1:8000`. It is configuration, never a place for secrets.
+2. Query `GET /api/v1/health` to report server reachability and independently query `GET /api/v1/reconstruction/capabilities` for model readiness, exact supported anatomy IDs, required views, upload limit, constraints, and unavailable reason. Healthy service does not imply available inference.
+3. Require both selected files and one exact capability-provided anatomy identifier. Preserve the atlas association selector separately.
+4. Only when the user chooses **Reconstruct 3D model**, send `POST /api/v1/reconstruction/jobs` using `FormData` fields `ap`, `lateral`, and `anatomy`; do not set `Content-Type` manually. Handle the expected `202` `{job_id,status:"queued"}` and contract-shaped errors.
+5. Poll `GET /api/v1/reconstruction/jobs/{job_id}` until `queued`, `processing`, `succeeded`, or `failed` reaches a terminal state. Honor a bounded timeout and abort/clean up on unmount. Render only backend-supplied meaningful progress; null remains indeterminate.
+6. After `succeeded`, request the returned `model_url` (relative URLs against the configured base) and parse the GLB in a distinct result viewer. Model type is `estimated_3d_bone_segmentation` per example; display the output with the contract's educational/research-not-clinically-validated wording. Do not connect the result to the Stress solver.
+
+No `xray-reconstruction-service/` exists in this checkout listing, and no client integration is present. Backend checkpoint/model readiness is outside this frontend audit; use Antigravity's separate report and the live contract responses rather than assuming the service or weights are available.
+
+## 6. Tests to run
+
+No test/build command was run in Phase 0. Existing checks discovered:
+
+- `npm run build` — TypeScript project build and Vite production build.
+- `npm run test:e2e` — Playwright suite; `tests/core.spec.js` and `tests/neuro.spec.js` currently define 10 end-to-end tests in total. It covers landing/navigation/theme, atlas selection/search, Neuro, Spine, local X-ray validation/controls, stress calculation and mapping, GLB export, Muscle, and Neuron Lab.
+
+After implementation, run both commands and preserve all existing tests. Add mocked reconstruction coverage for offline/unreachable service; healthy but unavailable capabilities; capability-driven anatomy selection; unsupported target/missing views/model unavailable; malformed/error responses; queued/processing/succeeded/failed lifecycle; meaningful vs null progress; timeout/unmount/abort and timer cleanup; safe relative model URL resolution; successful GLB parsing/download; and GLB fetch/parse failure. Include an explicit regression check that selecting/replacing/removing files and loading the bundled sample do not issue a job request, and that only the explicit button action submits multipart files. Do not count mocked plumbing as real inference. Run backend tests only when that backend phase exists and is available; they remain Antigravity-owned.
+
+## Phase 0 completion
+
+- **Files changed:** only this requested report, `prompt 3/CODEX_STATUS.md`.
+- **Commands/tests:** read-only PowerShell/Git/`rg` inspection commands; no build, browser, or test commands run.
+- **Verified versus unverified:** source paths, existing local-view behavior, reference viewer loading pattern, navigation/store wiring, current reconstruction-unavailable behavior, package scripts, tests, and contract integration requirements were inspected. No API or inference path was exercised; no backend/checkpoint availability is asserted.
+- **Ownership:** no Antigravity-owned backend files or shared contract files were edited.
+- **Next proposed phase:** wait for owner review and explicit approval before Phase 1. Stop here.
+
+## Phase 1 update — frontend foundations
+
+- **Files changed:** `src/components/XrayWorkspace/XrayWorkspace.tsx` adds browser decode validation using `createImageBitmap` before accepting a selected file. A request token prevents a stale asynchronous decode from replacing a newer selection; component cleanup invalidates pending work. The existing size/extension/MIME checks and preview/object-URL store behavior remain unchanged. `tests/core.spec.js` now uses the bundled valid AP JPG for the upload workflow and checks that a corrupt `.png` is rejected with a user-visible message and does not become a ready input.
+- **Commands and exact outcomes:** `npm run build` passed (TypeScript and Vite); Vite emitted its existing >500 kB chunk-size advisory. `npx playwright test tests/core.spec.js --grep "views local AP and lateral"` passed (1/1), including the corrupt-image case. The full `npm run test:e2e` completed with **2 passed, 8 failed**. Existing failures were: missing mascot in the landing-page test; Neuro scene timeout; X-ray test exceeded its 30-second limit while clicking Remove; stress form timeout; toolbar stress-mapping timeout; GLB export timeout; Muscle combined-layer timeout; and an existing Neuro test strict-mode ambiguity because the Neuro button matched both sidebar and dashboard card. Spine and atlas-search tests passed. The focused X-ray pass shows the new validation path works in isolation; the full suite remains a regression blocker and should be rerun after the unrelated dashboard/test-selector and browser timing issues are addressed. Three.js `Clock` deprecation warnings were emitted during browser runs.
+- **Verified versus not verified:** A supported JPEG is decoded and accepted, and a malformed file labeled PNG is rejected in the focused browser test. The build passes. API behavior, backend readiness, inference, model output, and result viewing remain unimplemented/unverified, as required for Phase 1.
+- **Blockers and risks:** The full existing Playwright suite is not green in this checkout. The landing and strict-selector failures align with pre-existing uncommitted Dashboard changes; several scene/UI tests timed out at their configured limits during the full run. The X-ray E2E case passed when run by itself but timed out in the full run. No unrelated dashboard or timeout changes were made. An untracked `xray-reconstruction-service/` directory appeared in the shared checkout; it is outside Codex ownership and was not opened or edited.
+- **Next phase proposed:** Phase 2 only after owner review and explicit approval. Phase 2 adds typed health/capabilities access and capability-driven target selection against the fixed contract; job submission and GLB viewing remain later phases.
+- **Ownership confirmation:** No backend service files, frontend package configuration, shared API contract, atlas viewer, stress solver, or atlas assets were modified. No dependency was installed. Stop for owner approval.

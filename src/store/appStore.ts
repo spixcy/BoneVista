@@ -145,6 +145,8 @@ interface AppState {
   xrayUpload: XrayUpload;
   setXrayAP: (file: File | null) => void;
   setXrayLateral: (file: File | null) => void;
+  reconstructionAnatomyTarget: string | null;
+  setReconstructionAnatomyTarget: (target: string | null) => void;
   reconstruction: ReconstructionResult;
   runReconstruction: () => Promise<void>;
   resetReconstruction: () => void;
@@ -290,6 +292,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (prev.lateralPreview) URL.revokeObjectURL(prev.lateralPreview);
     set({ xrayUpload: { ...prev, lateral: file, lateralPreview: file ? URL.createObjectURL(file) : null } });
   },
+  reconstructionAnatomyTarget: null,
+  setReconstructionAnatomyTarget: (target) => set({ reconstructionAnatomyTarget: target }),
   reconstruction: defaultReconstruction,
   runReconstruction: async () => {
     const { xrayUpload } = get();

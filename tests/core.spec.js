@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-const sample = fileURLToPath(new URL('./fixtures/sample.png', import.meta.url));
+const sample = fileURLToPath(new URL('../public/test-images/bonevista-hip-ap-sample.jpg', import.meta.url));
 const invalid = fileURLToPath(new URL('./fixtures/invalid.txt', import.meta.url));
 
 async function openWorkspace(page) {
@@ -123,6 +123,9 @@ test('views local AP and lateral images with working controls and no claimed inf
   await page.getByLabel('Remove AP radiograph').click();
   await page.getByLabel('AP radiograph file input').setInputFiles(invalid);
   await expect(page.getByText('Choose a JPEG, PNG, or WebP image. DICOM is not supported yet.')).toBeVisible();
+  await page.getByLabel('AP radiograph file input').setInputFiles({ name: 'corrupt.png', mimeType: 'image/png', buffer: Buffer.from('not an image') });
+  await expect(page.getByRole('alert')).toContainText('could not be decoded as a JPEG, PNG, or WebP image');
+  await expect(page.getByText('AP input').locator('..')).toContainText('Waiting for image');
 });
 
 test('runs the educational finite-element stress model and validates invalid inputs', async ({ page }) => {

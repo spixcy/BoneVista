@@ -2,36 +2,53 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
 import { ArrowRight, Contrast, FileImage, Info, Maximize, Minus, Plus, RotateCcw, RotateCw, Sun, Upload, X } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
+import { getReconstructionCapabilities, getReconstructionHealth, reconstructionApiBaseUrl, type ReconstructionCapabilities, type ReconstructionHealth } from '../../services/xrayReconstructionApi';
 import styles from './XrayWorkspace.module.css';
 
 const ACCEPTED = { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'], 'image/webp': ['.webp'] };
 const MAX_SIZE = 25 * 1024 * 1024;
 type View = 'ap' | 'lateral';
+type BackendStatus =
+  | { kind: 'checking' }
+  | { kind: 'offline'; message: string }
+  | { kind: 'capabilities-error'; health: ReconstructionHealth; message: string }
+  | { kind: 'loaded'; health: ReconstructionHealth; capabilities: ReconstructionCapabilities };
 
 function DropZone({ label, preview, onFile }: { label: View; preview: string | null; onFile: (file: File | null) => void }) {
   const [error, setError] = useState<string | null>(null);
+  const validationId = useRef(0);
+  useEffect(() => () => { validationId.current += 1; }, []);
   const onDrop = useCallback((files: File[], rejected: FileRejection[]) => {
+    const requestId = ++validationId.current;
     setError(null);
     if (rejected.length) {
       const code = rejected[0].errors[0]?.code;
       setError(code === 'file-too-large' ? 'File exceeds the 25 MB limit.' : 'Choose a JPEG, PNG, or WebP image. DICOM is not supported yet.');
       return;
     }
-    if (files[0]) onFile(files[0]);
+    if (!files[0]) return;
+    void createImageBitmap(files[0]).then((image) => {
+      image.close();
+      if (requestId === validationId.current) onFile(files[0]);
+    }).catch(() => {
+      if (requestId === validationId.current) setError('This file could not be decoded as a JPEG, PNG, or WebP image.');
+    });
   }, [onFile]);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: ACCEPTED, maxFiles: 1, maxSize: MAX_SIZE });
   return <div className={styles.dropCol}>
     <span className={`${styles.dropLabel} mono-label`}>{label === 'ap' ? 'AP View' : 'Lateral View'}</span>
     <div {...getRootProps()} className={`${styles.dropZone} ${isDragActive ? styles.dragActive : ''} ${preview ? styles.hasFile : ''}`}>
       <input {...getInputProps()} aria-label={`${label === 'ap' ? 'AP' : 'Lateral'} radiograph file input`} />
-      {preview ? <div className={styles.dropContent}><FileImage size={21}/><p>Image loaded</p><span>Choose another image</span><button className={styles.removeBtn} onClick={(event) => { event.stopPropagation(); onFile(null); setError(null); }} aria-label={`Remove ${label === 'ap' ? 'AP' : 'Lateral'} radiograph`}><X size={14}/></button></div> : <div className={styles.dropContent}><Upload size={22}/><p>Drop {label === 'ap' ? 'AP' : 'lateral'} image here</p><span>JPEG, PNG, or WebP · max 25 MB</span></div>}
+      {preview ? <div className={styles.dropContent}><FileImage size={21}/><p>Image loaded</p><span>Choose another image</span><button className={styles.removeBtn} onClick={(event) => { event.stopPropagation(); validationId.current += 1; onFile(null); setError(null); }} aria-label={`Remove ${label === 'ap' ? 'AP' : 'Lateral'} radiograph`}><X size={14}/></button></div> : <div className={styles.dropContent}><Upload size={22}/><p>Drop {label === 'ap' ? 'AP' : 'lateral'} image here</p><span>JPEG, PNG, or WebP · max 25 MB</span></div>}
     </div>
     {error && <div className={styles.fieldError} role="alert">{error}</div>}
   </div>;
 }
 
 export default function XrayWorkspace() {
-  const { anatomyStructures, stressTargetId, setStressTargetId, setActivePage, setViewMode, xrayUpload, setXrayAP, setXrayLateral } = useAppStore();
+  const { anatomyStructures, stressTargetId, setStressTargetId, setActivePage, setViewMode, xrayUpload, setXrayAP, setXrayLateral, reconstructionAnatomyTarget, setReconstructionAnatomyTarget } = useAppStore();
+  const [backendStatus, setBackendStatus] = useState<BackendStatus>({ kind: 'checking' });
+  const [statusRefresh, setStatusRefresh] = useState(0);
   const [view, setView] = useState<View>('ap');
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
@@ -47,6 +64,55 @@ export default function XrayWorkspace() {
   const file = view === 'ap' ? xrayUpload.ap : xrayUpload.lateral;
   const preview = view === 'ap' ? xrayUpload.apPreview : xrayUpload.lateralPreview;
   const target = anatomyStructures.find((item) => item.organ_id === stressTargetId);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    setBackendStatus({ kind: 'checking' });
+    void Promise.allSettled([
+      getReconstructionHealth(controller.signal),
+      getReconstructionCapabilities(controller.signal),
+    ]).then(([healthResult, capabilitiesResult]) => {
+      if (!active) return;
+      if (healthResult.status === 'rejected') {
+        setBackendStatus({ kind: 'offline', message: healthResult.reason instanceof Error ? healthResult.reason.message : 'Could not connect to the local reconstruction service.' });
+      } else if (capabilitiesResult.status === 'rejected') {
+        setBackendStatus({ kind: 'capabilities-error', health: healthResult.value, message: capabilitiesResult.reason instanceof Error ? capabilitiesResult.reason.message : 'Could not read model capabilities.' });
+      } else {
+        setBackendStatus({ kind: 'loaded', health: healthResult.value, capabilities: capabilitiesResult.value });
+      }
+    });
+    return () => { active = false; controller.abort(); };
+  }, [statusRefresh]);
+
+  const capabilities = backendStatus.kind === 'loaded' ? backendStatus.capabilities : null;
+  const modelAvailable = capabilities?.available === true && capabilities.mode === 'research';
+  const supportedAnatomies = capabilities?.supported_anatomies ?? [];
+  const selectedTargetSupported = !!reconstructionAnatomyTarget && supportedAnatomies.includes(reconstructionAnatomyTarget);
+  const uploadLimit = capabilities?.max_upload_bytes;
+  const inputTooLarge = !!uploadLimit && [xrayUpload.ap, xrayUpload.lateral].some((input) => !!input && input.size > uploadLimit);
+  const bothViewsReady = !!xrayUpload.ap && !!xrayUpload.lateral;
+  const readyForSubmission = modelAvailable && supportedAnatomies.length > 0 && bothViewsReady && !inputTooLarge && selectedTargetSupported;
+  const sampleLoaded = [xrayUpload.ap?.name, xrayUpload.lateral?.name].some((name) => name?.startsWith('bonevista-hip-'));
+  const backendStatusLabel = backendStatus.kind === 'checking' ? 'Checking service'
+    : backendStatus.kind === 'offline' ? 'API offline'
+      : backendStatus.kind === 'capabilities-error' ? 'Model status unavailable'
+        : !backendStatus.capabilities.available ? 'Model unavailable'
+          : supportedAnatomies.length === 0 ? 'No supported targets'
+            : inputTooLarge ? 'Input exceeds service limit'
+              : readyForSubmission ? 'Ready for submission'
+                : 'Model available';
+  const modelLabel = backendStatus.kind === 'loaded'
+    ? backendStatus.capabilities.available ? backendStatus.capabilities.model ?? 'Available' : 'Not configured'
+    : backendStatus.kind === 'checking' ? 'Checking'
+      : backendStatus.kind === 'offline' ? 'Unavailable'
+        : 'Unknown';
+
+  useEffect(() => {
+    if (backendStatus.kind === 'loaded' && reconstructionAnatomyTarget && !backendStatus.capabilities.supported_anatomies.includes(reconstructionAnatomyTarget)) {
+      setReconstructionAnatomyTarget(null);
+    }
+  }, [backendStatus, reconstructionAnatomyTarget, setReconstructionAnatomyTarget]);
 
   useEffect(() => {
     setDimensions(null);
@@ -114,17 +180,37 @@ export default function XrayWorkspace() {
     </div>
     <section className={styles.reconstructionStatus} aria-label="3D reconstruction status">
       <div className={styles.reconstructionHeading}>
-        <div><span className="mono-label">RECONSTRUCTION</span><h3>Patient-specific 3D model</h3></div>
-        <span className={styles.unavailableBadge}>Unavailable</span>
+        <div><span className="mono-label">RECONSTRUCTION</span><h3>AI-estimated 3D model</h3></div>
+        <span className={modelAvailable && supportedAnatomies.length > 0 ? styles.availableBadge : styles.unavailableBadge}>{backendStatusLabel}</span>
       </div>
-      <p>Images are ready for local viewing, but BoneVista has no configured reconstruction service or verified model checkpoint. No 3D result will be generated from these images.</p>
+      <p>{backendStatus.kind === 'checking' ? 'Checking the local API and its model capabilities.'
+        : backendStatus.kind === 'offline' ? `${backendStatus.message} Local image viewing remains available.`
+          : backendStatus.kind === 'capabilities-error' ? `The API is responding, but model capabilities could not be read: ${backendStatus.message}`
+            : !backendStatus.capabilities.available ? backendStatus.capabilities.reason ?? 'The API is healthy, but no verified inference model is configured.'
+              : supportedAnatomies.length === 0 ? 'The API reports an available model but no supported anatomy targets. Reconstruction cannot be submitted.'
+                : `The API is healthy${backendStatus.capabilities.model ? ` · model ${backendStatus.capabilities.model}` : ''}. Only anatomy targets reported by this model are available.`}</p>
       <div className={styles.inputStatus}>
         <span>AP input <strong>{xrayUpload.ap ? 'Ready' : 'Waiting for image'}</strong></span>
         <span>Lateral input <strong>{xrayUpload.lateral ? 'Ready' : 'Waiting for image'}</strong></span>
-        <span>Inference model <strong>Not configured</strong></span>
+        <span>Inference model <strong>{modelLabel}</strong></span>
       </div>
-      <button className={styles.reconstructDisabled} disabled title="A verified model checkpoint and local inference service are not configured">Reconstruct 3D bone</button>
-      <small>The BoneVision comparison and the candidate-repository review are documented in <code>docs/bonevision-comparison.md</code>. The reference atlas remains available separately.</small>
+      {modelAvailable && supportedAnatomies.length > 0 && <label className={styles.reconstructionTarget} htmlFor="xray-reconstruction-target">
+        Reconstruction anatomy
+        <select id="xray-reconstruction-target" aria-label="Reconstruction anatomy target" value={reconstructionAnatomyTarget ?? ''} onChange={(event) => setReconstructionAnatomyTarget(event.target.value || null)}>
+          <option value="">Choose a supported anatomy…</option>
+          {supportedAnatomies.map((anatomy) => <option key={anatomy} value={anatomy}>{anatomy.replaceAll(/[-_]+/g, ' ')}</option>)}
+        </select>
+      </label>}
+      {capabilities?.input_constraints?.length ? <ul className={styles.inputConstraints}>{capabilities.input_constraints.map((constraint) => <li key={constraint}>{constraint}</li>)}</ul> : null}
+      {inputTooLarge && <p className={styles.statusWarning} role="alert">An image exceeds the backend limit of {(uploadLimit! / 1024 / 1024).toFixed(1)} MiB. Replace it with a smaller file.</p>}
+      {sampleLoaded && modelAvailable && <p className={styles.statusWarning}>The bundled teaching pair shows a hip replacement and may be outside the model’s validated input domain. It is for viewer testing, not reconstruction accuracy evaluation.</p>}
+      {modelAvailable && <div className={styles.capabilityActions}>
+        <span>{backendStatusLabel}{bothViewsReady ? '' : ' · AP and lateral views are both required'}</span>
+        <button type="button" onClick={() => setStatusRefresh((value) => value + 1)} disabled={backendStatus.kind === 'checking'}>Refresh capabilities</button>
+      </div>}
+      {backendStatus.kind !== 'loaded' && <button type="button" className={styles.capabilityRetry} onClick={() => setStatusRefresh((value) => value + 1)} disabled={backendStatus.kind === 'checking'}>Check local service</button>}
+      <button className={styles.reconstructDisabled} disabled title={readyForSubmission ? 'Job submission is not enabled in this phase' : 'The backend must be available with a supported target and both valid views'}>Reconstruct 3D bone</button>
+      <small>{readyForSubmission ? 'Ready for submission; job submission will be connected in a later phase.' : 'Images remain in this browser during capability checks. The reference atlas remains separate.'} API: <code>{reconstructionApiBaseUrl}</code></small>
     </section>
     <section className={styles.viewer} aria-label="Radiograph viewer">
       <div className={styles.viewerHeader}>
@@ -162,6 +248,6 @@ export default function XrayWorkspace() {
       </button>
       <small>The image is a reference only. Stress is calculated from the educational load/material inputs; it is not inferred from the X-ray.</small>
     </div>
-    <div className={styles.info}><Info size={14}/><span>Images stay in this browser. Brightness, contrast, pan, zoom, and rotation are viewing adjustments only; there is no AI analysis, diagnosis, or 3D reconstruction configured. DICOM files are not supported in this version.</span></div>
+    <div className={styles.info}><Info size={14}/><span>Images remain in this browser during service checks. Brightness, contrast, pan, zoom, and rotation are viewing adjustments only. DICOM files are not supported in this version.</span></div>
   </div>;
 }
