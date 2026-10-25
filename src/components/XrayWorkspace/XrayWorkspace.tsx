@@ -2,7 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone, type FileRejection } from 'react-dropzone';
 import { ArrowRight, Contrast, FileImage, Info, Maximize, Minus, Plus, RotateCcw, RotateCw, Sun, Upload, X } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
-import { getReconstructionCapabilities, getReconstructionHealth, reconstructionApiBaseUrl, type ReconstructionCapabilities, type ReconstructionHealth } from '../../services/xrayReconstructionApi';
+import {
+  getReconstructionCapabilities,
+  getReconstructionHealth,
+  getReconstructionJobStatus,
+  reconstructionApiBaseUrl,
+  resolveModelGlbUrl,
+  submitReconstructionJob,
+  type ReconstructionCapabilities,
+  type ReconstructionHealth,
+  type ReconstructionJobStatusResponse,
+} from '../../services/xrayReconstructionApi';
 import styles from './XrayWorkspace.module.css';
 
 const ACCEPTED = { 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'], 'image/webp': ['.webp'] };
@@ -59,6 +69,23 @@ export default function XrayWorkspace() {
   const [dragging, setDragging] = useState(false);
   const [loadingSamples, setLoadingSamples] = useState(false);
   const [sampleError, setSampleError] = useState('');
+  const [submittingJob, setSubmittingJob] = useState(false);
+  const [jobState, setJobState] = useState<{
+    id: string | null;
+    status: 'idle' | 'queued' | 'processing' | 'succeeded' | 'failed';
+    progress: number | null;
+    message: string;
+    modelUrl: string | null;
+  }>({
+    id: null,
+    status: 'idle',
+    progress: null,
+    message: '',
+    modelUrl: null,
+  });
+  const [jobError, setJobError] = useState<string | null>(null);
+  const pollTimerRef = useRef<number | null>(null);
+  const jobAbortControllerRef = useRef<AbortController | null>(null);
   const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const file = view === 'ap' ? xrayUpload.ap : xrayUpload.lateral;
@@ -113,6 +140,96 @@ export default function XrayWorkspace() {
       setReconstructionAnatomyTarget(null);
     }
   }, [backendStatus, reconstructionAnatomyTarget, setReconstructionAnatomyTarget]);
+
+  useEffect(() => {
+    return () => {
+      if (pollTimerRef.current !== null) {
+        window.clearTimeout(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+      if (jobAbortControllerRef.current) {
+        jobAbortControllerRef.current.abort();
+        jobAbortControllerRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleStartReconstruction = useCallback(async () => {
+    if (!xrayUpload.ap || !xrayUpload.lateral || !reconstructionAnatomyTarget) return;
+
+    if (pollTimerRef.current !== null) {
+      window.clearTimeout(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+    if (jobAbortControllerRef.current) {
+      jobAbortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    jobAbortControllerRef.current = controller;
+    setSubmittingJob(true);
+    setJobError(null);
+    setJobState({
+      id: null,
+      status: 'queued',
+      progress: null,
+      message: 'Submitting reconstruction job…',
+      modelUrl: null,
+    });
+
+    try {
+      const submitRes = await submitReconstructionJob(
+        xrayUpload.ap,
+        xrayUpload.lateral,
+        reconstructionAnatomyTarget,
+        controller.signal
+      );
+
+      setSubmittingJob(false);
+      setJobState({
+        id: submitRes.job_id,
+        status: 'queued',
+        progress: null,
+        message: 'Job queued on server…',
+        modelUrl: null,
+      });
+
+      // Begin polling job status
+      const poll = async (jobId: string) => {
+        try {
+          const statusRes: ReconstructionJobStatusResponse = await getReconstructionJobStatus(
+            jobId,
+            controller.signal
+          );
+
+          setJobState({
+            id: statusRes.job_id,
+            status: statusRes.status,
+            progress: statusRes.progress,
+            message: statusRes.message,
+            modelUrl: statusRes.model_url ? resolveModelGlbUrl(statusRes.model_url) : null,
+          });
+
+          if (statusRes.status === 'queued' || statusRes.status === 'processing') {
+            pollTimerRef.current = window.setTimeout(() => void poll(jobId), 1500);
+          }
+        } catch (err) {
+          if (!controller.signal.aborted) {
+            setJobState((prev) => ({ ...prev, status: 'failed', message: 'Polling error' }));
+            setJobError(err instanceof Error ? err.message : 'Error polling reconstruction job.');
+          }
+        }
+      };
+
+      pollTimerRef.current = window.setTimeout(() => void poll(submitRes.job_id), 1000);
+    } catch (err) {
+      setSubmittingJob(false);
+      if (!controller.signal.aborted) {
+        setJobState((prev) => ({ ...prev, status: 'failed', message: 'Submission rejected' }));
+        setJobError(err instanceof Error ? err.message : 'Failed to submit reconstruction job.');
+      }
+    }
+  }, [xrayUpload.ap, xrayUpload.lateral, reconstructionAnatomyTarget]);
 
   useEffect(() => {
     setDimensions(null);
@@ -209,8 +326,36 @@ export default function XrayWorkspace() {
         <button type="button" onClick={() => setStatusRefresh((value) => value + 1)} disabled={backendStatus.kind === 'checking'}>Refresh capabilities</button>
       </div>}
       {backendStatus.kind !== 'loaded' && <button type="button" className={styles.capabilityRetry} onClick={() => setStatusRefresh((value) => value + 1)} disabled={backendStatus.kind === 'checking'}>Check local service</button>}
-      <button className={styles.reconstructDisabled} disabled title={readyForSubmission ? 'Job submission is not enabled in this phase' : 'The backend must be available with a supported target and both valid views'}>Reconstruct 3D bone</button>
-      <small>{readyForSubmission ? 'Ready for submission; job submission will be connected in a later phase.' : 'Images remain in this browser during capability checks. The reference atlas remains separate.'} API: <code>{reconstructionApiBaseUrl}</code></small>
+      
+      {jobError && <div className={styles.fieldError} role="alert">{jobError}</div>}
+      
+      {jobState.status !== 'idle' && (
+        <div className={styles.jobProgressBox}>
+          <div className={styles.jobStatusRow}>
+            <span>Status: <strong>{jobState.status}</strong></span>
+            {jobState.progress !== null && <span>{jobState.progress}%</span>}
+          </div>
+          <p className={styles.jobMessage}>{jobState.message}</p>
+          {jobState.status === 'succeeded' && jobState.modelUrl && (
+            <div className={styles.jobSuccessAction}>
+              <span>Estimated 3D bone mesh generated (AI research estimate · not clinically validated).</span>
+              <a href={jobState.modelUrl} download="reconstructed_bone.glb" className={styles.downloadGlbBtn}>
+                Download GLB mesh
+              </a>
+            </div>
+          )}
+        </div>
+      )}
+
+      <button
+        className={readyForSubmission && !submittingJob && (jobState.status === 'idle' || jobState.status === 'failed' || jobState.status === 'succeeded') ? styles.reconstructBtn : styles.reconstructDisabled}
+        disabled={!readyForSubmission || submittingJob || jobState.status === 'queued' || jobState.status === 'processing'}
+        onClick={handleStartReconstruction}
+        title={readyForSubmission ? 'Submit AP + lateral pair to local reconstruction service' : 'The backend must be available with a supported target and both valid views'}
+      >
+        {submittingJob ? 'Submitting job…' : jobState.status === 'queued' || jobState.status === 'processing' ? 'Reconstructing…' : 'Reconstruct 3D bone'}
+      </button>
+      <small>{readyForSubmission ? 'Explicit user action sends images to the configured local service. The reference atlas remains separate.' : 'Images remain in this browser during capability checks. The reference atlas remains separate.'} API: <code>{reconstructionApiBaseUrl}</code></small>
     </section>
     <section className={styles.viewer} aria-label="Radiograph viewer">
       <div className={styles.viewerHeader}>

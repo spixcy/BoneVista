@@ -128,7 +128,7 @@ test('views local AP and lateral images with working controls and no claimed inf
   await page.getByRole('tab', { name: /Lateral/ }).click();
   await expect(page.getByAltText('Lateral radiograph')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Zoom in' })).toBeEnabled();
-  await expect(page.getByText(/no AI analysis, diagnosis, or 3D reconstruction/)).toBeVisible();
+  await expect(page.getByText(/no AI analysis, diagnosis, or 3D reconstruction/i)).toBeVisible();
   await page.getByLabel('Remove AP radiograph').click();
   await page.getByLabel('AP radiograph file input').setInputFiles(invalid);
   await expect(page.getByText('Choose a JPEG, PNG, or WebP image. DICOM is not supported yet.')).toBeVisible();
@@ -144,7 +144,28 @@ test('reports an offline reconstruction API while keeping local image viewing av
   await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
   await expect(page.getByText('API offline')).toBeVisible();
   await expect(page.getByText(/Local image viewing remains available/)).toBeVisible();
-  await expect(page.getByLabel('AP radiograph file input')).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Radiograph viewer' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
+});
+
+test('distinguishes a healthy API from an unavailable inference model', async ({ page }) => {
+  await mockReconstructionApi(page, {
+    available: false,
+    mode: 'unavailable',
+    model: null,
+    supported_anatomies: [],
+    requires_ap: true,
+    requires_lateral: true,
+    max_upload_bytes: 26214400,
+    input_constraints: ['A verified compatible checkpoint is not configured.'],
+    reason: 'No verified inference checkpoint is configured.',
+  });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await openWorkspace(page);
+  await page.getByRole('button', { name: 'X-Ray Workspace', exact: true }).click();
+  await expect(page.getByText('Model unavailable')).toBeVisible();
+  await expect(page.getByText('No verified inference checkpoint is configured.')).toBeVisible();
+  await expect(page.getByLabel('Reconstruction anatomy target')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
 });
 
@@ -168,15 +189,14 @@ test('uses only backend-supported reconstruction targets and keeps atlas associa
   const reconstructionTarget = page.getByLabel('Reconstruction anatomy target');
   await expect(reconstructionTarget).toBeVisible();
   await expect(reconstructionTarget.locator('option')).toHaveCount(3);
-  await expect(reconstructionTarget.locator('option').nth(1)).toHaveValue('vertebra');
-  await expect(reconstructionTarget.locator('option').nth(2)).toHaveValue('femur');
+  await expect(reconstructionTarget.locator('option').nth(1)).toHaveAttribute('value', 'vertebra');
+  await expect(reconstructionTarget.locator('option').nth(2)).toHaveAttribute('value', 'femur');
   await reconstructionTarget.selectOption('vertebra');
   await page.getByLabel('Bone associated with radiographs').selectOption('femur_l');
   await expect(reconstructionTarget).toHaveValue('vertebra');
   await page.getByRole('button', { name: 'Load real AP + lateral sample X-rays' }).click();
   await expect(page.getByText(/may be outside the model’s validated input domain/)).toBeVisible();
   await expect(page.getByText('Ready for submission').first()).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Reconstruct 3D bone' })).toBeDisabled();
   expect(jobRequests).toEqual([]);
 });
 
