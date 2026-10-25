@@ -1,0 +1,30 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+}
+
+.canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+.halo {
+  position: absolute;
+  inset: 8% 6% 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, .2) 0%, rgba(212, 175, 55, .05) 45%, transparent 70%);
+  pointer-events: none;
+}
+
+.plinth {
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: 3%;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, .3), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+}

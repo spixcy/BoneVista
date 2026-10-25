@@ -224,7 +224,8 @@ main { position: relative; z-index: 1; }
 .lineMask > span { display: inline-block; }
 .heroDescription { max-width: 540px; margin-bottom: 38px; color: var(--lp-muted); font: 300 clamp(15px, 1.2vw, 18px)/1.75 var(--font-sans); }
 .heroActions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-.heroArt { position: relative; z-index: 1; width: min(100%, 500px); justify-self: center; }
+.heroArt { position: relative; z-index: 1; width: min(100%, 580px); justify-self: center; }
+.skullLoading { aspect-ratio: 1 / 1.05; display: grid; place-items: center; color: var(--lp-gold); font: 500 11px var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
 
 .callout {
   position: absolute;
@@ -244,8 +245,8 @@ main { position: relative; z-index: 1; }
 .callout::before { content: ''; position: absolute; top: 50%; width: 46px; height: 1px; background: linear-gradient(90deg, transparent, rgba(212, 175, 55, .7)); }
 .calloutA { top: 12%; left: -8%; animation-delay: 2.4s; }
 .calloutA::before { left: 100%; transform: scaleX(-1); }
-.calloutB { top: 38%; right: -10%; animation-delay: 2.6s; }
-.calloutB::before { right: 100%; }
+.calloutB { top: 44%; left: -14%; animation-delay: 2.6s; }
+.calloutB::before { left: 100%; transform: scaleX(-1); }
 .calloutC { bottom: 14%; left: -6%; animation-delay: 2.8s; }
 .calloutC::before { left: 100%; transform: scaleX(-1); }
 
@@ -512,7 +513,7 @@ main { position: relative; z-index: 1; }
   .hero { grid-template-columns: 1fr; padding-top: 30px; text-align: left; }
   .heroArt { width: min(80%, 420px); grid-row: 1; }
   .calloutA, .calloutC { left: -2%; }
-  .calloutB { right: -4%; }
+  .calloutB { left: -4%; }
   .about, .faq { grid-template-columns: 1fr; }
   .scanner { grid-template-columns: 1fr; }
   .moduleGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

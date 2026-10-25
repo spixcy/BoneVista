@@ -5,7 +5,6 @@ import { Activity, ArrowRight, Bone, BookOpen, Brain, ChevronDown, Cpu, Download
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
-import SkullEmblem from './components/SkullEmblem/SkullEmblem';
 import { filterNeuroStructures } from './data/neuroAtlas';
 import { WorkspaceVisibleContext } from './hooks/useWorkspaceVisible';
 import { useAppStore } from './store/appStore';
@@ -21,6 +20,7 @@ const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
 const MuscleExplorerHost = lazy(() => import('./components/MuscleExplorer/MuscleExplorerHost'));
 const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/NeuroExplorerDataHost'));
 const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
+const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
 
 type Page = ReturnType<typeof useAppStore.getState>['activePage'];
@@ -167,7 +167,7 @@ const App: React.FC = () => {
             </motion.div>
           </div>
           <motion.div className={landing.heroArt} initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4, ease: EASE }}>
-            <SkullEmblem />
+            <Suspense fallback={<div className={landing.skullLoading}>Assembling skull…</div>}><SkullModel3D /></Suspense>
             <div className={`${landing.callout} ${landing.calloutA}`}><span>Os frontale</span><small>Frontal bone</small></div>
             <div className={`${landing.callout} ${landing.calloutB}`}><span>Orbita</span><small>Eye socket</small></div>
             <div className={`${landing.callout} ${landing.calloutC}`}><span>Mandibula</span><small>Lower jaw</small></div>
