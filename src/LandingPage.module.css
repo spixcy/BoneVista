@@ -335,16 +335,20 @@ main { position: relative; z-index: 1; }
 /* ─── Scanner ────────────────────────────────────────── */
 .scanner {
   display: grid;
-  grid-template-columns: minmax(0, .85fr) minmax(360px, 1.15fr);
-  align-items: center;
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 44px;
   padding: 110px var(--lp-pad);
   border-block: 1px solid var(--lp-line);
   background: linear-gradient(180deg, rgba(212, 175, 55, .03), transparent 40%, rgba(212, 175, 55, .03));
   scroll-margin-top: 64px;
 }
-.scannerCopy { max-width: 560px; }
-.scannerFigure { position: relative; width: 100%; }
+.scannerCopy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; }
+.scannerCopy .displayTitle { margin-bottom: 0; }
+.scannerCopy .bodyCopy strong { color: var(--lp-gold-soft); font-weight: 600; }
+.scannerCopy .checkList { margin-top: 18px; }
+.scannerCopy .explorerLink { margin-top: 22px; }
+.scannerFigure { position: relative; width: 100%; height: min(780px, 82vh); min-height: 560px; }
+.scannerFigure > * { height: 100%; }
 .loadingFigure { min-height: 480px; display: grid; place-items: center; color: var(--lp-gold); font: 500 12px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
 .checkList { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; list-style: none; }
 .checkList li { display: flex; align-items: center; gap: 12px; color: var(--lp-white); font-size: 14px; }
@@ -534,7 +538,8 @@ main { position: relative; z-index: 1; }
   .calloutA, .calloutC { left: -2%; }
   .calloutB { left: -4%; }
   .about, .faq { grid-template-columns: 1fr; }
-  .scanner { grid-template-columns: 1fr; }
+  .scannerCopy { grid-template-columns: 1fr; }
+  .scannerFigure { height: 640px; }
   .moduleGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .scrollCue { display: none; }
 }
@@ -551,6 +556,7 @@ main { position: relative; z-index: 1; }
   .about, .modules, .faq { padding-block: 90px; }
 }
 @media (max-width: 560px) {
+  .scannerFigure { height: 540px; min-height: 0; }
   .nav { height: 64px; padding-inline: 16px; }
   .brand { font-size: 19px; }
   .launch { padding: 8px 14px; font-size: 11px; }

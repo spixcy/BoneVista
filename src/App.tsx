@@ -222,17 +222,21 @@ const App: React.FC = () => {
 
         <section className={landing.scanner} id="scanner">
           <Reveal className={landing.scannerCopy}>
-            <span className={landing.eyebrow}>03 · Try it</span>
-            <h2 className={landing.displayTitle}>One atlas. <em>Every angle.</em></h2>
-            <p className={landing.bodyCopy}>Pick a body region, choose a bone, then drag to orbit it or toggle a wireframe view. This is a small preview of what the full workspace can do.</p>
+            <div>
+              <span className={landing.eyebrow}>03 · Try it</span>
+              <h2 className={landing.displayTitle}>One atlas. <em>Every angle.</em></h2>
+            </div>
+            <div>
+            <p className={landing.bodyCopy}>Pick a body region, choose a bone, then drag to orbit it or toggle a wireframe view. Hit <strong>Full screen</strong> to open any bone in the Bone Explorer.</p>
             <ul className={landing.checkList}>
               <li>19 bones across the limbs, spine, trunk and head</li>
               <li>Smooth orbit, zoom and auto-rotate controls</li>
               <li>Solid and wireframe display modes</li>
             </ul>
             <a className={landing.explorerLink} href="#/bone-explorer">Open the full Bone Explorer · all 335 structures <ArrowRight size={15}/></a>
+            </div>
           </Reveal>
-          <LazyMount className={landing.scannerFigure} minHeight={480}>
+          <LazyMount className={landing.scannerFigure} minHeight={560}>
             <Suspense fallback={<div className={landing.loadingFigure}>Preparing 3D preview…</div>}>
               <ScannerTarget3D />
             </Suspense>
