@@ -399,6 +399,7 @@ main { position: relative; z-index: 1; }
 .platformHeading p { max-width: 380px; color: var(--lp-muted); font-size: 14px; line-height: 1.7; }
 .workspaceFrame {
   position: relative;
+  scroll-margin-top: 76px;
   max-width: 1450px;
   height: min(880px, 88vh);
   min-height: 620px;

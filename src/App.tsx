@@ -99,7 +99,7 @@ const LazyMount: React.FC<{ children: React.ReactNode; className?: string; minHe
   return <div ref={ref} className={className} style={{ minHeight }}>{near ? children : null}</div>;
 };
 
-const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 const App: React.FC = () => {
   const { setActivePage, setAnatomyStructures, theme } = useAppStore();
