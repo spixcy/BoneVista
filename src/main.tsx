@@ -4,20 +4,25 @@ import './index.css';
 import App from './App';
 
 const BoneExplorerPage = lazy(() => import('./pages/BoneExplorer/BoneExplorerPage'));
+const NeetPgPage = lazy(() => import('./pages/NeetPg/NeetPgPage'));
 
 // Hash routes start with "#/"; plain anchors such as "#about" stay on the landing page.
-const isExplorer = (hash: string) => hash.startsWith('#/bone-explorer');
+type Route = 'landing' | 'explorer' | 'neet';
+const routeOf = (hash: string): Route => (hash.startsWith('#/bone-explorer') ? 'explorer' : hash.startsWith('#/neet-pg') ? 'neet' : 'landing');
 
 const Root: React.FC = () => {
-  const [explorer, setExplorer] = useState(() => isExplorer(window.location.hash));
+  const [route, setRoute] = useState(() => routeOf(window.location.hash));
   useEffect(() => {
-    const onHash = () => setExplorer(isExplorer(window.location.hash));
+    const onHash = () => setRoute(routeOf(window.location.hash));
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
-  return explorer
-    ? <Suspense fallback={<div style={{ minHeight: '100vh', background: '#050505' }} />}><BoneExplorerPage /></Suspense>
-    : <App />;
+  if (route === 'landing') return <App />;
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#050505' }} />}>
+      {route === 'explorer' ? <BoneExplorerPage /> : <NeetPgPage />}
+    </Suspense>
+  );
 };
 
 createRoot(document.getElementById('root')!).render(<Root />);

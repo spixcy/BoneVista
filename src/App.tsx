@@ -148,7 +148,7 @@ const App: React.FC = () => {
       <header className={`${landing.nav} ${scrolled ? landing.navScrolled : ''}`}>
         <a className={landing.brand} href="#top"><span className={landing.brandMark}><Bone size={18}/></span><span>Bone<em>Vista</em></span></a>
         <nav className={landing.navLinks} aria-label="Main site navigation">
-          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#/neet-pg">NEET PG</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
         </nav>
         <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
       </header>
