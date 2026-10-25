@@ -23,7 +23,15 @@ const WIRE_COLOR = new THREE.Color('#d4af37');
 
 type Pointer = React.RefObject<{ x: number; y: number }>;
 
-const Skull: React.FC<{ pointer: Pointer }> = ({ pointer }) => {
+/** Drag state shared between the DOM handlers and the render loop. */
+type Spin = { dragging: boolean; yaw: number; pitch: number; velocity: number; idleSince: number };
+type SpinRef = React.RefObject<Spin>;
+
+const REST_YAW = -0.62;
+const REST_PITCH = 0.06;
+const TAU = Math.PI * 2;
+
+const Skull: React.FC<{ pointer: Pointer; spin: SpinRef; wrap: React.RefObject<HTMLDivElement | null> }> = ({ pointer, spin, wrap }) => {
   const { scene } = useGLTF('/anatomy/skeletal_male.glb', '/draco/gltf/');
   const group = useRef<THREE.Group>(null);
   const start = useRef<number | null>(null);
@@ -89,12 +97,30 @@ const Skull: React.FC<{ pointer: Pointer }> = ({ pointer }) => {
       m.opacity = solidIn;
       if (m.transparent === opaque) { m.transparent = !opaque; m.needsUpdate = true; }
     }
+    const s = spin.current;
     const p = pointer.current;
-    const targetY = -0.62 + p.x * 0.35 + Math.sin(now * 0.25) * 0.08;
-    const targetX = 0.06 + p.y * 0.18;
-    const ease = 1 - Math.exp(-delta * 3);
+    const idle = performance.now() - s.idleSince > 3500;
+    if (!s.dragging) {
+      // Momentum after a flick, then ease back to the front-facing pose once idle.
+      s.yaw += s.velocity * delta;
+      s.velocity *= Math.exp(-delta * 2.5);
+      if (idle) {
+        const rest = REST_YAW + Math.round((s.yaw - REST_YAW) / TAU) * TAU;
+        const settle = 1 - Math.exp(-delta * 1.6);
+        s.yaw += (rest - s.yaw) * settle;
+        s.pitch += (REST_PITCH - s.pitch) * settle;
+      }
+    }
+    const atRest = !s.dragging && idle && Math.abs(s.velocity) < 0.05;
+    const targetY = s.yaw + (atRest ? p.x * 0.35 + Math.sin(now * 0.25) * 0.08 : 0);
+    const targetX = s.pitch + (atRest ? p.y * 0.18 : 0);
+    const ease = 1 - Math.exp(-delta * (s.dragging ? 14 : 4));
     group.current.rotation.y += (targetY - group.current.rotation.y) * ease;
     group.current.rotation.x += (targetX - group.current.rotation.x) * ease;
+    // The bone callouts beside the skull only line up with the front-facing pose.
+    const offset = Math.abs((((group.current.rotation.y - REST_YAW) % TAU) + TAU + Math.PI) % TAU - Math.PI);
+    const facing = offset < 0.45 && Math.abs(group.current.rotation.x - REST_PITCH) < 0.35 ? 'true' : 'false';
+    if (wrap.current && wrap.current.dataset.facing !== facing) wrap.current.dataset.facing = facing;
     group.current.position.y = Math.sin(now * 0.6) * 0.04;
   });
 
@@ -113,7 +139,55 @@ const Skull: React.FC<{ pointer: Pointer }> = ({ pointer }) => {
 const SkullModel3D: React.FC<{ className?: string }> = ({ className }) => {
   const wrap = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
+  const spin = useRef<Spin>({ dragging: false, yaw: REST_YAW, pitch: REST_PITCH, velocity: 0, idleSince: -Infinity });
   const visible = useInView(wrap, { margin: '80px 0px' });
+
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    let lastX = 0;
+    let lastY = 0;
+    let lastT = 0;
+    const down = (event: PointerEvent) => {
+      if (event.button !== 0) return;
+      el.setPointerCapture(event.pointerId);
+      Object.assign(spin.current, { dragging: true, velocity: 0 });
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastT = performance.now();
+    };
+    const move = (event: PointerEvent) => {
+      const s = spin.current;
+      if (!s.dragging) return;
+      const now = performance.now();
+      const dx = (event.clientX - lastX) * 0.012;
+      s.yaw += dx;
+      s.pitch = Math.max(-0.6, Math.min(0.7, s.pitch + (event.clientY - lastY) * 0.008));
+      s.velocity = dx / Math.max((now - lastT) / 1000, 0.008);
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastT = now;
+    };
+    const up = (event: PointerEvent) => {
+      const s = spin.current;
+      if (!s.dragging) return;
+      if (el.hasPointerCapture(event.pointerId)) el.releasePointerCapture(event.pointerId);
+      // A slow release should not fling the skull.
+      if (performance.now() - lastT > 80) s.velocity = 0;
+      s.velocity = Math.max(-12, Math.min(12, s.velocity));
+      Object.assign(s, { dragging: false, idleSince: performance.now() });
+    };
+    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    return () => {
+      el.removeEventListener('pointerdown', down);
+      el.removeEventListener('pointermove', move);
+      el.removeEventListener('pointerup', up);
+      el.removeEventListener('pointercancel', up);
+    };
+  }, []);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -127,7 +201,7 @@ const SkullModel3D: React.FC<{ className?: string }> = ({ className }) => {
   }, []);
 
   return (
-    <div ref={wrap} className={`${styles.wrap} ${className ?? ''}`} aria-hidden="true">
+    <div ref={wrap} className={`${styles.wrap} ${className ?? ''}`} data-facing="true" title="Drag to spin the skull">
       <div className={styles.halo} />
       <Canvas
         className={styles.canvas}
@@ -141,10 +215,11 @@ const SkullModel3D: React.FC<{ className?: string }> = ({ className }) => {
         <directionalLight position={[4, 1.5, -3]} intensity={1.8} color="#e2c25c" />
         <directionalLight position={[2, -2, 3]} intensity={0.35} color="#c9b48a" />
         <Suspense fallback={null}>
-          <Skull pointer={pointer} />
+          <Skull pointer={pointer} spin={spin} wrap={wrap} />
         </Suspense>
       </Canvas>
       <div className={styles.plinth} />
+      <span className={styles.hint}>Drag to spin 360°</span>
     </div>
   );
 };

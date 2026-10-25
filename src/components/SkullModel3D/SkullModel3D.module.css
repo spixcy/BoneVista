@@ -2,6 +2,23 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1.05;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.wrap:active { cursor: grabbing; }
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  translate: -50% 0;
+  color: #8a8478;
+  font: 500 10px var(--font-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .canvas {

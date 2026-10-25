@@ -169,9 +169,11 @@ const App: React.FC = () => {
           </div>
           <motion.div className={landing.heroArt} initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4, ease: EASE }}>
             <Suspense fallback={<div className={landing.skullLoading}>Assembling skull…</div>}><SkullModel3D /></Suspense>
-            <div className={`${landing.callout} ${landing.calloutA}`}><span>Os frontale</span><small>Frontal bone</small></div>
-            <div className={`${landing.callout} ${landing.calloutB}`}><span>Orbita</span><small>Eye socket</small></div>
-            <div className={`${landing.callout} ${landing.calloutC}`}><span>Mandibula</span><small>Lower jaw</small></div>
+            <div className={landing.callouts} aria-hidden="true">
+              <div className={`${landing.callout} ${landing.calloutA}`}><span>Os frontale</span><small>Frontal bone</small></div>
+              <div className={`${landing.callout} ${landing.calloutB}`}><span>Orbita</span><small>Eye socket</small></div>
+              <div className={`${landing.callout} ${landing.calloutC}`}><span>Mandibula</span><small>Lower jaw</small></div>
+            </div>
           </motion.div>
           <a className={landing.scrollCue} href="#about" aria-label="Scroll to learn more"><ChevronDown size={18}/></a>
         </section>

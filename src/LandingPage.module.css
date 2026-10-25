@@ -227,6 +227,8 @@ main { position: relative; z-index: 1; }
 .heroArt { position: relative; z-index: 1; width: min(100%, 580px); justify-self: center; }
 .skullLoading { aspect-ratio: 1 / 1.05; display: grid; place-items: center; color: var(--lp-gold); font: 500 11px var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
 
+.callouts { position: absolute; inset: 0; pointer-events: none; transition: opacity .4s ease; }
+.heroArt:has([data-facing='false']) .callouts { opacity: 0; }
 .callout {
   position: absolute;
   display: flex;
