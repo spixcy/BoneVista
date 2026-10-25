@@ -19,11 +19,13 @@ interface Props {
   autoRotate: boolean;
   resetKey: number;
   onPick: (node: string) => void;
+  /** Spans that receive the live camera azimuth / elevation, written directly to avoid re-renders. */
+  telemetry?: React.RefObject<{ azimuth: HTMLElement | null; elevation: HTMLElement | null }>;
 }
 
 type Controls = { target: THREE.Vector3; update: () => void };
 
-const Skeleton: React.FC<Props> = ({ node, knownNodes, mode, wireframe, autoRotate, resetKey, onPick }) => {
+const Skeleton: React.FC<Props> = ({ node, knownNodes, mode, wireframe, autoRotate, resetKey, onPick, telemetry }) => {
   const { scene } = useGLTF(ATLAS_URL, DRACO_URL);
   const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
   const controls = useThree((state) => state.controls) as unknown as Controls | null;
@@ -85,6 +87,19 @@ const Skeleton: React.FC<Props> = ({ node, knownNodes, mode, wireframe, autoRota
     const distance = position.distanceTo(target);
     goal.current = { target, position: target.clone().add(new THREE.Vector3(0.35, 0.15, 1).normalize().multiplyScalar(distance)) };
   }, [resetKey]);
+
+  const readout = useRef({ azimuth: NaN, elevation: NaN });
+  const offset = useMemo(() => new THREE.Vector3(), []);
+  useFrame(() => {
+    if (!controls || !telemetry?.current) return;
+    offset.copy(camera.position).sub(controls.target);
+    const azimuth = Math.round(((THREE.MathUtils.radToDeg(Math.atan2(offset.x, offset.z)) % 360) + 360) % 360);
+    const elevation = Math.round(THREE.MathUtils.radToDeg(Math.asin(THREE.MathUtils.clamp(offset.y / (offset.length() || 1), -1, 1))));
+    const { azimuth: az, elevation: el } = telemetry.current;
+    if (az && azimuth !== readout.current.azimuth) az.textContent = `${String(azimuth).padStart(3, '0')}°`;
+    if (el && elevation !== readout.current.elevation) el.textContent = `${elevation > 0 ? '+' : ''}${elevation}°`;
+    readout.current = { azimuth, elevation };
+  });
 
   useFrame((_, delta) => {
     if (!goal.current || !controls) return;

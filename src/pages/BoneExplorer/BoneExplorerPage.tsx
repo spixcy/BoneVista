@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, Bone, Box, ChevronLeft, ChevronRight, ExternalLink, Layers, ListTree, RotateCw, Scan, Search, X } from 'lucide-react';
+import { ArrowLeft, Bone, Box, ChevronLeft, ChevronRight, Crosshair, ExternalLink, Layers, ListTree, RotateCw, Scan, Search, X } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import { DISPLAY_REGIONS, toExplorerBones, type ExplorerBone, type Side } from './regions';
 import type { ViewMode } from './BoneViewer';
@@ -17,6 +17,7 @@ const SIDES: { id: Side | 'all'; label: string }[] = [
   { id: 'midline', label: 'Midline' },
 ];
 
+const normKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 const idFromHash = () => decodeURIComponent(window.location.hash.slice(EXPLORER_HASH.length + 1)) || null;
 
 /** Loads the skeletal manifest if the landing page has not already done so. */
@@ -51,6 +52,7 @@ const BoneExplorerPage: React.FC = () => {
   const [resetKey, setResetKey] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const telemetry = useRef<{ azimuth: HTMLElement | null; elevation: HTMLElement | null }>({ azimuth: null, elevation: null });
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -69,7 +71,9 @@ const BoneExplorerPage: React.FC = () => {
     .filter((group) => group.items.length), [visible]);
   const ordered = useMemo(() => groups.flatMap((group) => group.items), [groups]);
 
-  const selected: ExplorerBone | undefined = bones.find((bone) => bone.organ_id === selectedId) ?? bones.find((bone) => bone.organ_id === DEFAULT_BONE) ?? bones[0];
+  const selected: ExplorerBone | undefined = bones.find((bone) => bone.organ_id === selectedId)
+    ?? bones.find((bone) => normKey(bone.node) === normKey(selectedId))
+    ?? bones.find((bone) => bone.organ_id === DEFAULT_BONE) ?? bones[0];
 
   const select = (id: string) => {
     setSelectedId(id);
@@ -171,41 +175,77 @@ const BoneExplorerPage: React.FC = () => {
         {drawerOpen && <button type="button" className={styles.scrim} aria-label="Close bone list" onClick={() => setDrawerOpen(false)} />}
 
         <main className={styles.stage}>
-          <div className={styles.viewer}>
+          <div className={styles.scanner}>
+            <span className={styles.cornerTL} /><span className={styles.cornerTR} /><span className={styles.cornerBL} /><span className={styles.cornerBR} />
+
+            <div className={styles.canvas}>
+              {selected && (
+                <Suspense fallback={<div className={styles.loading}>Initialising 3D scanner…</div>}>
+                  <BoneViewer node={selected.node} knownNodes={knownNodes} mode={mode} wireframe={wireframe} autoRotate={autoRotate} resetKey={resetKey} telemetry={telemetry}
+                    onPick={(node) => { const hit = bones.find((bone) => bone.node === node); if (hit) select(hit.organ_id); }} />
+                </Suspense>
+              )}
+            </div>
+
+            <svg className={styles.reticle} viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <g className={styles.ring}>
+                <circle cx="250" cy="250" r="215" fill="none" stroke="rgba(212,175,55,.22)" strokeWidth="1" strokeDasharray="8 6 2 6" />
+                <circle cx="250" cy="250" r="198" fill="none" stroke="rgba(212,175,55,.12)" strokeWidth="1" strokeDasharray="3 9" />
+              </g>
+              <g className={styles.ringReverse}>
+                <circle cx="250" cy="250" r="160" fill="none" stroke="rgba(212,175,55,.2)" strokeWidth="1" strokeDasharray="14 18" />
+              </g>
+              <circle cx="250" cy="250" r="118" fill="none" stroke="rgba(212,175,55,.3)" strokeWidth="1" />
+              <circle cx="250" cy="250" r="34" fill="none" stroke="rgba(212,175,55,.4)" strokeWidth="1" strokeDasharray="4 4" />
+              <path d="M250 18v60M250 422v60M18 250h60M422 250h60" stroke="#d4af37" strokeOpacity=".55" strokeWidth="1.2" />
+              <path d="M238 238h6M238 238v6M262 238h-6M262 238v6M238 262h6M238 262v-6M262 262h-6M262 262v-6" stroke="#d4af37" strokeWidth="1.4" />
+              <g fill="#d4af37" fontSize="10" fontFamily="monospace" fontWeight="700" textAnchor="middle">
+                <text x="250" y="12">000°</text><text x="490" y="254">090°</text><text x="250" y="498">180°</text><text x="12" y="254">270°</text>
+              </g>
+            </svg>
+            <div className={styles.scanline} aria-hidden="true" />
+
+            <div className={styles.hudTop}>
+              <span className={styles.status}><i /> Scanner active · target locked</span>
+              {selected && <span className={styles.target}>Anatomy: <b>{selected.label}{selected.side !== 'midline' ? ` (${selected.side})` : ''}</b> <em>[{selected.region.title}]</em></span>}
+            </div>
+
             {selected && (
-              <Suspense fallback={<div className={styles.loading}>Loading 3D atlas…</div>}>
-                <BoneViewer node={selected.node} knownNodes={knownNodes} mode={mode} wireframe={wireframe} autoRotate={autoRotate} resetKey={resetKey}
-                  onPick={(node) => { const hit = bones.find((bone) => bone.node === node); if (hit) select(hit.organ_id); }} />
-              </Suspense>
-            )}
-            {selected && (
-              <div className={styles.hud}>
-                <span className={styles.region}>{selected.region.title}{selected.side !== 'midline' ? ` · ${selected.side}` : ''}</span>
+              <div className={styles.title}>
                 <h2>{selected.label}</h2>
                 <p>{selected.ta2_latin}</p>
               </div>
             )}
-            <div className={styles.toolbar} role="toolbar" aria-label="Viewer controls">
-              <button type="button" onClick={() => step(-1)} aria-label="Previous bone"><ChevronLeft size={16} /></button>
-              <div className={styles.segment} role="group" aria-label="View mode">
-                <button type="button" aria-pressed={mode === 'isolated'} onClick={() => setMode('isolated')}><Box size={14} /> Isolated</button>
-                <button type="button" aria-pressed={mode === 'context'} onClick={() => setMode('context')}><Layers size={14} /> In skeleton</button>
+
+            <div className={styles.hudBottom}>
+              <div className={styles.telemetry}>
+                <span>Ref: <b>{selected?.ta2_latin ?? '—'}</b></span>
+                <span>Azimuth: <b ref={(el) => { telemetry.current.azimuth = el; }}>000°</b> &nbsp; Elevation: <b ref={(el) => { telemetry.current.elevation = el; }}>0°</b></span>
+                <span className={styles.tip}>{mode === 'context' ? 'Click a bone to select · drag to orbit · scroll to zoom' : 'Drag to orbit · scroll to zoom · ↑ ↓ next bone'}</span>
               </div>
-              <button type="button" aria-pressed={wireframe} onClick={() => setWireframe((value) => !value)}><Scan size={14} /> Wireframe</button>
-              <button type="button" aria-pressed={autoRotate} onClick={() => setAutoRotate((value) => !value)}><RotateCw size={14} /> Rotate</button>
-              <button type="button" onClick={() => setResetKey((value) => value + 1)}>Reset view</button>
-              <button type="button" onClick={() => step(1)} aria-label="Next bone"><ChevronRight size={16} /></button>
+              <div className={styles.controls} role="toolbar" aria-label="Scanner controls">
+                <button type="button" className={styles.iconButton} onClick={() => step(-1)} aria-label="Previous bone"><ChevronLeft size={16} /></button>
+                <div className={styles.segment} role="group" aria-label="View mode">
+                  <button type="button" aria-pressed={mode === 'isolated'} onClick={() => setMode('isolated')}><Box size={14} /> Isolated</button>
+                  <button type="button" aria-pressed={mode === 'context'} onClick={() => setMode('context')}><Layers size={14} /> In skeleton</button>
+                </div>
+                <button type="button" aria-pressed={wireframe} onClick={() => setWireframe((value) => !value)}><Scan size={14} /> {wireframe ? 'Wireframe' : 'Solid scan'}</button>
+                <button type="button" aria-pressed={autoRotate} onClick={() => setAutoRotate((value) => !value)}><RotateCw size={14} /> {autoRotate ? 'Rotating' : 'Paused'}</button>
+                <button type="button" onClick={() => setResetKey((value) => value + 1)}><Crosshair size={14} /> Re-centre</button>
+                <button type="button" className={styles.iconButton} onClick={() => step(1)} aria-label="Next bone"><ChevronRight size={16} /></button>
+              </div>
             </div>
-            <span className={styles.tip}>{mode === 'context' ? 'Click any bone to select it · drag to orbit · scroll to zoom' : 'Drag to orbit · scroll to zoom · ↑ ↓ to step through bones'}</span>
           </div>
 
           {selected && (
             <aside className={styles.info} aria-label="Bone details">
+              <span className={styles.infoKicker}>Target data</span>
               <dl>
                 <div><dt>Name</dt><dd>{selected.name_en}</dd></div>
                 <div><dt>Latin (TA2)</dt><dd><em>{selected.ta2_latin}</em></dd></div>
                 <div><dt>Region</dt><dd>{selected.region.title}</dd></div>
                 <div><dt>Side</dt><dd>{selected.side === 'midline' ? 'Midline (unpaired)' : selected.side === 'left' ? 'Left' : 'Right'}</dd></div>
+                <div><dt>Atlas ID</dt><dd><code>{selected.organ_id}</code></dd></div>
               </dl>
               <p className={styles.blurb}>{selected.region.blurb}</p>
               <button type="button" className={styles.primary} onClick={openInWorkspace}>Open in 3D Anatomy workspace <ExternalLink size={14} /></button>
