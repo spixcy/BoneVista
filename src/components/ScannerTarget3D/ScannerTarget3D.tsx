@@ -1,6 +1,7 @@
-import React, { useMemo, useRef, useState, Suspense } from 'react';
+import React, { useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls } from '@react-three/drei';
+import { useInView } from 'framer-motion';
 import * as THREE from 'three';
 import { RotateCw, Layers, Crosshair } from 'lucide-react';
 import styles from './ScannerTarget3D.module.css';
@@ -26,13 +27,14 @@ const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 interface BoneMeshProps {
   boneDef: TargetBoneDef;
   isWireframe: boolean;
-  onRotationChange?: (pitch: number, yaw: number) => void;
+  yawRef: React.RefObject<HTMLSpanElement | null>;
+  pitchRef: React.RefObject<HTMLSpanElement | null>;
 }
 
-const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, onRotationChange }) => {
+const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, yawRef, pitchRef }) => {
   const { scene } = useGLTF('/anatomy/skeletal_male.glb', '/draco/gltf/');
   const groupRef = useRef<THREE.Group>(null);
-  const frameCount = useRef(0);
+  const lastReadout = useRef({ pitch: NaN, yaw: NaN });
 
   const { model, center, scale } = useMemo(() => {
     const cloned = scene.clone(true);
@@ -85,15 +87,21 @@ const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, onRotationCha
     return { model: cloned, center: centerVec, scale: finalScale };
   }, [scene, boneDef, isWireframe]);
 
+  // Free the per-bone materials when the specimen or display mode changes.
+  useEffect(() => () => {
+    model.traverse((obj) => {
+      if (obj instanceof THREE.Mesh && obj.visible) (obj.material as THREE.Material).dispose();
+    });
+  }, [model]);
+
+  // Write the telemetry straight to the DOM so orbiting never re-renders React.
   useFrame((state) => {
-    if (!groupRef.current) return;
-    frameCount.current += 1;
-    if (frameCount.current % 6 === 0 && onRotationChange) {
-      const rot = state.camera.rotation;
-      const pitch = Math.round(THREE.MathUtils.radToDeg(rot.x));
-      const yaw = Math.round(THREE.MathUtils.radToDeg(rot.y));
-      onRotationChange(pitch, yaw);
-    }
+    const rot = state.camera.rotation;
+    const pitch = Math.round(THREE.MathUtils.radToDeg(rot.x));
+    const yaw = Math.round(THREE.MathUtils.radToDeg(rot.y));
+    if (pitch !== lastReadout.current.pitch && pitchRef.current) pitchRef.current.textContent = `${pitch}°`;
+    if (yaw !== lastReadout.current.yaw && yawRef.current) yawRef.current.textContent = `${yaw}°`;
+    lastReadout.current = { pitch, yaw };
   });
 
   return (
@@ -109,10 +117,13 @@ export const ScannerTarget3D: React.FC = () => {
   const [selectedBone, setSelectedBone] = useState<TargetBoneDef>(TARGET_BONES[0]);
   const [isWireframe, setIsWireframe] = useState<boolean>(false);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
-  const [coords, setCoords] = useState<{ pitch: number; yaw: number }>({ pitch: 0, yaw: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const yawRef = useRef<HTMLSpanElement>(null);
+  const pitchRef = useRef<HTMLSpanElement>(null);
+  const visible = useInView(containerRef, { margin: '80px 0px' });
 
   return (
-    <div className={styles.scannerContainer}>
+    <div ref={containerRef} className={styles.scannerContainer}>
       {/* Corner Bracket Accents */}
       <div className={styles.cornerTL} />
       <div className={styles.cornerTR} />
@@ -137,13 +148,13 @@ export const ScannerTarget3D: React.FC = () => {
 
       {/* Interactive 3D Canvas */}
       <div className={styles.canvasWrapper}>
-        <Canvas camera={{ position: [0, 0.2, 3.6], fov: 38 }} dpr={[1, 1.5]} gl={{ alpha: true, antialias: true }}>
+        <Canvas frameloop={visible ? 'always' : 'never'} camera={{ position: [0, 0.2, 3.6], fov: 38 }} dpr={[1, 1.5]} gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}>
           <ambientLight intensity={0.7} />
           {/* Main Key Light */}
           <directionalLight position={[2, 3, 3]} intensity={1.4} color="#ffffff" />
-          {/* Cyan Rim Light */}
+          {/* Gold Rim Light */}
           <directionalLight position={[-3, -2, -2]} intensity={2.4} color="#d4af37" />
-          {/* Violet Depth Light */}
+          {/* Warm Depth Light */}
           <directionalLight position={[2, -3, -2]} intensity={1.6} color="#f1d78a" />
           {/* Top Soft Light */}
           <directionalLight position={[0, 4, 1]} intensity={0.8} color="#fff4d6" />
@@ -152,7 +163,8 @@ export const ScannerTarget3D: React.FC = () => {
             <BoneMesh
               boneDef={selectedBone}
               isWireframe={isWireframe}
-              onRotationChange={(pitch, yaw) => setCoords({ pitch, yaw })}
+              yawRef={yawRef}
+              pitchRef={pitchRef}
             />
           </Suspense>
 
@@ -212,9 +224,9 @@ export const ScannerTarget3D: React.FC = () => {
           </div>
           <div>
             <span>AZIMUTH: </span>
-            <span className={styles.coordsReadout}>{coords.yaw}°</span>
+            <span ref={yawRef} className={styles.coordsReadout}>0°</span>
             <span style={{ marginLeft: 10 }}>ELEVATION: </span>
-            <span className={styles.coordsReadout}>{coords.pitch}°</span>
+            <span ref={pitchRef} className={styles.coordsReadout}>0°</span>
           </div>
           <div>
             <span style={{ color: '#b5ae9f' }}>DRAG TO ORBIT 3D</span>
