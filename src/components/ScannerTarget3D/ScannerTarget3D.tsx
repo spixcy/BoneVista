@@ -4,6 +4,7 @@ import { useGLTF, OrbitControls } from '@react-three/drei';
 import { useInView } from 'framer-motion';
 import * as THREE from 'three';
 import { RotateCw, Layers, Crosshair, Maximize2 } from 'lucide-react';
+import { DragRotateGroup, useDragRotate, type DragRotateState } from '../../hooks/useDragRotate';
 import styles from './ScannerTarget3D.module.css';
 
 interface TargetBoneDef {
@@ -47,11 +48,12 @@ interface BoneMeshProps {
   isWireframe: boolean;
   yawRef: React.RefObject<HTMLSpanElement | null>;
   pitchRef: React.RefObject<HTMLSpanElement | null>;
+  rotation: React.RefObject<DragRotateState>;
+  autoRotate: boolean;
 }
 
-const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, yawRef, pitchRef }) => {
+const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, yawRef, pitchRef, rotation, autoRotate }) => {
   const { scene } = useGLTF('/anatomy/skeletal_male.glb', '/draco/gltf/');
-  const groupRef = useRef<THREE.Group>(null);
   const lastReadout = useRef({ pitch: NaN, yaw: NaN });
 
   const { model, center, scale } = useMemo(() => {
@@ -112,22 +114,25 @@ const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, yawRef, pitch
     });
   }, [model]);
 
-  // Write the telemetry straight to the DOM so orbiting never re-renders React.
-  useFrame((state) => {
-    const rot = state.camera.rotation;
-    const pitch = Math.round(THREE.MathUtils.radToDeg(rot.x));
-    const yaw = Math.round(THREE.MathUtils.radToDeg(rot.y));
+  // Write the telemetry straight to the DOM so rotating never re-renders React.
+  const euler = useMemo(() => new THREE.Euler(0, 0, 0, 'YXZ'), []);
+  const readout = (quaternion: THREE.Quaternion) => {
+    euler.setFromQuaternion(quaternion, 'YXZ');
+    const yaw = Math.round(THREE.MathUtils.radToDeg(euler.y));
+    const pitch = Math.round(THREE.MathUtils.radToDeg(euler.x));
     if (pitch !== lastReadout.current.pitch && pitchRef.current) pitchRef.current.textContent = `${pitch}°`;
     if (yaw !== lastReadout.current.yaw && yawRef.current) yawRef.current.textContent = `${yaw}°`;
     lastReadout.current = { pitch, yaw };
-  });
+  };
 
   return (
-    <group ref={groupRef} scale={scale}>
-      <group position={center.clone().multiplyScalar(-1)}>
-        <primitive object={model} />
+    <DragRotateGroup state={rotation} autoRotate={autoRotate} onFrame={readout}>
+      <group scale={scale}>
+        <group position={center.clone().multiplyScalar(-1)}>
+          <primitive object={model} />
+        </group>
       </group>
-    </group>
+    </DragRotateGroup>
   );
 };
 
@@ -140,6 +145,11 @@ export const ScannerTarget3D: React.FC = () => {
   const yawRef = useRef<HTMLSpanElement>(null);
   const pitchRef = useRef<HTMLSpanElement>(null);
   const visible = useInView(containerRef, { margin: '80px 0px' });
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const rotation = useDragRotate(canvasRef);
+
+  // Each new specimen starts upright, facing the viewer.
+  useEffect(() => { rotation.current.quaternion.identity(); rotation.current.velocity.set(0, 0); }, [selectedBone, rotation]);
 
   return (
     <div ref={containerRef} className={styles.scannerContainer}>
@@ -166,7 +176,7 @@ export const ScannerTarget3D: React.FC = () => {
       <div className={styles.scanline} />
 
       {/* Interactive 3D Canvas */}
-      <div className={styles.canvasWrapper}>
+      <div ref={canvasRef} className={styles.canvasWrapper}>
         <Canvas frameloop={visible ? 'always' : 'never'} camera={{ position: [0, 0.2, 3.6], fov: 38 }} dpr={[1, 1.5]} gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}>
           <ambientLight intensity={0.7} />
           {/* Main Key Light */}
@@ -184,16 +194,18 @@ export const ScannerTarget3D: React.FC = () => {
               isWireframe={isWireframe}
               yawRef={yawRef}
               pitchRef={pitchRef}
+              rotation={rotation}
+              autoRotate={autoRotate}
             />
           </Suspense>
 
+          {/* Dragging rotates the bone itself (see useDragRotate); the controls only handle zoom. */}
           <OrbitControls
+            enableRotate={false}
             enableZoom={true}
             minDistance={2.2}
             maxDistance={5.5}
             enablePan={false}
-            autoRotate={autoRotate}
-            autoRotateSpeed={2.2}
           />
         </Canvas>
       </div>
@@ -248,7 +260,7 @@ export const ScannerTarget3D: React.FC = () => {
             <span ref={pitchRef} className={styles.coordsReadout}>0°</span>
           </div>
           <div>
-            <span style={{ color: '#b5ae9f' }}>DRAG TO ORBIT 3D</span>
+            <span style={{ color: '#b5ae9f' }}>DRAG TO ROTATE 360°</span>
           </div>
         </div>
 
