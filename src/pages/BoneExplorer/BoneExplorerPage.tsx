@@ -221,7 +221,7 @@ const BoneExplorerPage: React.FC = () => {
               <div className={styles.telemetry}>
                 <span>Ref: <b>{selected?.ta2_latin ?? '—'}</b></span>
                 <span>Azimuth: <b ref={(el) => { telemetry.current.azimuth = el; }}>000°</b> &nbsp; Elevation: <b ref={(el) => { telemetry.current.elevation = el; }}>0°</b></span>
-                <span className={styles.tip}>{mode === 'context' ? 'Click a bone to select · drag to orbit · scroll to zoom' : 'Drag to orbit · scroll to zoom · ↑ ↓ next bone'}</span>
+                <span className={styles.tip}>{mode === 'context' ? 'Click a bone to select · drag to rotate 360° · scroll to zoom' : 'Drag to rotate 360° · scroll to zoom · ↑ ↓ next bone'}</span>
               </div>
               <div className={styles.controls} role="toolbar" aria-label="Scanner controls">
                 <button type="button" className={styles.iconButton} onClick={() => step(-1)} aria-label="Previous bone"><ChevronLeft size={16} /></button>
