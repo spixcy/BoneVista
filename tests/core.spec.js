@@ -67,8 +67,8 @@ const availableTestCapabilities = {
 
 test('BoneVista landing page scrolls into the working app and remembers day/night mode', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page).toHaveTitle('BoneVista');
-  await expect(page.getByRole('heading', { name: /THE ANATOMY WORKSPACE FOR BONE/ })).toBeVisible();
+  await expect(page).toHaveTitle('BoneVista — 3D Anatomy Workspace');
+  await expect(page.getByRole('heading', { name: /The human body/ })).toBeVisible();
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 30_000 });
   await openWorkspace(page);
   await expect(page.getByRole('heading', { name: 'Explore human anatomy' })).toBeVisible();
@@ -96,7 +96,7 @@ test('global anatomy search selects the actual C1 atlas mesh', async ({ page }) 
   await page.getByRole('option', { name: /Atlas \(C1\)/ }).click();
   await expect(page.locator('[class*=assetCount]')).toContainText('335', { timeout: 30_000 });
   await expect(page.locator('[class*=selectionBadge]')).toHaveText('1 selected');
-  await expect(page.getByText(/Z-Anatomy/)).toBeVisible();
+  await expect(page.locator('[class*=attribution]')).toContainText('Z-Anatomy');
 });
 
 test('Neuro Explorer loads the licensed whole-body nerves scene and opens brain atlas search results', async ({ page }) => {
