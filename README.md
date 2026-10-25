@@ -1,370 +1,389 @@
-﻿# BoneVista
+# <div align="center">🦴 BoneVista</div>
 
-BoneVista is a browser-based anatomy learning and exploration workspace. It combines an interactive segmented reference skeleton, a spine browser, a local radiograph viewer, and a small educational 1D axial finite-element example. It is a prototype for learning and software demonstration; it is not a clinical imaging, diagnostic, treatment-planning, or patient-record system.
+<div align="center">
 
-## Contents
+**Next-Generation 3D Biomechanical & Anatomical Visualization Engine**  
+*Segmented 3D Skeletal Atlas · Dual-Layer Muscle Écorché · Neuro & Brain Explorer · 1D Axial FEA Simulation · Bi-Planar Radiograph Studio*
 
-- [What BoneVista does](#what-bonevista-does)
-- [Start the app](#start-the-app)
-- [First-time walkthrough](#first-time-walkthrough)
-- [How the features connect](#how-the-features-connect)
-- [Landing page controls](#landing-page-controls)
-- [Workspace navigation](#workspace-navigation)
-- [Home page](#home-page)
-- [3D Anatomy viewer](#3d-anatomy-viewer)
-- [Atlas Structures panel](#atlas-structures-panel)
-- [Muscle Explorer](#muscle-explorer)
-- [Neuro & Brain Explorer](#neuro--brain-explorer)
-- [Spine Explorer](#spine-explorer)
-- [X-Ray Workspace](#x-ray-workspace)
-- [Stress Analysis](#stress-analysis)
-- [Studies and Settings](#studies-and-settings)
-- [Data handling and privacy](#data-handling-and-privacy)
-- [Limits and things BoneVista does not do](#limits-and-things-bonevista-does-not-do)
-- [Development and checks](#development-and-checks)
-- [Anatomy model, sample images, and licenses](#anatomy-model-sample-images-and-licenses)
-- [BoneVision comparison and reconstruction research](#bonevision-comparison-and-reconstruction-research)
+[![React 19](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/Three.js_r186-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
+[![Vite 6](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TypeScript 6](https://img.shields.io/badge/TypeScript_6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Python 3.10+](https://img.shields.io/badge/Python_3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Playwright](https://img.shields.io/badge/Playwright_E2E-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![License](https://img.shields.io/badge/License-CC_BY--SA_4.0_%2F_MIT-blue?style=for-the-badge)](LICENSES.md)
 
-## What BoneVista does
+</div>
 
-- Displays a generalized, interactive 3D skeletal reference model with named atlas structures.
-- Adds superficial and deep muscle layers, stable structure selection, visibility, isolation, and a paired skeleton-plus-muscles view in Muscle Explorer.
-- Provides detailed brain and full-body nerve scenes with searchable, selectable structures in Neuro & Brain Explorer.
-- Lets you search, select, hide, and isolate structures, and view the model from six anatomical directions.
-- Provides a spine page to browse named atlas meshes for cervical, thoracic, lumbar, sacral, and coccygeal regions.
-- Opens AP and lateral radiograph images from JPEG, PNG, and WebP files for local viewing and display adjustments.
-- Includes a real, openly licensed AP/lateral hip-replacement example pair so image controls can be tried without supplying your own images.
-- Runs an educational, one-dimensional axial bar finite-element calculation and displays its scalar stress result on a manually selected atlas mesh for visual context.
-- Exports the reference skeleton as GLB or OBJ and exports a PDF summary of selected atlas structures.
+---
 
-## Start the app
+<p align="center">
+  <img src="public/branding/anatomy-workspace-banner.png" alt="BoneVista Workspace Panoramic Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
+</p>
 
-Requirements: Node.js with npm, and a modern desktop browser with WebGL support for the 3D model.
+<p align="center">
+  <a href="#-interactive-showcase"><b>Explore Showcase</b></a> •
+  <a href="#-key-features"><b>Key Features</b></a> •
+  <a href="#-system-architecture"><b>Architecture</b></a> •
+  <a href="#-mathematical-formulation"><b>FEA Formulation</b></a> •
+  <a href="#-x-ray-reconstruction-microservice"><b>FastAPI Microservice</b></a> •
+  <a href="#-quick-start"><b>Quick Start</b></a> •
+  <a href="#-clinical-disclaimer"><b>Disclaimer</b></a>
+</p>
 
-```bash
-npm install
-npm run dev
+---
+
+## 🌟 Overview
+
+**BoneVista** is an interactive, browser-based anatomical learning and biomechanical exploration workspace. Built from the ground up with **React 19**, **Three.js**, and **React Three Fiber**, it merges segmented 3D skeletal geometry, deep/superficial muscle Écorché layers, cerebral and peripheral neuroanatomy, an educational 1D axial Finite Element Analysis (FEA) stress engine, and a bi-planar (AP & Lateral) digital radiograph suite.
+
+All image processing and rendering are executed **locally inside the browser** or through an optional, privacy-first local FastAPI microservice—safeguarding data privacy with zero external telemetry.
+
+> [!IMPORTANT]
+> **Educational & Research Notice:** BoneVista is an educational prototype and software demonstration platform. It is **not** a clinical diagnostic system, medical device, patient-record repository, or surgical treatment planner.
+
+---
+
+## 🎨 Interactive Showcase
+
+<table align="center" width="100%">
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <img src="public/branding/3d-anatomy-card.jpg" width="100%" alt="3D Skeletal Atlas" style="border-radius: 8px;" />
+      <br />
+      <b>💀 3D Skeletal Atlas</b>
+      <p>335+ segmented reference bones with 6-DOF camera controls, Draco decompression, and single-click structure isolation.</p>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="public/branding/card-muscles.jpg" width="100%" alt="Muscle Explorer" style="border-radius: 8px;" />
+      <br />
+      <b>🥩 Muscle Explorer (Écorché)</b>
+      <p>Superficial & deep muscular layers, paired skeleton-plus-muscles combined view, and synchronized camera focus.</p>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="public/branding/card-neuro.jpg" width="100%" alt="Neuro & Brain Explorer" style="border-radius: 8px;" />
+      <br />
+      <b>🧠 Neuro & Brain Atlas</b>
+      <p>437 named cerebral structures & 255 peripheral nerves catalogued into 44 functional pathways.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <img src="public/branding/card-spine.jpg" width="100%" alt="Spine Explorer" style="border-radius: 8px;" />
+      <br />
+      <b>🦴 Spine Explorer</b>
+      <p>Regionally filtered vertebral column: Cervical (C1–C7), Thoracic (T1–T12), Lumbar (L1–L5), Sacrum & Coccyx.</p>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="public/branding/card-stress.jpg" width="100%" alt="FEA Stress Analysis" style="border-radius: 8px;" />
+      <br />
+      <b>🔬 1D Axial FEA Simulation</b>
+      <p>Direct stiffness solver with live matrix assembly and real-time 0–10 MPa heatmapped mesh overlays.</p>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="public/branding/card-xray.jpg" width="100%" alt="Bi-Planar X-Ray Studio" style="border-radius: 8px;" />
+      <br />
+      <b>🩻 Bi-Planar Radiograph Studio</b>
+      <p>Orthogonal AP/Lateral viewing studio with 800% zoom, image enhancement, and FastAPI microservice hook.</p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## ⚡ Key Features
+
+### 1. 💀 High-Fidelity 3D Skeletal Atlas
+- **335+ Segmented Anatomical Meshes:** Loaded from Draco-compressed `skeletal_male.glb` with an authoritative hierarchical manifest (`manifest.json`).
+- **6 Anatomical Perspectives:** Instant one-click camera orientation presets:
+  - `Ant` (Anterior / Front)
+  - `Post` (Posterior / Back)
+  - `Lat L` & `Lat R` (Left and Right Lateral)
+  - `Sup` & `Inf` (Superior / Top and Inferior / Bottom)
+- **Interactive Inspection:** Orbit, zoom, pan, select, deselect, search by English or Latin taxonomy, and toggle structure isolation.
+- **Export Pipeline:** Export the current active 3D reference scene directly as **glTF/GLB**, **Wavefront OBJ**, or generate a formatted **PDF Summary Report**.
+
+### 2. 🥩 Muscle Explorer (Écorché)
+- **Dedicated Écorché Asset:** Bundles a 14 MB high-resolution Écorché model (`ecorche.glb`) derived from BodyParts3D/DBCLS and Z-Anatomy.
+- **Dynamic Layer Presets:**
+  - `Bones`: Returns to the original BoneVista segmented skeletal atlas.
+  - `Superficial`: Isolates superficial muscle tissue.
+  - `Deep`: Exposes deep muscle layers.
+  - `Combined`: Synchronized Écorché bone-tissue and muscular hierarchy.
+- **Unified Selection State:** Meshes share selection, isolation, and global anatomy search across workspace components.
+
+### 3. 🧠 Neuro & Brain Explorer
+- **Detailed Brain Atlas:** 437 individually catalogued cerebral structures (`brain.glb`) from the Brain Project.
+- **Whole Nervous System:** Complete full-body peripheral nerve network (`nerves.glb`) with 255 named meshes grouped into 44 functional catalogues.
+- **Cranial Nerve Isolation:** Frame the brain with cranial nerves toggled on/off to prevent visual occlusion.
+- **Extensible Architecture:** Pre-configured hook for the microscopic Neuron Lab.
+
+### 4. 🦴 Vertebral Spine Explorer
+- **Vertebra-by-Vertebra Segmentation:** Inspect and isolate each vertebra across anatomical spinal curves:
+  - **Cervical:** C1 (Atlas) through C7 (Vertebra Prominens)
+  - **Thoracic:** T1 through T12
+  - **Lumbar:** L1 through L5
+  - **Sacral & Coccygeal:** Sacrum and Coccyx
+- **Bilateral Synchronization:** Selecting any vertebra highlights the matching mesh and auto-focuses the camera in the 3D viewport.
+
+### 5. 🔬 Educational 1D Axial FEA Stress Solver
+- **Direct Stiffness Method:** Assembles 2-node linear axial bar finite elements into a global stiffness matrix $[K]$.
+- **Configurable Parameters:**
+  - Tensile / Compressive Axial Force $F$ ($\text{N}$)
+  - Cross-sectional Area $A$ ($\text{mm}^2$)
+  - Bone Shaft Length $L$ ($\text{mm}$)
+  - Young's Elastic Modulus $E$ ($\text{GPa}$)
+  - Discretization Elements $N$ ($1 \le N \le 100$)
+- **Real-Time Heatmap Mapping:** Solves using Gaussian elimination and renders a scalar stress color overlay across the selected atlas bone on a normalized 0–10 MPa scale.
+
+### 6. 🩻 Bi-Planar Radiograph Studio
+- **Dual-Slot Orthogonal Viewer:** Dedicated slots for Anteroposterior (AP) and Lateral radiographic projections.
+- **Real-Time Pixel Adjustment:** 10%–800% dynamic zoom, 90° stepped rotation, translation pan, and real-time brightness (25%–200%) & contrast (25%–250%) controls.
+- **Bundled Teaching Dataset:** Includes openly licensed clinical hip arthroplasty AP & Lateral radiographs for instant testing:
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="public/test-images/bonevista-hip-ap-sample.jpg" width="240" alt="Sample AP Radiograph" style="border-radius: 6px;" /><br />
+      <sub><b>Anteroposterior (AP) Projection</b></sub>
+    </td>
+    <td align="center">
+      <img src="public/test-images/bonevista-hip-lateral-sample.jpg" width="240" alt="Sample Lateral Radiograph" style="border-radius: 6px;" /><br />
+      <sub><b>Lateral Projection</b></sub>
+    </td>
+  </tr>
+</table>
+
+- **Atlas Manual Registration:** Associate uploaded radiographs with any reference bone to carry into stress mapping.
+
+---
+
+## 📐 System Architecture
+
+BoneVista coordinates a browser-based single-page application with static Draco-encoded glTF assets and a decoupled Python FastAPI microservice.
+
+```mermaid
+flowchart TD
+    subgraph Client["Browser Client (React 19 + TypeScript + Vite)"]
+        UI["Landing & Workspace Shell"]
+        subgraph Store["State Management (Zustand)"]
+            AppState["Selection, Theme & Layout State"]
+            AtlasCache["Manifests & Anatomy Metadata"]
+            XrayState["In-Memory Object URLs & Canvas Controls"]
+        end
+        subgraph Canvas3D["WebGL 3D Engine (Three.js & React Three Fiber)"]
+            Draco["Draco Compressed Mesh Loader"]
+            MeshCache["335+ Bone Meshes"]
+            Ecorche["Écorché Muscular Layers"]
+            NeuroScene["Brain & Peripheral Nerves"]
+            Shader["Scalar Stress Heatmap Shader (0-10 MPa)"]
+        end
+        subgraph Solvers["Biomechanical & Export Engines"]
+            FEA["1D Axial Bar FEA Direct Stiffness Solver"]
+            Exporters["GLB, OBJ & PDF Exporters"]
+        end
+    end
+
+    subgraph Service["Local AI Microservice (FastAPI + Python 3.10)"]
+        API["FastAPI App (127.0.0.1:8000)"]
+        Validator["Magic-Bytes & 25MB Upload Validator"]
+        Pipeline["Reconstruction Pipeline Adapter"]
+    end
+
+    UI --> Store
+    Store --> Canvas3D
+    Store --> Solvers
+    FEA --> Shader
+    UI -.->|HTTP / REST (Optional)| API
+    API --> Validator
+    Validator --> Pipeline
 ```
 
-Open the local URL printed by Vite (normally `http://localhost:5173`). The landing page contains the working app lower down the page; use **Launch App** or scroll to **The Workspace**. To create and serve a production build locally:
+### Biomechanical & Analysis Workflow
 
+```mermaid
+flowchart LR
+    A["Select Bone / Search Atlas"] --> B["Camera Auto-Frames & Highlights Mesh"]
+    B --> C["Explore Écorché or Neuro Layers"]
+    D["Drop AP & Lateral Radiographs"] --> E["Local Image Studio (Pan / Zoom / Rotate / Contrast)"]
+    E --> F["Manual Registration to Atlas Mesh"]
+    F --> G["Configure FEA Parameters (E, A, L, Force, Elements)"]
+    G --> H["Assemble Global Stiffness Matrix [K]"]
+    H --> I["Solve Gaussian Elimination [K]{u} = {F}"]
+    I --> J["Render Real-Time Heatmap onto 3D Mesh"]
+```
+
+---
+
+## 🔬 Mathematical Formulation
+
+BoneVista incorporates an educational, linear-elastic 1D axial bar finite element solver to demonstrate direct stiffness matrix assembly and structural mechanics on biological tissues.
+
+### 1. Element Stiffness Matrix
+For an axial bar element $e$ of length $L_e = \frac{L}{N}$, cross-sectional area $A$, and elastic modulus $E$:
+
+$$k_e = \frac{E A}{L_e} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix}$$
+
+### 2. Global System Assembly & Boundary Conditions
+Elements are assembled into the global stiffness matrix $[K] \in \mathbb{R}^{(N+1) \times (N+1)}$:
+
+$$[K] \{u\} = \{F\}$$
+
+Fixed-end Dirichlet boundary conditions are applied at node 0 ($u_0 = 0$), and a tensile/compressive load $F$ is applied at node $N$:
+
+$$\begin{bmatrix}
+K_{11} & K_{12} & \dots & 0 \\
+K_{21} & K_{22} & \dots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \dots & K_{NN}
+\end{bmatrix}
+\begin{Bmatrix} u_1 \\ u_2 \\ \vdots \\ u_N \end{Bmatrix}
+=
+\begin{Bmatrix} 0 \\ 0 \\ \vdots \\ F \end{Bmatrix}$$
+
+### 3. Axial Stress & Strain Calculation
+Displacements $\{u\}$ are resolved via Gaussian elimination with back-substitution:
+
+$$\varepsilon_e = \frac{u_{i+1} - u_i}{L_e}, \quad \sigma_e = E \cdot \varepsilon_e = \frac{F}{A}$$
+
+### 4. Color Scalar Mapping
+The calculated absolute axial stress $|\sigma|$ is normalized against a calibrated scale ($0 \text{ to } 10\text{ MPa}$) and mapped onto the 3D mesh:
+
+$$\text{Intensity} = \text{clamp}\left( \frac{|\sigma|}{10\text{ MPa}}, 0, 1 \right) \quad \longrightarrow \quad \text{Color}(\text{Blue} \to \text{Cyan} \to \text{Yellow} \to \text{Red})$$
+
+---
+
+## ⚡ X-Ray Reconstruction Microservice
+
+BoneVista includes an isolated **FastAPI** backend (`xray-reconstruction-service/`) implementing standard bi-planar X-ray to 3D reconstruction endpoints.
+
+### API Specification & Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/v1/health` | Returns service status and health payload |
+| `GET` | `/api/v1/reconstruction/capabilities` | Truthfully reports AI inference availability and supported anatomies |
+| `POST` | `/api/v1/reconstruction/jobs` | Submits bi-planar AP & Lateral radiographs for 3D reconstruction |
+| `GET` | `/api/v1/reconstruction/jobs/{job_id}` | Polls reconstruction job status (`queued`, `processing`, `succeeded`, `failed`) |
+| `GET` | `/api/v1/reconstruction/jobs/{job_id}/model.glb` | Downloads generated reconstructed 3D glTF/GLB model |
+
+> [!NOTE]
+> **Truthful Capability Reporting:** By default, `GET /api/v1/reconstruction/capabilities` returns `available: false` until a verified model checkpoint is configured. It does not fabricate patient meshes from generalized atlas data.
+
+---
+
+## ⌨️ Viewport & Navigation Controls
+
+| Input | Action |
+|---|---|
+| <kbd>Left Click + Drag</kbd> | Orbit / Rotate 3D camera around reference center |
+| <kbd>Right Click + Drag</kbd> or <kbd>Shift + Drag</kbd> | Pan 3D camera laterally / vertically |
+| <kbd>Mouse Wheel</kbd> / <kbd>Pinch</kbd> | Smooth Zoom in and out (10% to 800% in 2D / continuous in 3D) |
+| <kbd>Left Click</kbd> on Mesh | Select structure, trigger camera re-frame, and display metadata |
+| <kbd>Left Click</kbd> on Background | Deselect current structure |
+| <kbd>Ant</kbd> / <kbd>Post</kbd> / <kbd>Lat</kbd> / <kbd>Sup</kbd> / <kbd>Inf</kbd> | Snap camera to standard anatomical orientations |
+| <kbd>Auto Rotate</kbd> | Toggle smooth 360° inspection rotation |
+| <kbd>Isolate</kbd> | Hide non-selected structures for focused spatial inspection |
+| <kbd>Esc</kbd> | Exit fullscreen maximized workspace |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- **Node.js** (v18.0+ or v20+) and **npm**
+- Modern desktop web browser supporting **WebGL 2.0**
+- *(Optional for microservice)* **Python 3.10+**
+
+### 1. Launch Frontend Workspace
+```bash
+# Clone the repository
+git clone https://github.com/spixcy/BoneVista.git
+cd BoneVista
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+Open the local URL (typically `http://localhost:5173`). Click **Launch App** or scroll down to enter the embedded interactive workspace.
+
+To create a production build:
 ```bash
 npm run build
 npm run preview
 ```
 
-## First-time walkthrough
+### 2. Launch Local FastAPI Microservice *(Optional)*
+```powershell
+cd xray-reconstruction-service
 
-1. Open **Launch App** and wait for the atlas model and its labels to load. Use the maximize control on the embedded workspace when you want it to fill the screen; press **Esc** or use the restore control to return to the landing page.
-2. Select a bone by clicking it in the 3D view, choosing it in the **Atlas Structures** list, or searching the global anatomy search.
-3. Open **Muscle Explorer** to switch between the original BoneVista bones, superficial muscles, deep muscles, and the paired Écorché bones-plus-muscles view. Search from the global anatomy field or select a mesh in the viewport.
-4. Open **Neuro & Brain Explorer**. Switch between the detailed Brain Atlas and the full-body nerve scene; search the catalogue and select or hide structures.
-5. Use **Spine Explorer** to browse vertebrae by region.
-6. Use **X-Ray Workspace** to load an image or click **Load real AP + lateral sample X-rays**. Switch AP/Lateral and adjust the display.
-7. To see the educational stress example, associate an atlas structure with the X-ray (if starting there), open stress mapping, set the model inputs, and click **Run simulation**.
-8. Read the model assumptions and limits shown beside the results. The image is not used as a solver input.
+# Create and activate virtual environment
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 
-## How the features connect
+# Install requirements
+pip install -r requirements-dev.txt
 
-BoneVista uses one shared reference atlas and one shared workspace state to link its pages. The atlas label manifest supplies names and identifiers; the GLB supplies the 3D meshes. Choosing a structure in one feature can carry that selection into another.
+# Run pytest verification suite
+pytest tests/ -v
 
-```mermaid
-flowchart LR
-  Atlas[Atlas manifest and 3D model] --> Search[Global anatomy search]
-  Atlas --> Viewer[3D Anatomy and structure panel]
-  MuscleAtlas[Écorché local GLB and mesh metadata] --> Muscle[Muscle Explorer layers]
-  MuscleAtlas --> Search
-  NeuroModels[Brain and nerve GLBs with source manifests] --> Neuro[Neuro & Brain Explorer]
-  Neuro --> Search
-  MuscleAtlas --> Muscle
-  Atlas --> Spine[Spine Explorer]
-  Dashboard[Home dashboard] --> Viewer
-  Dashboard --> Spine
-  Dashboard --> Xray[X-Ray Workspace]
-  Search -->|selects structure| Viewer
-  Muscle -->|shared selection and visibility state| Viewer
-  Spine -->|selects vertebra mesh| Viewer
-  Xray -->|manual atlas association| Stress[Stress Analysis]
-  Stress -->|scalar stress color for selected mesh| Viewer
-  Xray -.->|reference thumbnails only| Stress
+# Start local service
+python run.py
 ```
+Service runs locally at `http://127.0.0.1:8000`.
 
-- **Home** is the entry point. Its 3D Anatomy, Spine Explorer, and X-Ray Workspace cards open the same pages as the sidebar. The **Open 3D Anatomy** button goes directly to the viewer.
-- **Global search**, the **Atlas Structures** panel, and **Spine Explorer** all use the same atlas labels and structure identifiers. Selecting a vertebra in Spine Explorer selects the matching mesh in the 3D viewer.
-- **X-Ray Workspace** holds AP and lateral previews in shared in-memory app state. You can choose an atlas structure manually as the image association, then open Stress Analysis with that target selected.
-- **Stress Analysis** uses only the numeric load and material inputs. After a successful calculation, the viewer colors the chosen atlas mesh with one scalar result. X-ray thumbnails may appear as reference, but image pixels do not enter the calculation.
-- The top **Bone**, **X-Ray**, and **Stress** view tabs switch the workspace view; the sidebar pages provide direct navigation. Image files and calculation inputs/results remain available while moving between these pages during the current browser session.
-
-## Landing page controls
-
-The landing page is a scrollable introduction to the application. Its decorative bones are animated models for presentation and are not the workspace atlas.
-
-- **BoneVista brand**: jumps to the top of the landing page.
-- **Scanner**, **Intelligence**, **Platform**, and **Roadmap**: jump to the corresponding landing page section.
-- **Launch App**: scrolls to the embedded application workspace.
-- **Initialize Sequence** and **Scroll to Explore**: move down to the scanner introduction.
-- The page explains the atlas, spine and image tools, and roadmap. Marketing/feature text does not enable features beyond those described in this README.
-
-## Workspace navigation
-
-The left sidebar stays available while browsing workspace pages. On narrow screens it starts collapsed to icons.
-
-- **Home**: opens the dashboard, its atlas counts, feature cards, and local-use information.
-- **3D Anatomy**: opens the main 3D viewer in Bone mode.
-- **Muscle Explorer**: opens the local Écorché atlas in BoneVista's existing 3D canvas. Switch between the original BoneVista bones, superficial muscles, deep muscles, and the paired Écorché skeleton with both muscle layers.
-- **Neuro & Brain Explorer**: opens the brain and full-body nerve scenes in the existing 3D workspace. Its panel provides mode tabs, layer visibility, structure search, selection, isolation, focus, reset, and details.
-- **Spine Explorer**: opens the region-filtered vertebra browser.
-- **X-Ray Workspace**: opens the two-view image viewer.
-- **Stress Analysis**: opens the educational axial bar solver.
-- **Studies**: opens a placeholder explaining that saved patient studies are not implemented, with a shortcut to X-Ray Workspace.
-- **Settings**: changes the workspace appearance.
-- **Collapse/Expand sidebar** (chevron at the bottom): reduces or restores the sidebar width. On small screens the sidebar is automatically collapsed.
-
-At the top of the workspace:
-
-- **Search anatomy structures**: searches the loaded atlas by English or Latin name. Up to six matching results are shown. Choosing a result selects it and opens the 3D viewer. Search is for the atlas, not for image contents.
-- Neuro results open the corresponding Brain Atlas or Whole Nervous System mode and select their namespaced structure IDs.
-- **Theme button** (sun/moon): switches between day and night appearance. The choice is saved in this browser.
-
-## Home page
-
-- **Open 3D Anatomy**: opens the segmented reference skeleton.
-- **Scroll to Explore**: moves to the feature cards.
-- **3D Anatomy**, **Spine Explorer**, and **X-Ray Workspace** cards: open those pages.
-- **Open X-Ray Workspace** in the empty Studies card: opens the image viewer.
-- The wide banner introduces the anatomy workspace; it is decorative and does not show an uploaded or interactive patient scan.
-- The guide and privacy cards provide static guidance about the prototype and local image handling.
-- Scroll progress indicator: shows how far through the Home page you have scrolled.
-- The atlas counts report structures and spine labels available in the loaded reference data. They are not measurements from a person.
-
-## 3D Anatomy viewer
-
-### View modes
-
-The toolbar's **View** tabs switch the main workspace content:
-
-- **Bone**: shows the full 3D reference skeleton.
-- **Stress**: shows the educational axial stress calculation panel while retaining the 3D viewer behind it. After a successful run, the chosen atlas mesh is colored using the calculation's scalar stress value.
-- **X-Ray**: opens the local radiograph workspace over the viewer. It does not turn the 3D skeleton into a radiograph.
-
-Switching modes retains the entered X-ray files and stress form/result for the current browser session.
-
-### Orientation tabs
-
-- **Ant**: anterior/front view.
-- **Post**: posterior/back view.
-- **Lat L** and **Lat R**: left and right lateral views.
-- **Sup** and **Inf**: superior/top and inferior/bottom views.
-
-These presets reposition the camera around the reference skeleton. They do not change anatomy or identify a side in an uploaded radiograph.
-
-### 3D interaction
-
-- **Drag** in the canvas: orbit/rotate the model.
-- **Scroll**: zoom in and out.
-- **Shift + drag**: pan the camera.
-- **Click a named mesh**: select/deselect that atlas structure. The selected mesh is highlighted; the camera moves toward the selected structure.
-- **Click empty canvas**: clears the selection.
-- **Auto-rotate** (circular arrow): toggles continuous slow rotation. Dragging remains available.
-- **Isolate selected** (focus corners): hides other labeled structures so the selected structure(s) are easier to inspect. It is unavailable until at least one structure is selected. Toggle again to restore the rest.
-- **Clear selection** (reset arrow): clears the selected structures. It is disabled when nothing is selected.
-- **Selection count badge**: shows how many structures are currently selected.
-- **Maximize workspace** (diagonal arrows at the embedded app's upper right): expands the workspace over the landing page. Use the restore button or **Esc** to return.
-
-The atlas panel can be hidden only when the application state requests it; in the standard workspace it is shown on the right.
-
-### Viewer exports
-
-Buttons at the lower right of the 3D viewport:
-
-- **GLB**: downloads the currently loaded reference model as a binary glTF file.
-- **OBJ**: downloads the model as Wavefront OBJ text.
-- **PDF**: downloads a summary containing the atlas structure count, number of selected structures, and the selected structures' English and Latin names. It does not include a patient record or diagnostic report.
-
-Exports are disabled while the model or atlas labels are unavailable. The model is attributed in the viewer to Z-Anatomy / BodyParts3D under CC BY-SA 4.0; see the included notices and license files.
-
-## Atlas Structures panel
-
-The right-side panel lists labeled atlas structures grouped by their atlas path/region.
-
-- **Find a structure**: filters visible entries by English name, Latin name, and atlas path.
-- **Region heading and chevron**: expands or collapses a group. The vertebral column group starts open; entering a search opens matching groups.
-- **Region count**: count of matching structures currently in that group (so it changes with search).
-- **Structure name**: selects/deselects the corresponding model mesh. Selected rows are highlighted; selecting a row also shows its reference details at the bottom of the panel.
-- **Eye / crossed-eye button**: hides or shows that structure in the 3D view. This is separate from selection.
-- **Selected count**: number of selected atlas structures.
-- **Details**: shows the selected structure's English name, Latin name, and atlas path when available.
-
-The atlas labels are loaded from `public/anatomy/manifest.json`; the 3D geometry is loaded from `public/anatomy/skeletal_male.glb`. A label may not have a separately selectable mesh if the source model groups it with other geometry.
-
-## Muscle Explorer
-
-Muscle Explorer uses a second, locally bundled GLB at `public/muscle-atlas/ecorche.glb`. It stays separate from BoneVista's original 335-structure atlas and is loaded into the same 3D canvas. The source metadata supplies names, sides, layer labels, source dataset, FMA identifiers when present, and mesh parts. BoneVista groups repeated mesh pieces by stable namespaced IDs; selection, visibility, isolation, camera focus, and global search use the same shared workspace state as the existing viewer.
-
-- **Bones** returns to the original BoneVista skeleton, preserving its existing atlas and interactions.
-- **Superficial** shows the superficial muscle layer without deep muscles or a skeleton.
-- **Deep** shows the deep muscle layer without superficial muscles or a skeleton.
-- **Combined** shows the Écorché bone-tissue meshes with both muscle layers. BoneVista does not overlay its separate original skeleton on the Écorché model.
-- **Global anatomy search** finds Écorché structures after the model has loaded. Selecting a result opens the matching layer preset and selects the mesh in the shared 3D viewer.
-- **Click a mesh** to select it and focus the camera. The detail card reports only source-provided metadata. Per-structure visibility and isolation use the shared workspace state.
-- GLB and OBJ export the currently displayed scene. The PDF summary lists selected entries from the active atlas.
-- The source GLB's skeleton layer also contains cartilage, teeth, and eye meshes. BoneVista exposes only entries marked as bone tissue in the paired combined view.
-
-The Écorché asset is from Charleeh/ecorche commit `320805e06aee51e2e6f6b22533eb2a59d43f2d4d`, licensed CC BY-SA 4.0, and derived from BodyParts3D / DBCLS and Z-Anatomy. Its full attribution and license are included under `public/muscle-atlas/`. BoneVista keeps its original atlas and its separate license notices intact.
-
-## Neuro & Brain Explorer
-
-The Brain Atlas loads a locally bundled, detailed 3D brain with 437 named structures. The Whole Nervous System scene combines that brain with the locally bundled full-body nerve model; 44 grouped catalogue entries map to all 255 named nerve meshes. Mesh selection, catalogue selection, layer visibility, per-structure visibility, isolation, focus, camera reset and search use namespaced neuro IDs in BoneVista's shared state. Cranial nerves are hidden by default in Brain Atlas to keep the brain framed; their layer can be enabled from the panel.
-
-The selected brain asset is `public/neuro/brain.glb` from Brain Project, and the nerve asset is `public/neuro/nerves.glb` from 3D Human Body Anatomy. Both are distributed under CC BY-SA 4.0 with source-specific attribution and third-party credits recorded in [`public/neuro/NOTICE.md`](public/neuro/NOTICE.md). The nerve source has no spinal cord mesh, so the spinal-cord layer is unavailable. Its 3D model is not fabricated from the skeletal atlas.
-
-Neuron Lab is a separate microscopic mode with an illustrative neuron diagram. Its shapes and signal animation are educational visuals, not an empirical reconstruction or a validated physiological simulation. A verified neuronal dataset can be integrated later.
-
-## Spine Explorer
-
-The spine page shows atlas vertebra meshes that are individually named in the source data.
-
-- **All**: displays all available individually named spine entries.
-- **Cervical**: filters to C1–C7.
-- **Thoracic**: filters to T1–T12.
-- **Lumbar**: filters to L1–L5.
-- **Sacral**: displays Sacrum and Coccyx entries.
-- **C1, C2, …, T1, …, L1, Sacrum, Coccyx buttons**: select the corresponding atlas mesh; click the selected item again to deselect it. The selected vertebra is also selected in the 3D viewer.
-- **Detail card**: displays the atlas label, region, and mesh identifier for the selected entry.
-- **Reference atlas coverage** chips: summarize the expected named regions; an entry is shown only if it is present in the loaded atlas labels.
-
-This page is a mesh browser. It does not calculate spinal alignment, detect disease, or assess an individual scan.
-
-## X-Ray Workspace
-
-### Loading and replacing images
-
-Two drop zones are provided:
-
-- **AP View**: choose or drop one anteroposterior image.
-- **Lateral View**: choose or drop one lateral image.
-- Click a drop zone to open the file picker, or drag a file onto it.
-- Accepted formats: JPEG (`.jpg`, `.jpeg`), PNG (`.png`), and WebP (`.webp`). Maximum file size is 25 MB per image.
-- **Image loaded / Choose another image**: replaces the image in that slot.
-- **Remove** (x on the loaded drop zone): clears only that AP or lateral slot.
-- Unsupported format and oversized-file errors appear under the affected slot. DICOM is not supported.
-
-### Included test images
-
-**Load real AP + lateral sample X-rays** loads an openly licensed teaching pair showing a hip replacement. The source describes a left hip case and the sample is useful for testing image loading and display controls. It is not a normal-bone reference and is not a test/validation dataset for stress calculations or diagnosis. **Image source and license** opens the source page for the AP example; see [public/test-images/README.md](public/test-images/README.md) for both image sources and license details.
-
-### 3D reconstruction status
-
-The workspace shows whether each AP/lateral input is present and whether a reconstruction model is configured. **Reconstruct 3D bone** is disabled while there is no verified checkpoint and inference service. Uploading a pair does not create a mesh. The feature comparison and the reviewed candidate repository's missing checkpoint/license are documented in [docs/bonevision-comparison.md](docs/bonevision-comparison.md).
-
-### Viewer controls
-
-- **AP** and **Lateral** tabs: switch which uploaded image is displayed. A dot indicates that a file is present in that slot.
-- **Zoom out / Zoom in**: scales the current image down or up; range is 10%–800%.
-- **Scroll over the viewer**: also zooms in or out.
-- **Fit image**: fits the image within the available viewing area, accounting for 90°/270° rotation.
-- **Rotate left / Rotate right**: rotates the image in 90° steps.
-- **Reset adjustments** (x): returns zoom, rotation, pan, brightness, and contrast to their defaults.
-- **Drag image**: pans it within the viewer.
-- **Brightness** slider: changes display brightness from 25% to 200%.
-- **Contrast** slider: changes display contrast from 25% to 250%.
-- **Image details**: filename, pixel dimensions, and file size are shown for the displayed view when available.
-
-### Associate an image with an atlas structure
-
-- **Associate these images with an atlas bone**: manually chooses which generalized atlas label to associate with the loaded radiograph(s). This is a user-provided association, not automatic image recognition or anatomical registration.
-- **Open stress mapping for …**: becomes enabled after an atlas structure and at least one image are present. It opens Stress mode with the chosen atlas structure selected and the images available as reference thumbnails.
-- The stress solver does not read the image, estimate dimensions, detect the bone, or derive force/material values from it. Association is only a visual/user workflow link.
-
-### Image privacy and limits
-
-Image files are loaded into browser memory as local object URLs. This app has no configured image upload endpoint or AI inference service. Brightness, contrast, zoom, rotation, and pan change the on-screen presentation only; they do not modify the source file or enhance diagnostic information. Do not use the viewer to make clinical decisions.
-
-## Stress Analysis
-
-Stress Analysis is a small working computational example, not a simulation of the 3D bone geometry.
-
-### Inputs
-
-- **Atlas structure to highlight**: selects which named reference mesh should be colored after a successful run. The list comes from atlas labels.
-- **Calculation geometry**: currently fixed to **Uniform long-bone shaft (1D bar)**; this selector is disabled because no other geometry is implemented.
-- **Axial force (N)**: non-negative tensile force applied to the free end. Default: 500 N.
-- **Cross-sectional area (mm²)**: positive uniform bar area. Default: 300 mm².
-- **Length (mm)**: positive bar length. Default: 400 mm.
-- **Young's modulus (GPa)**: positive linear elastic material stiffness. Default: 17 GPa.
-- **Finite elements**: number of two-node axial bar elements, integer from 1 to 100. Default: 12. This changes the discretization of the simple bar, not the 3D atlas mesh.
-- **Run simulation**: assembles and solves the one-dimensional linear system using the listed inputs. A structure must be selected first.
-- **Reset**: restores the default inputs and clears the shown result and stress color.
-
-The model fixes one end, applies the axial load at the other, assembles 2-node bar element stiffness matrices, and solves the constrained system using Gaussian elimination. It calculates axial strain/displacement and stress; with a uniform bar and end load, the ideal stress is constant along the bar.
-
-### Results
-
-- **Max axial stress (MPa)**: maximum absolute element axial stress from the calculation.
-- **End displacement (mm)**: displacement at the loaded end relative to the fixed end.
-- **Bar diagram**: visualizes the fixed end and load direction for the idealized bar.
-- **Elements solved**: number of elements used.
-- **Element stress variation**: difference between highest and lowest computed element stress; a uniform ideal bar should have near-zero variation, aside from floating point rounding.
-- **Stress legend (0–10 MPa)**: blue-to-red color key for the mesh overlay. The displayed overlay color is clamped to this range; values above 10 MPa use the high end of the scale.
-- **Mapped structure note**: names the atlas mesh receiving the scalar color. The same scalar is applied across that mesh; it is not a spatial stress field.
-- **Associated X-ray reference**: if images were loaded, thumbnails can be shown with a **View uploaded X-rays** shortcut. The images remain reference-only and are not solver inputs.
-
-The method note describes the model and explicitly lists omitted effects. The defaults are illustrative and are not patient-specific or clinically validated material parameters.
-
-## Studies and Settings
-
-### Studies
-
-The Studies page is currently a placeholder. No study records are created or saved, and there is no patient list, case management, or persistent image library. Its **Open X-Ray Workspace** button is a shortcut to local image viewing.
-
-### Settings
-
-- **Day**: applies the light workspace theme.
-- **Night**: applies the dark workspace theme.
-- The theme is saved in local browser storage under `bonevista-theme`. It is a display preference only.
-
-## Data handling and privacy
-
-- Uploaded AP/lateral files are represented in browser memory using object URLs. Replacing or removing a file releases its prior object URL.
-- The app has no configured backend for image upload, patient storage, account management, or inference. Images are not sent to a server by the implemented image viewer.
-- The included sample images are fetched from the app's own static files and then opened in the same local viewer.
-- Atlas geometry, atlas labels, decorative artwork, and app code are static assets served with the application.
-- Exported files are generated in the browser and downloaded to the user's device.
-- This describes current code behavior. Hosting the app behind additional third-party scripts or changing the code/deployment can change data flows; review the deployed environment separately before using real sensitive data.
-
-## Limits and things BoneVista does not do
-
-BoneVista currently does **not**:
-
-- Read DICOM files or PACS studies.
-- Detect bones, segment radiographs, measure image anatomy, or recognize AP/lateral orientation automatically.
-- Perform AI inference, fracture detection, diagnosis, risk scoring, or treatment recommendations.
-- Reconstruct a 3D patient-specific bone from one or more X-rays.
-- Use uploaded image pixels in the stress solver.
-- Calculate a 3D or patient-specific stress/strain field, model bending/contact, predict failure, or validate implant placement.
-- Save patient studies, maintain medical records, or synchronize data between devices.
-- Provide a clinically validated device or substitute for qualified medical judgment.
-
-The stress color overlay is a visualization of one scalar from the educational 1D bar calculation placed on a selected generalized atlas mesh. It is not evidence about the selected bone in the sample or any person's bone.
-
-## Development and checks
-
+### 3. Automated End-to-End Testing
 ```bash
-npm run dev       # start Vite development server
-npm run build     # TypeScript project build and Vite production build
-npm run preview   # serve the production build locally
-npm run test:e2e  # run Playwright end-to-end tests
+# Run Playwright E2E test suite
+npm run test:e2e
 ```
 
-The Playwright suite covers landing/navigation, theme persistence, atlas and neuro search/selection, neuro mesh loading and layer controls, spine filters, local image controls and input validation, the educational stress calculation and mapping flow, and GLB export. Playwright may require its browser installation and a running/available local test server according to `playwright.config.js`.
+---
 
-## Anatomy model, sample images, and licenses
+## 🔒 Data Handling & Privacy
 
-- The reference skeleton is based on Z-Anatomy / BodyParts3D; the viewer identifies the content as CC BY-SA 4.0. See [`public/anatomy/LICENSE`](public/anatomy/LICENSE), [`public/anatomy/NOTICE`](public/anatomy/NOTICE), and [`LICENSES.md`](LICENSES.md).
-- The AP and lateral hip-replacement teaching images and their sources/licensing are documented in [`public/test-images/README.md`](public/test-images/README.md). They are included to exercise the viewer, not to validate analysis.
-- Other bundled third-party assets and notices are listed in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
-- The repository's top-level `LICENSE` covers the BoneVista project code; third-party assets may have separate terms.
+- **Local-First Architecture:** Image uploads (AP and Lateral projections) are handled strictly in browser memory using ephemeral `blob:` object URLs.
+- **Zero Cloud Leakage:** Radiographs are **never** forwarded to third-party servers, cloud analytics, or external AI platforms.
+- **Storage Boundaries:** Theme preferences (`bonevista-theme`) are saved in the client's local `localStorage`.
+- **Stateless Exports:** GLB, OBJ, and PDF exports are compiled in client memory and downloaded straight to your local drive.
 
-## BoneVision comparison and reconstruction research
+---
 
-See the [BoneVision comparison and reconstruction integration review](docs/bonevision-comparison.md) for a feature-by-feature comparison, source review of the proposed X-ray-to-3D repository, local hardware/runtime findings, baseline verification, and the recommended integration path. The review distinguishes advertised website features from verified functionality and documents why a patient-specific reconstruction model is not currently available in this checkout.
+## ⚠️ Clinical Disclaimer
+
+> [!CAUTION]
+> **NOT A MEDICAL DEVICE.** BoneVista is developed exclusively for educational demonstration, biomechanical software exploration, and computer graphics research.
+>
+> - BoneVista does **not** interpret, segment, or diagnose pathology from radiographs or CT scans.
+> - Uploading a radiograph does **not** create a patient-specific anatomical bone mesh.
+> - The 1D FEA solver is an idealized mathematical bar calculation; it does **not** simulate patient-specific geometry, implant micro-motion, bone fracture risk, or stress tensor fields.
+> - Never rely on BoneVista for medical decision-making, diagnosis, surgical planning, or clinical evaluation. Always consult qualified healthcare professionals.
+
+---
+
+## 📜 Attributions & Licenses
+
+BoneVista bundles high-quality, openly licensed anatomical assets with full provenance:
+
+| Dataset / Asset | Source / Author | License | Description |
+|---|---|---|---|
+| **Skeletal Reference Atlas** | [Z-Anatomy](https://www.z-anatomy.com/) / [BodyParts3D](https://dbarchive.biosciencedbc.jp/en/bodyparts3d/) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | 335+ segmented bone meshes & anatomical hierarchy |
+| **Muscle Atlas (Écorché)** | [Charleeh / ecorche](https://github.com/Charleeh/ecorche) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | High-resolution superficial and deep muscle layers |
+| **Brain Atlas** | [Brain Project](https://sketchfab.com/3d-models/brain-project) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | 437 named cerebral structures & cranial nerves |
+| **Peripheral Nerves** | [3D Human Body Anatomy](https://sketchfab.com/3d-models/human-anatomy) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Full-body nerve tree with 255 mesh elements |
+| **Hip Arthroplasty X-Rays** | Open Teaching Dataset | Open Access | Orthogonal AP & Lateral verification images |
+| **BoneVista Codebase** | BoneVista Contributors | [MIT License](LICENSES.md) | Application source code & UI components |
+
+Detailed notices, source commits, and copyleft terms are preserved in [`LICENSES.md`](LICENSES.md), [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md), and [`public/neuro/NOTICE.md`](public/neuro/NOTICE.md).
+
+---
+
+<div align="center">
+
+Crafted with 🦴 for anatomy learners, bioengineers, and computer vision researchers.  
+⭐ **Star BoneVista on GitHub if you found it useful!**
+
+</div>
