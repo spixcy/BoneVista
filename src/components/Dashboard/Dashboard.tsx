@@ -142,20 +142,13 @@ const Dashboard: React.FC = () => {
         <div className={styles.introCopy}>
           <span className={styles.eyebrow}>YOUR ANATOMY WORKSPACE</span>
           <h1>Explore human anatomy</h1>
-          <p>Interactive 3D skeletal reference atlas, deep muscular layers, neural pathways, and local radiograph inspection in one cohesive workspace.</p>
           <div className={styles.introMeta}>
-            <span><Layers3 size={15}/>{anatomyStructures.length || '335'} named atlas structures</span>
-            <span><Sparkles size={15}/>26 isolated spine vertebrae</span>
+            <span><Layers3 size={14}/>{anatomyStructures.length || '335'} named atlas structures</span>
+            <span><Sparkles size={14}/>26 isolated spine vertebrae</span>
           </div>
           <div className={styles.introButtons}>
             <button className={styles.primaryButton} onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}>
-              Open 3D Anatomy <ArrowRight size={16}/>
-            </button>
-            <button
-              className={styles.scrollCue}
-              onClick={() => exploreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            >
-              EXPLORE ALL FEATURES <ArrowDown size={13}/>
+              Open 3D Anatomy <ArrowRight size={14}/>
             </button>
           </div>
         </div>

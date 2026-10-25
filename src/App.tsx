@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown, ArrowRight, Bone, Maximize2, Minimize2, Moon, Search, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -19,6 +19,7 @@ const XrayWorkspace  = lazy(() => import('./components/XrayWorkspace/XrayWorkspa
 const StressAnalysis = lazy(() => import('./components/StressAnalysis/StressAnalysis'));
 const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
 const LandingBone    = lazy(() => import('./components/LandingBone'));
+const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
 
 const boneField = {
   hero: [
@@ -142,7 +143,11 @@ const App: React.FC = () => {
             <p className={landing.bodyCopy}>Start with the full skeletal reference, select named structures, and focus the view to study individual anatomy. BoneVista is an educational reference workspace, not a patient-specific diagnostic system.</p>
             <div className={landing.scanLabel}>335 named reference structures · interactive 3D</div>
           </div>
-          <div className={landing.scannerFigure}><img src="/branding/scanner-target.jpg" alt="BoneVista anatomical targeting reference"/></div>
+          <div className={landing.scannerFigure}>
+            <Suspense fallback={<div style={{ minHeight: 480, display: 'grid', placeItems: 'center', color: '#12dcc4', font: '600 12px monospace' }}>INITIALIZING 3D SCANNER...</div>}>
+              <ScannerTarget3D />
+            </Suspense>
+          </div>
         </section>
 
         <section className={landing.intelligence} id="intelligence">

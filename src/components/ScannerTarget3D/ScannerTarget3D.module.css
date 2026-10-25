@@ -1,0 +1,255 @@
+.scannerContainer {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(18, 220, 196, 0.35);
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(18, 220, 196, 0.08) 0%, rgba(15, 23, 42, 0.85) 60%, rgba(8, 12, 22, 0.98) 100%);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 0 35px rgba(18, 220, 196, 0.06);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Corner bracket accents */
+.cornerTL, .cornerTR, .cornerBL, .cornerBR {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: #12dcc4;
+  border-style: solid;
+  pointer-events: none;
+  z-index: 10;
+}
+.cornerTL { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+.cornerTR { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+.cornerBL { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+.cornerBR { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+
+/* Header telemetry */
+.hudHeader {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hudStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 11px var(--font-mono, monospace);
+  letter-spacing: 0.14em;
+  color: #12dcc4;
+  text-transform: uppercase;
+}
+
+.beaconDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #12dcc4;
+  box-shadow: 0 0 10px #12dcc4;
+  animation: pulseBeacon 1.8s ease-in-out infinite;
+}
+
+.hudTargetInfo {
+  text-align: right;
+  font: 600 11px var(--font-mono, monospace);
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+}
+
+.targetNameHighlight {
+  color: #f1f5f9;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+/* Canvas viewport */
+.canvasWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  cursor: grab;
+}
+
+.canvasWrapper:active {
+  cursor: grabbing;
+}
+
+/* SVG Reticle HUD */
+.reticleOverlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.rotatingRing {
+  transform-origin: center;
+  animation: rotateRing 30s linear infinite;
+}
+
+.reverseRing {
+  transform-origin: center;
+  animation: rotateRingRev 45s linear infinite;
+}
+
+/* Sweeping laser line */
+.scanline {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(18, 220, 196, 0.2) 20%, #12dcc4 50%, rgba(18, 220, 196, 0.2) 80%, transparent 100%);
+  box-shadow: 0 0 14px #12dcc4;
+  pointer-events: none;
+  z-index: 5;
+  animation: sweepLaser 4.5s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+/* Bottom HUD Controls */
+.hudFooter {
+  position: absolute;
+  bottom: 14px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+.telemetryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 600 10px var(--font-mono, monospace);
+  color: #64748b;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+.coordsReadout {
+  color: #12dcc4;
+  font-weight: 700;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.boneChips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.boneChip {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.75);
+  color: #94a3b8;
+  font: 600 11px var(--font-mono, monospace);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boneChip:hover {
+  border-color: rgba(18, 220, 196, 0.5);
+  color: #e2e8f0;
+  background: rgba(30, 41, 59, 0.85);
+}
+
+.boneChipActive {
+  border-color: #12dcc4;
+  background: rgba(18, 220, 196, 0.16);
+  color: #12dcc4;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(18, 220, 196, 0.2);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 6px;
+}
+
+.hudButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.75);
+  color: #94a3b8;
+  font: 600 11px var(--font-mono, monospace);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hudButton:hover {
+  border-color: #12dcc4;
+  color: #12dcc4;
+  background: rgba(18, 220, 196, 0.1);
+}
+
+.hudButtonActive {
+  border-color: #12dcc4;
+  color: #12dcc4;
+  background: rgba(18, 220, 196, 0.18);
+}
+
+/* Animations */
+@keyframes rotateRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotateRingRev {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes sweepLaser {
+  0% { top: 18%; opacity: 0; }
+  15% { opacity: 0.85; }
+  85% { opacity: 0.85; }
+  100% { top: 82%; opacity: 0; }
+}
+
+@keyframes pulseBeacon {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.35); opacity: 0.4; }
+}
+
+@media (max-width: 640px) {
+  .scannerContainer {
+    height: 420px;
+    min-height: 420px;
+  }
+  .controlsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

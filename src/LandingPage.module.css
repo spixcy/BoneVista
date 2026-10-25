@@ -29,9 +29,9 @@
 .displayTitle span { display: block; color: transparent; -webkit-text-stroke: 1px rgba(236, 240, 253, .76); }
 .bodyCopy { max-width: 520px; color: #b4bdd0; font-size: 15px; line-height: 1.8; }
 .scanLabel { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 12px 16px; border-left: 2px solid #12dcc4; color: #14dfc7; font: 600 12px var(--font-mono); }
-.scannerFigure { position: relative; min-height: 380px; display: grid; place-items: center; overflow: hidden; border: 1px solid rgba(190, 199, 220, .14); border-radius: 22px; background: radial-gradient(ellipse, rgba(84, 100, 134, .13), transparent 67%); backdrop-filter: blur(4px); }
-.scannerFigure img { max-width: 86%; max-height: 360px; object-fit: contain; border-radius: 18px; filter: drop-shadow(0 15px 35px rgba(29, 56, 197, .25)); }
-.scannerFigure:after { content: 'REFERENCE ATLAS \00b7 335 NAMED STRUCTURES'; position: absolute; left: 20px; bottom: 17px; color: #969db2; font: 9px var(--font-mono); letter-spacing: .12em; }
+.scannerFigure { position: relative; min-height: 480px; width: 100%; display: block; }
+
+
 .intelligence { padding: 110px clamp(28px, 10vw, 190px) 120px; background: rgba(30, 31, 47, .08); }
 .sectionIntro { max-width: 820px; margin-bottom: 42px; }
 .sectionIntro .displayTitle { margin-bottom: 16px; }
@@ -67,8 +67,8 @@
   .hero { min-height: 790px; align-items: flex-start; padding: 110px 28px 80px; }
   .heroTitle { font-size: clamp(56px, 13vw, 100px); }
   .scanner { grid-template-columns: 1fr; padding: 80px 28px; }
-  .scannerFigure { min-height: 270px; }
-  .scannerFigure img { max-height: 250px; }
+  .scannerFigure { min-height: 420px; }
+
   .intelligence,.roadmap { padding: 80px 28px; }
   .featureGrid,.roadmapGrid { grid-template-columns: 1fr; }
   .featureCard { min-height: 170px; }
