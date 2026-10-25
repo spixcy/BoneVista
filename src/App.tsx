@@ -7,6 +7,7 @@ import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
 import { filterNeuroStructures } from './data/neuroAtlas';
 import { WorkspaceVisibleContext } from './hooks/useWorkspaceVisible';
+import BoneBiology from './components/BoneBiology/BoneBiology';
 import { useAppStore } from './store/appStore';
 import styles from './App.module.css';
 import landing from './LandingPage.module.css';
@@ -139,7 +140,7 @@ const App: React.FC = () => {
       <header className={`${landing.nav} ${scrolled ? landing.navScrolled : ''}`}>
         <a className={landing.brand} href="#top"><span className={landing.brandMark}><Bone size={18}/></span><span>Bone<em>Vista</em></span></a>
         <nav className={landing.navLinks} aria-label="Main site navigation">
-          <a href="#about">About</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+          <a href="#about">About</a><a href="#bones">Bones</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
         </nav>
         <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
       </header>
@@ -207,9 +208,11 @@ const App: React.FC = () => {
           </div>
         </section>
 
+        <BoneBiology eyebrowClassName={landing.eyebrow} titleClassName={landing.displayTitle} />
+
         <section className={landing.scanner} id="scanner">
           <Reveal className={landing.scannerCopy}>
-            <span className={landing.eyebrow}>02 · Try it</span>
+            <span className={landing.eyebrow}>03 · Try it</span>
             <h2 className={landing.displayTitle}>One atlas. <em>Every angle.</em></h2>
             <p className={landing.bodyCopy}>Pick a body region, choose a bone, then drag to orbit it or toggle a wireframe view. This is a small preview of what the full workspace can do.</p>
             <ul className={landing.checkList}>
@@ -227,7 +230,7 @@ const App: React.FC = () => {
 
         <section className={landing.modules} id="modules">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>03 · Modules</span>
+            <span className={landing.eyebrow}>04 · Modules</span>
             <h2 className={landing.displayTitle}>Six instruments. <em>One studio.</em></h2>
             <p className={landing.bodyCopy}>Each module opens directly in the workspace below. Click a card to jump straight in.</p>
           </Reveal>
@@ -247,7 +250,7 @@ const App: React.FC = () => {
 
         <section className={landing.how} id="how">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>04 · How it works</span>
+            <span className={landing.eyebrow}>05 · How it works</span>
             <h2 className={landing.displayTitle}>From curiosity <em>to clarity.</em></h2>
           </Reveal>
           <ol className={landing.steps}>
@@ -264,7 +267,7 @@ const App: React.FC = () => {
 
         <section className={landing.platform} id="platform">
           <Reveal className={landing.platformHeading}>
-            <div><span className={landing.eyebrow}>05 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
+            <div><span className={landing.eyebrow}>06 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
             <p>The full BoneVista app runs right here. Use the sidebar to switch modules, search any structure, or maximise the window for focused study.</p>
           </Reveal>
           <Workspace />
@@ -279,7 +282,7 @@ const App: React.FC = () => {
 
         <section className={landing.faq} id="faq">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>06 · FAQ</span>
+            <span className={landing.eyebrow}>07 · FAQ</span>
             <h2 className={landing.displayTitle}>Good <em>questions.</em></h2>
           </Reveal>
           <div className={landing.faqList}>
