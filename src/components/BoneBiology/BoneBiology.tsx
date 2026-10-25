@@ -10,7 +10,7 @@ const FRACTURE_STAGES = ['Haematoma', 'Soft callus', 'Hard callus', 'Remodelling
 
 /** Landing page section teaching bone biology with an interactive 3D model per topic. */
 const BoneBiology: React.FC<{ eyebrowClassName: string; titleClassName: string }> = ({ eyebrowClassName, titleClassName }) => {
-  const [topicId, setTopicId] = useState<TopicId>('structure');
+  const [topicId, setTopicId] = useState<TopicId>('skeleton');
   const [fractureStage, setFractureStage] = useState(0);
   const viewer = useRef<HTMLDivElement>(null);
   const near = useInView(viewer, { once: true, margin: '500px 0px' });

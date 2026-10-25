@@ -30,19 +30,19 @@ export const smooth = (a: number, b: number, x: number) => THREE.MathUtils.smoot
 
 /* Labels are plain DOM nodes in an overlay above the canvas. Scenes register an anchor
    object; LabelProjector moves each node to its anchor's screen position every frame. */
-export type LabelEntry = { id: number; text: React.ReactNode; left?: boolean; anchor: THREE.Object3D };
+export type LabelEntry = { id: number; text: React.ReactNode; left?: boolean; center?: boolean; dy?: number; anchor: THREE.Object3D };
 export const LabelContext = createContext<{ add: (entry: LabelEntry) => void; remove: (id: number) => void } | null>(null);
 let nextLabelId = 0;
 
-export const Label: React.FC<{ position: Vec3; children: React.ReactNode; left?: boolean }> = ({ position, children, left }) => {
+export const Label: React.FC<{ position: Vec3; children: React.ReactNode; left?: boolean; center?: boolean; dy?: number }> = ({ position, children, left, center, dy }) => {
   const registry = useContext(LabelContext);
   const anchor = useRef<THREE.Group>(null);
   useEffect(() => {
     if (!registry || !anchor.current) return;
     const id = ++nextLabelId;
-    registry.add({ id, text: children, left, anchor: anchor.current });
+    registry.add({ id, text: children, left, center, dy, anchor: anchor.current });
     return () => registry.remove(id);
-  }, [registry, children, left]);
+  }, [registry, children, left, center, dy]);
   return <group ref={anchor} position={position} />;
 };
 
@@ -64,8 +64,10 @@ export const LabelProjector: React.FC<{ layer: React.RefObject<HTMLDivElement | 
       // Keep the pill inside the viewer: right-hand labels extend right of the anchor, left-hand ones extend left.
       const width = (node.firstElementChild as HTMLElement | null)?.offsetWidth ?? 0;
       const rawX = ((v.x + 1) / 2) * size.width;
-      const x = label.left ? Math.max(rawX, width + 18) : Math.min(rawX, size.width - width - 18);
-      node.style.transform = `translate(${x}px, ${((1 - v.y) / 2) * size.height}px)`;
+      const x = label.center
+        ? Math.min(Math.max(rawX, width / 2 + 12), size.width - width / 2 - 12)
+        : label.left ? Math.max(rawX, width + 18) : Math.min(rawX, size.width - width - 18);
+      node.style.transform = `translate(${x}px, ${((1 - v.y) / 2) * size.height + (label.dy ?? 0)}px)`;
       node.style.opacity = shown ? '1' : '0';
     }
   });

@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import * as THREE from 'three';
 import type { TopicId } from './content';
 import styles from './BoneBiology.module.css';
+import { BoneShapes, Skeleton } from './AtlasScenes';
 import { ARTERY, BONE, BONE_LIGHT, CARTILAGE, GOLD, Label, LabelContext, LabelProjector, OSTEOBLAST, OSTEOCLAST, OSTEOID, RED_MARROW, Sway, VEIN, YELLOW_MARROW, rng, smooth, type LabelEntry, type Vec3 } from './sceneKit';
 
 /* ─── Long bone cut-away ─────────────────────────────── */
@@ -646,6 +647,9 @@ const Clinical: React.FC = () => (
 /* ─── Canvas host ────────────────────────────────────── */
 
 const CAMERAS: Record<TopicId, { position: Vec3; target: Vec3 }> = {
+  skeleton: { position: [0, 0.3, 8.6], target: [0, 0, 0] },
+  shapes: { position: [0, 0.25, 6.6], target: [0.15, 0, 0] },
+  sites: { position: [0, 0.3, 8.6], target: [0, 0, 0] },
   cells: { position: [0.4, 3.7, 6.8], target: [0, -0.3, 0] },
   structure: { position: [-4.9, 0.6, 4.9], target: [0, 0, 0] },
   osteon: { position: [-4.6, 3.3, 4.6], target: [0, -0.1, 0] },
@@ -682,6 +686,11 @@ const BoneScenes: React.FC<{ topic: TopicId; fractureStage: number; active: bool
         <directionalLight position={[4, 2, -3]} intensity={1.2} color="#e2c25c" />
         <OrbitControls makeDefault enablePan={false} enableZoom={false} rotateSpeed={0.6} />
         <CameraRig topic={topic} />
+        <Suspense fallback={null}>
+          {topic === 'skeleton' && <Skeleton mode="regions" />}
+          {topic === 'shapes' && <BoneShapes />}
+          {topic === 'sites' && <Skeleton mode="fractures" />}
+        </Suspense>
         {topic === 'cells' && <BoneCells />}
         {topic === 'structure' && <LongBone />}
         {topic === 'osteon' && <Osteon />}
@@ -694,7 +703,7 @@ const BoneScenes: React.FC<{ topic: TopicId; fractureStage: number; active: bool
       <div ref={layer} className={styles.labelLayer} aria-hidden="true">
         {labels.map((label) => (
           <div key={label.id} data-label={label.id} className={styles.labelAnchor}>
-            <div className={`${styles.label} ${label.left ? styles.labelLeft : ''}`}><i />{label.text}</div>
+            <div className={`${styles.label} ${label.left ? styles.labelLeft : ''} ${label.center ? styles.labelCenter : ''}`}><i />{label.text}</div>
           </div>
         ))}
       </div>

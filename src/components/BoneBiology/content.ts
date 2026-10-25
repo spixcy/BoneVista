@@ -1,4 +1,4 @@
-export type TopicId = 'cells' | 'structure' | 'osteon' | 'growth' | 'remodel' | 'fracture' | 'clinical';
+export type TopicId = 'skeleton' | 'shapes' | 'cells' | 'structure' | 'osteon' | 'growth' | 'remodel' | 'fracture' | 'sites' | 'clinical';
 
 export interface Topic {
   id: TopicId;
@@ -18,6 +18,46 @@ export const KEY_NUMBERS = [
 ];
 
 export const TOPICS: Topic[] = [
+  {
+    id: 'skeleton',
+    tab: 'Skeleton',
+    title: 'The adult skeleton',
+    intro: 'The 206 bones of the adult skeleton divide into the axial skeleton, which forms the central axis and protects the brain, spinal cord and thoracic organs, and the appendicular skeleton of the limbs and the girdles that attach them.',
+    hint: 'The full reference skeleton. Axial bones are gold, appendicular bones are ivory, and cartilage (costal cartilages, intervertebral discs) is blue.',
+    facts: [
+      { title: 'Axial skeleton · 80', text: 'Skull 22 (8 cranial, 14 facial), auditory ossicles 6, hyoid 1, vertebral column 26 and thoracic cage 25 (sternum plus 24 ribs).' },
+      { title: 'Appendicular skeleton · 126', text: 'Pectoral girdles 4 (clavicles, scapulae), upper limbs 60, pelvic girdle 2 (hip bones) and lower limbs 60.' },
+      { title: 'Each upper limb · 30', text: 'Humerus, radius, ulna, 8 carpals, 5 metacarpals and 14 phalanges.' },
+      { title: 'Each lower limb · 30', text: 'Femur, patella, tibia, fibula, 7 tarsals, 5 metatarsals and 14 phalanges.' },
+      { title: 'Vertebral column · 26', text: '7 cervical, 12 thoracic and 5 lumbar vertebrae, plus the sacrum (5 fused vertebrae) and coccyx (usually 3–5 fused segments).' },
+      { title: 'Ribs', text: 'True ribs 1–7 attach directly to the sternum; false ribs 8–10 attach via the costal cartilage above; floating ribs 11–12 have no anterior attachment.' },
+    ],
+    highYield: [
+      'A newborn has around 270–300 bones and ossification centres; many fuse during childhood to reach 206.',
+      'Each hip bone forms from the ilium, ischium and pubis, which fuse at the acetabulum.',
+      'The BoneVista atlas lists 335 skeletal structures because it also models cartilages, discs and paired parts separately.',
+    ],
+  },
+  {
+    id: 'shapes',
+    tab: 'Bone shapes',
+    title: 'Bones by shape',
+    intro: 'Bones are classified by shape, and shape follows function: long bones act as levers, short bones transmit force and allow small gliding movements, flat bones protect and anchor muscles.',
+    hint: 'Real bones from the BoneVista atlas, one of each shape class, slowly rotating.',
+    facts: [
+      { title: 'Long bones', text: 'Longer than they are wide, with a shaft and two ends: femur, humerus, tibia — and also the small phalanges. They grow in length at the physis.' },
+      { title: 'Short bones', text: 'Roughly cuboidal and mostly spongy bone inside a thin cortex: the carpals and tarsals.' },
+      { title: 'Flat bones', text: 'Two plates of compact bone around a spongy layer (the diploë in the skull): parietal bones, sternum, ribs, scapula. In adults they keep red marrow.' },
+      { title: 'Irregular bones', text: 'Complex shapes that fit no other group: vertebrae, sphenoid, ethmoid and often the hip bone.' },
+      { title: 'Sesamoid bones', text: 'Develop within tendons and improve leverage across a joint. The patella is the largest; the pisiform and the sesamoids of the big toe are others.' },
+      { title: 'Pneumatic bones', text: 'Contain air-filled sinuses lined with mucosa: frontal, maxilla, sphenoid and ethmoid. They lighten the skull and add resonance to the voice.' },
+    ],
+    highYield: [
+      'Phalanges are long bones despite their size — classification is by shape, not size.',
+      'Bone marrow aspiration uses flat bones with persistent red marrow, most often the posterior iliac crest.',
+      'The patella sits inside the quadriceps tendon and increases the extensor moment arm at the knee.',
+    ],
+  },
   {
     id: 'cells',
     tab: 'Cells & matrix',
@@ -134,6 +174,25 @@ export const TOPICS: Topic[] = [
       'Impaired healing: smoking, diabetes, malnutrition, infection, excessive motion and poor blood supply.',
       'Scaphoid (retrograde supply) and femoral neck fractures risk avascular necrosis.',
       'Union is clinical (no pain or motion) plus radiological (bridging callus on several cortices).',
+    ],
+  },
+  {
+    id: 'sites',
+    tab: 'Fracture sites',
+    title: 'Classic fracture sites',
+    intro: 'A handful of fractures appear again and again in clinics and exams. Knowing the mechanism, the typical patient and the complication to watch for is usually enough to answer the question.',
+    hint: 'The reference skeleton with five classic fracture sites highlighted in red.',
+    facts: [
+      { title: 'Hip · femoral neck', text: 'Typically an older person with osteoporosis after a low-energy fall. The leg is shortened and externally rotated. Displaced intracapsular fractures can disrupt the medial circumflex femoral artery and cause avascular necrosis.' },
+      { title: 'Distal radius', text: 'Fall on an outstretched hand (FOOSH). A Colles fracture has dorsal displacement ("dinner-fork" deformity); a Smith fracture is displaced volarly.' },
+      { title: 'Scaphoid', text: 'The most commonly fractured carpal bone, also after a FOOSH. Tender in the anatomical snuffbox; initial X-rays can be normal. Retrograde blood supply puts the proximal pole at risk of non-union and avascular necrosis.' },
+      { title: 'Vertebral compression', text: 'Osteoporotic wedge fractures, commonly in the mid-thoracic spine and at the thoracolumbar junction (T12–L1). They cause back pain, height loss and kyphosis.' },
+      { title: 'Clavicle', text: 'Among the most common fractures overall, usually of the middle third after a fall onto the shoulder or outstretched hand. Also a recognised birth injury.' },
+    ],
+    highYield: [
+      'Fragility fractures: hip, vertebra, distal radius and proximal humerus — think osteoporosis and check bone density.',
+      'FOOSH injuries: distal radius, scaphoid, clavicle and, in children, supracondylar humerus.',
+      'Snuffbox tenderness with a normal X-ray: treat as a scaphoid fracture and re-image.',
     ],
   },
   {

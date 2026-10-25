@@ -153,6 +153,7 @@
   transform: translate(10px, -50%);
 }
 .label i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: #d4af37; box-shadow: 0 0 8px rgba(212, 175, 55, .8); }
+.labelCenter { transform: translate(-50%, -50%); }
 .labelLeft { flex-direction: row-reverse; padding: 4px 7px 4px 9px; transform: translate(calc(-100% - 10px), -50%); }
 
 /* ─── Notes panel ─── */
