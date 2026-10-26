@@ -20,6 +20,7 @@ import NeuroExplorerPanel from './NeuroExplorerPanel';
 import NeuroScenePlaceholder from './NeuroScenePlaceholder';
 import { useNeuroExplorerModel } from '../../hooks/useNeuroExplorerModel';
 import { useAppStore } from '../../store/appStore';
+import { useWorkspaceVisible } from '../../hooks/useWorkspaceVisible';
 import styles from './NeuroExplorerPage.module.css';
 
 const NeuroExplorerPage: React.FC = () => {
@@ -27,6 +28,7 @@ const NeuroExplorerPage: React.FC = () => {
   const model = useNeuroExplorerModel();
   const hiddenIds = useAppStore((state) => state.hiddenNeuroStructures);
   const toggleStructureVisibility = useAppStore((state) => state.toggleNeuroStructureVisibility);
+  const workspaceVisible = useWorkspaceVisible();
 
   return (
     <div className={styles.page} data-testid="neuro-explorer-page">
@@ -46,7 +48,7 @@ const NeuroExplorerPage: React.FC = () => {
             onResetView={model.onResetView}
           />
         ) : (
-          <NeuroViewport3D active />
+          <NeuroViewport3D active={workspaceVisible} />
         )}
       </div>
 

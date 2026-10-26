@@ -23,9 +23,9 @@
   min-height: 155px;
   padding: 22px 28px;
   overflow: hidden;
-  border: 1px solid rgba(116, 190, 204, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 16px;
-  background: #081122;
+  background: #070707;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
   flex-shrink: 0;
 }
@@ -42,13 +42,13 @@
   height: 100%;
   object-fit: cover;
   object-position: right center;
-  filter: brightness(0.95) contrast(1.1);
+  filter: grayscale(1) sepia(.55) saturate(1.4) hue-rotate(-8deg) brightness(.8) contrast(1.1);
 }
 
 .introVignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(8, 17, 34, 0.96) 0%, rgba(8, 17, 34, 0.82) 48%, rgba(8, 17, 34, 0.15) 85%);
+  background: linear-gradient(90deg, rgba(5, 5, 5, 0.96) 0%, rgba(5, 5, 5, 0.82) 48%, rgba(5, 5, 5, 0.15) 85%);
 }
 
 .introCopy {
@@ -92,7 +92,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #9cb3d8;
+  color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
 }
@@ -113,21 +113,21 @@
   align-items: center;
   gap: 10px;
   padding: 12px 22px;
-  border: 1px solid #5178f2;
-  border-radius: 9px;
-  background: #3568e8;
-  color: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gradient-gold);
+  color: #0a0a0a;
   font: 600 13px var(--font-sans);
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(53, 104, 232, 0.32);
+  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.32);
   transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   white-space: nowrap;
 }
 
 .primaryButton:hover {
-  background: #4778f0;
+  filter: brightness(1.08);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(53, 104, 232, 0.45);
+  box-shadow: 0 12px 28px rgba(212, 175, 55, 0.45);
 }
 
 .scrollProgress {
@@ -266,7 +266,7 @@
   object-position: center;
   border-radius: 0 16px 16px 0;
   opacity: 0.65;
-  filter: grayscale(85%) brightness(0.85) contrast(1.05);
+  filter: grayscale(1) sepia(.35) brightness(0.8) contrast(1.05);
   mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0.15) 88%, rgba(0, 0, 0, 0) 100%);
   -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0.15) 88%, rgba(0, 0, 0, 0) 100%);
   pointer-events: none;
@@ -291,142 +291,28 @@
 
 .actionCard:hover img {
   opacity: 1;
-  filter: grayscale(0%) brightness(1.1) contrast(1.15);
+  filter: grayscale(1) sepia(.7) saturate(1.5) brightness(1.05) contrast(1.15);
   transform: scale(1.04);
 }
 
-/* Themes */
-.actionCard.blue:hover {
-  border-color: rgba(96, 165, 250, 0.7);
-  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.25);
+/* Gold theme shared by every quick-access card */
+.actionCard .actionIcon {
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--color-accent);
+  border-color: rgba(212, 175, 55, 0.28);
 }
-.actionCard.blue .actionIcon {
-  background: rgba(59, 130, 246, 0.12);
-  color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.25);
+.actionCard:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.12);
 }
-.actionCard.blue:hover .actionIcon {
-  background: #3b82f6;
-  color: #ffffff;
-  border-color: #60a5fa;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.55);
+.actionCard:hover .actionIcon {
+  background: var(--gradient-gold);
+  color: #0a0a0a;
+  border-color: transparent;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.45);
 }
-.actionCard.blue:hover .actionArrow {
-  color: #60a5fa;
-}
-
-.actionCard.indigo:hover {
-  border-color: rgba(244, 63, 114, 0.7);
-  box-shadow: 0 14px 34px rgba(244, 63, 114, 0.25);
-}
-.actionCard.indigo .actionIcon {
-  background: rgba(244, 63, 114, 0.12);
-  color: #f472b6;
-  border-color: rgba(244, 63, 114, 0.25);
-}
-.actionCard.indigo:hover .actionIcon {
-  background: #f43f5e;
-  color: #ffffff;
-  border-color: #fb7185;
-  box-shadow: 0 0 16px rgba(244, 63, 94, 0.55);
-}
-.actionCard.indigo:hover .actionArrow {
-  color: #fb7185;
-}
-
-.actionCard.purple:hover {
-  border-color: rgba(168, 85, 247, 0.7);
-  box-shadow: 0 14px 34px rgba(168, 85, 247, 0.25);
-}
-.actionCard.purple .actionIcon {
-  background: rgba(168, 85, 247, 0.12);
-  color: #c084fc;
-  border-color: rgba(168, 85, 247, 0.25);
-}
-.actionCard.purple:hover .actionIcon {
-  background: #a855f7;
-  color: #ffffff;
-  border-color: #c084fc;
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.55);
-}
-.actionCard.purple:hover .actionArrow {
-  color: #c084fc;
-}
-
-.actionCard.teal:hover {
-  border-color: rgba(20, 184, 166, 0.7);
-  box-shadow: 0 14px 34px rgba(20, 184, 166, 0.25);
-}
-.actionCard.teal .actionIcon {
-  background: rgba(20, 184, 166, 0.12);
-  color: #2dd4bf;
-  border-color: rgba(20, 184, 166, 0.25);
-}
-.actionCard.teal:hover .actionIcon {
-  background: #14b8a6;
-  color: #ffffff;
-  border-color: #2dd4bf;
-  box-shadow: 0 0 16px rgba(20, 184, 166, 0.55);
-}
-.actionCard.teal:hover .actionArrow {
-  color: #2dd4bf;
-}
-
-.actionCard.violet:hover {
-  border-color: rgba(129, 140, 248, 0.7);
-  box-shadow: 0 14px 34px rgba(99, 102, 241, 0.25);
-}
-.actionCard.violet .actionIcon {
-  background: rgba(99, 102, 241, 0.12);
-  color: #a5b4fc;
-  border-color: rgba(99, 102, 241, 0.25);
-}
-.actionCard.violet:hover .actionIcon {
-  background: #6366f1;
-  color: #ffffff;
-  border-color: #818cf8;
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.55);
-}
-.actionCard.violet:hover .actionArrow {
-  color: #818cf8;
-}
-
-.actionCard.amber:hover {
-  border-color: rgba(245, 158, 11, 0.7);
-  box-shadow: 0 14px 34px rgba(245, 158, 11, 0.25);
-}
-.actionCard.amber .actionIcon {
-  background: rgba(245, 158, 11, 0.12);
-  color: #fbbf24;
-  border-color: rgba(245, 158, 11, 0.25);
-}
-.actionCard.amber:hover .actionIcon {
-  background: #f59e0b;
-  color: #ffffff;
-  border-color: #fcd34d;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.55);
-}
-.actionCard.amber:hover .actionArrow {
-  color: #fcd34d;
-}
-
-.actionCard.emerald:hover {
-  border-color: rgba(16, 185, 129, 0.7);
-  box-shadow: 0 14px 34px rgba(16, 185, 129, 0.25);
-}
-.actionCard.emerald .actionIcon {
-  background: rgba(16, 185, 129, 0.12);
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.25);
-}
-.actionCard.emerald:hover .actionIcon {
-  background: #10b981;
-  color: #ffffff;
-  border-color: #34d399;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.55);
-}
-.actionCard.emerald:hover .actionArrow {
-  color: #34d399;
+.actionCard:hover .actionArrow {
+  color: var(--color-accent);
 }
 
 /* ── Chotu Skeleton Guide & Companion Section ── */
@@ -442,7 +328,7 @@
   align-items: center;
   gap: 22px;
   padding: 16px 22px;
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 16px;
   background: linear-gradient(135deg, rgba(20, 24, 45, 0.85) 0%, rgba(13, 18, 36, 0.95) 100%);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -451,8 +337,8 @@
 }
 
 .chotuCard:hover {
-  border-color: rgba(168, 85, 247, 0.55);
-  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.2);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2);
 }
 
 .chotuArtWrap {
@@ -469,7 +355,7 @@
   height: 72px;
   object-fit: contain;
   border-radius: 12px;
-  filter: drop-shadow(0 6px 14px rgba(139, 92, 246, 0.4));
+  filter: drop-shadow(0 6px 14px rgba(212, 175, 55, 0.4));
   transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -482,17 +368,17 @@
   align-items: center;
   gap: 5px;
   padding: 3px 10px;
-  border: 1px solid rgba(168, 85, 247, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   border-radius: 20px;
-  background: rgba(139, 92, 246, 0.15);
-  color: #d8b4fe;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--color-accent);
   font: 600 10.5px var(--font-mono);
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
 .chotuBadge svg {
-  color: #c084fc;
+  color: #f1d78a;
   flex-shrink: 0;
 }
 
@@ -510,7 +396,7 @@
 }
 
 .chotuEyebrow {
-  color: #c084fc;
+  color: #f1d78a;
   font: 700 9.5px var(--font-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -518,14 +404,14 @@
 }
 
 .chotuText h3 {
-  color: #f1f5f9;
+  color: var(--color-text-primary);
   font: 650 16px/1.3 var(--font-sans);
   letter-spacing: -0.02em;
   margin: 3px 0 5px;
 }
 
 .chotuText p {
-  color: #94a3b8;
+  color: #b5ae9f;
   font-size: 12.5px;
   line-height: 1.5;
   margin: 0;
@@ -543,21 +429,21 @@
   align-items: center;
   gap: 7px;
   padding: 8px 14px;
-  border: 1px solid #7c3aed;
-  border-radius: 8px;
-  background: #6d28d9;
-  color: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gradient-gold);
+  color: #0a0a0a;
   font: 600 12px var(--font-sans);
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
+  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
   transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   white-space: nowrap;
 }
 
 .chotuPrimaryBtn:hover {
-  background: #7c3aed;
+  filter: brightness(1.08);
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(109, 40, 217, 0.45);
+  box-shadow: 0 8px 18px rgba(212, 175, 55, 0.45);
 }
 
 .chotuSecondaryBtn {
@@ -568,7 +454,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
+  color: var(--color-text-primary);
   font: 550 12px var(--font-sans);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -630,8 +516,8 @@
 }
 
 .overviewIcon {
-  background: rgba(59, 130, 246, 0.12);
-  color: #60a5fa;
+  background: rgba(212, 175, 55, 0.12);
+  color: #e2c66e;
 }
 
 .overviewIconStudies {
@@ -664,12 +550,12 @@
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #94a3b8;
+  color: #b5ae9f;
   font-size: 11px;
 }
 
 .statPill strong {
-  color: #f1f5f9;
+  color: var(--color-text-primary);
   margin-right: 4px;
 }
 

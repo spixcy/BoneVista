@@ -1,18 +1,30 @@
-﻿# BoneVista design system
+# BoneVista design system
 
 ## Product direction
 
-Medical research workstation with a quiet, high-contrast interface. Keep the anatomy viewport as the primary surface. Use restrained teal for active controls and status; use amber only for limitations and unavailable capabilities. The BoneVision screenshots are broad visual references, not a layout or brand to copy.
+Premium anatomy studio with a black, white and gold palette. The landing page leads with an animated gold skull and editorial serif headlines; the embedded workspace keeps the anatomy viewport as the primary surface. Gold marks interactive and selected states; semantic green/amber/red are reserved for status and warnings.
 
 ## Foundations
 
-- **Canvas:** `#080d10`; side rail: `#0b1114`; panels: `#0d1418`.
-- **Primary accent:** `#7da2ff`; selected surface: `#18243d`.
-- **Text:** `#e8eceb`; secondary: `#819092`; muted: `#657274`.
-- **Borders:** `#1e2a2d`; warning: muted amber with a visible explanatory label.
-- **Typography:** Manrope for display headings; DM Sans for interface text; DM Mono for technical labels and status.
-- **Spacing:** 4 px base; common gaps 8, 12, 20, 28 px.
-- **Shape:** small 3–5 px panel radii; avoid ornamental pill cards.
+- **Canvas:** `#050505`; surface: `#0b0b0b`; elevated: `#131312`; hover: `#1c1a16`.
+- **Gold ramp:** `#fbf3d5` · `#f1d78a` · `#d4af37` (accent) · `#a8832a` · `#6b5219`. Use `--gradient-gold` for primary buttons and `--gradient-gold-text` for highlighted words.
+- **Text:** `#f6f3eb`; secondary: `#b5ae9f`; muted: `#7b7568`.
+- **Borders:** hairline `rgba(255,255,255,.07)`; emphasis `rgba(212,175,55,.28)`.
+- **Light theme:** ivory `#f8f6f0` canvas with deep gold `#9c7a24` accent.
+- **Typography:** Cormorant Garamond for display headings (italic for gold emphasis); Inter for interface text; JetBrains Mono for labels, eyebrows and telemetry.
+- **Shape:** 10–22 px radii on cards; pill-shaped primary buttons.
+
+## Motion
+
+- Entrance reveals use `--ease-premium` (`cubic-bezier(.22,.8,.24,1)`) and run once per element.
+- Animate only `transform` and `opacity`; never animate filters, shadows or layout.
+- Ambient motion (skull line draw, scan beam, marquee) is CSS-only and disabled under `prefers-reduced-motion`.
+
+## Performance rules
+
+- One WebGL canvas per visible feature. 3D scenes pause (`frameloop="never"`) when scrolled off screen.
+- Heavy modules (three.js scenes, muscle and neuro explorers, PDF export) are lazy-loaded.
+- Per-frame values (camera telemetry, counters) are written to the DOM through refs, not React state.
 
 ## Interaction rules
 
@@ -21,6 +33,3 @@ Medical research workstation with a quiet, high-contrast interface. Keep the ana
 - Clearly label reference anatomy, local-only storage, and unavailable inference.
 - Preserve visible keyboard focus and accessible names on icon-only controls.
 - On narrow screens, stack the structure list and details below the viewport.
-- Use transitions for state feedback only; no ambient motion beyond the load indicator.
-
-
