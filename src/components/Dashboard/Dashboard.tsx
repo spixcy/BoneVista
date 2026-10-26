@@ -19,6 +19,7 @@ import styles from './Dashboard.module.css';
 
 interface QuickAction {
   page: 'viewer' | 'muscles' | 'neuro' | 'spine' | 'xray' | 'stress' | 'studies';
+  brainAtlas?: boolean;
   title: string;
   detail: string;
   icon: React.ComponentType<{ size?: number }>;
@@ -49,6 +50,15 @@ const actions: QuickAction[] = [
     detail: 'Inspect cerebral cortex lobes, neural pathways, and spinal nerves',
     icon: Brain,
     art: '/branding/card-neuro.jpg',
+    tone: 'purple',
+  },
+  {
+    page: 'neuro',
+    brainAtlas: true,
+    title: 'Brain Anatomy',
+    detail: 'Open the 3D brain atlas directly and explore cerebral structures',
+    icon: Brain,
+    art: '/branding/brain-anatomy-card.svg',
     tone: 'purple',
   },
   {
@@ -90,17 +100,21 @@ const Dashboard: React.FC = () => {
     anatomyStructures,
     setActivePage,
     setViewMode,
+    setNeuroMode,
     muscleStatus,
     setMusclePreset,
   } = useAppStore();
   const exploreRef = useRef<HTMLElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const handleActionClick = (page: QuickAction['page']) => {
+  const handleActionClick = (action: QuickAction) => {
+    const { page } = action;
     if (page === 'viewer') {
       setViewMode('bone');
     } else if (page === 'muscles') {
       if (muscleStatus === 'idle') setMusclePreset('superficial');
+    } else if (page === 'neuro' && action.brainAtlas) {
+      setNeuroMode('brain-atlas');
     } else if (page === 'xray') {
       setViewMode('xray');
     } else if (page === 'stress') {
@@ -169,21 +183,24 @@ const Dashboard: React.FC = () => {
           <span className={styles.sectionBadge}>{actions.length} Tools Available</span>
         </div>
         <div className={styles.actionGrid}>
-          {actions.map(({ page, title, detail, icon: Icon, art, tone }) => (
-            <button
-              key={page}
-              className={`${styles.actionCard} ${styles[tone]}`}
-              onClick={() => handleActionClick(page)}
-            >
-              <div className={styles.actionText}>
-                <span className={styles.actionIcon}><Icon size={18} /></span>
-                <strong>{title}</strong>
-                <span>{detail}</span>
-                <span className={styles.actionArrow}><ArrowRight size={14} /></span>
-              </div>
-              {art && <img loading="lazy" decoding="async" src={art} alt="" aria-hidden="true" />}
-            </button>
-          ))}
+          {actions.map((action) => {
+            const { page, title, detail, icon: Icon, art, tone } = action;
+            return (
+              <button
+                key={title}
+                className={`${styles.actionCard} ${styles[tone]}`}
+                onClick={() => handleActionClick(action)}
+              >
+                <div className={styles.actionText}>
+                  <span className={styles.actionIcon}><Icon size={18} /></span>
+                  <strong>{title}</strong>
+                  <span>{detail}</span>
+                  <span className={styles.actionArrow}><ArrowRight size={14} /></span>
+                </div>
+                {art && <img loading="lazy" decoding="async" src={art} alt="" aria-hidden="true" />}
+              </button>
+            );
+          })}
         </div>
       </section>
 
