@@ -105,6 +105,7 @@ const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({
 const App: React.FC = () => {
   const { setActivePage, setAnatomyStructures, theme } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
+  const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -150,7 +151,12 @@ const App: React.FC = () => {
         <nav className={landing.navLinks} aria-label="Main site navigation">
           <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#/neet-pg">NEET PG</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
         </nav>
-        <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
+        <div className={landing.navActions}>
+          <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
+          <button className={`${landing.workspaceToggle} ${workspaceMaximized ? landing.workspaceToggleRestore : ''}`} onClick={() => { if (!workspaceMaximized) scrollToId('workspace'); setWorkspaceMaximized((maximized) => !maximized); }} aria-label={workspaceMaximized ? 'Restore workspace size' : 'Maximize workspace'} title={workspaceMaximized ? 'Restore workspace size (Esc)' : 'Open workspace'}>
+            {workspaceMaximized ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+          </button>
+        </div>
       </header>
 
       <main>
@@ -285,7 +291,7 @@ const App: React.FC = () => {
             <div><span className={landing.eyebrow}>06 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
             <p>The full BoneVista app runs right here. Use the sidebar to switch modules, search any structure, or maximise the window for focused study.</p>
           </Reveal>
-          <Workspace />
+          <Workspace workspaceMaximized={workspaceMaximized} setWorkspaceMaximized={setWorkspaceMaximized} />
         </section>
 
         <section className={landing.tech}>
@@ -331,14 +337,13 @@ const App: React.FC = () => {
 };
 
 /** The embedded BoneVista application. */
-const Workspace: React.FC = () => {
+const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: React.Dispatch<React.SetStateAction<boolean>> }> = ({ workspaceMaximized, setWorkspaceMaximized }) => {
   const { activePage, rightPanelOpen, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const isMuscleExplorer = activePage === 'muscles';
   const isNeuroExplorer = activePage === 'neuro';
   const isAnatomyWorkspace = isViewer || isMuscleExplorer || isNeuroExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
-  const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
   const frameInView = useInView(frameRef, { margin: '120px 0px' });
   const visible = frameInView || workspaceMaximized;
@@ -369,9 +374,6 @@ const Workspace: React.FC = () => {
           <div className={styles.topbarActions}>
             <button className={styles.themeToggle} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
               {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-            </button>
-            <button className={styles.themeToggle} onClick={() => setWorkspaceMaximized((maximized) => !maximized)} aria-label={workspaceMaximized ? 'Restore workspace size' : 'Maximize workspace'} title={workspaceMaximized ? 'Restore workspace size (Esc)' : 'Maximize workspace'}>
-              {workspaceMaximized ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
             </button>
           </div>
         </header>
