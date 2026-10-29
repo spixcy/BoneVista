@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, animate, useInView } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
-import { Activity, ArrowRight, Bone, BookOpen, Brain, ChevronDown, Cpu, Download, Gauge, Layers, Lock, Maximize2, Minimize2, Moon, MousePointerClick, Rows3, ScanLine, Search, ShieldCheck, Sparkles, Sun } from 'lucide-react';
+import { Activity, ArrowRight, Bone, BookOpen, Brain, ChevronDown, Download, Gauge, Layers, Lock, Maximize2, Minimize2, Moon, MousePointerClick, Rows3, ScanLine, Search, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
@@ -292,13 +292,6 @@ const App: React.FC = () => {
             <p>The full BoneVista app runs right here. Use the sidebar to switch modules, search any structure, or maximise the window for focused study.</p>
           </Reveal>
           <Workspace workspaceMaximized={workspaceMaximized} setWorkspaceMaximized={setWorkspaceMaximized} />
-        </section>
-
-        <section className={landing.tech}>
-          <Reveal className={landing.techInner}>
-            <span className={landing.iconBadge}><Cpu size={18}/></span>
-            <p><strong>Under the hood.</strong> React 19, Three.js and React Three Fiber render Draco-compressed anatomy meshes on the GPU. Heavy modules load only when you open them, and 3D scenes pause when they scroll out of view, so the page stays smooth.</p>
-          </Reveal>
         </section>
 
         <section className={landing.faq} id="faq">
