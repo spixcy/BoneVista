@@ -6,6 +6,7 @@ async function openResourcesPage(page) {
   await page.getByRole('link', { name: 'Launch App' }).click();
   await expect(page.locator('#platform')).toBeInViewport();
   await page.getByRole('button', { name: 'Resources & Credits', exact: true }).click();
+  await expect(page.getByTestId('resources-credits-page')).toBeVisible();
 }
 
 test('Resources & Credits: sidebar entry is visible and navigates to the module', async ({ page }) => {
@@ -32,7 +33,7 @@ test('Resources & Credits: GitHub links are rendered on cards with upstream repo
   await openResourcesPage(page);
 
   // Cards with GitHub repos have GitHub action links or buttons
-  const githubActions = page.locator('article').locator('text=GitHub');
+  const githubActions = page.getByTestId('resources-credits-page').locator('article').locator('text=GitHub');
   expect(await githubActions.count()).toBeGreaterThanOrEqual(1);
 });
 
@@ -40,7 +41,7 @@ test('Resources & Credits: exactly four resource category cards are displayed', 
   await page.goto('/');
   await openResourcesPage(page);
 
-  const cards = page.locator('article');
+  const cards = page.getByTestId('resources-credits-page').locator('article');
   await expect(cards).toHaveCount(4);
 });
 
@@ -59,7 +60,7 @@ test('Resources & Credits: Sources modal opens for multi-source cards', async ({
   await openResourcesPage(page);
 
   // Skeletal Anatomy has multiple sources → "Sources ↗" button
-  const sourcesBtn = page.locator('article').first().getByRole('button', { name: /Sources/ });
+  const sourcesBtn = page.getByTestId('resources-credits-page').locator('article').first().getByRole('button', { name: /Sources/ });
   await sourcesBtn.click();
 
   // Modal should be visible with detailed records
