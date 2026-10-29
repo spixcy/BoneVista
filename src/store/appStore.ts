@@ -57,7 +57,7 @@ interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   // Navigation
-  activePage: 'dashboard' | 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings';
+  activePage: 'dashboard' | 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings' | 'resources';
   setActivePage: (page: AppState['activePage']) => void;
 
   // 3D Viewer
@@ -174,7 +174,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   neuroMode: 'nervous-system',
   setNeuroMode: (mode) => set((state) => ({
     neuroMode: mode,
-    neuroStatus: mode === 'neuron-lab' ? 'ready' : 'loading',
+    neuroStatus: 'loading',
     neuroError: null,
     hiddenNeuroLayers: mode === 'brain-atlas' ? new Set(['neuro:brain:cranial_nerves']) : new Set(),
     neuroIsolationMode: false,

@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, animate, useInView } from 'framer-motion';
-import { Activity, ArrowRight, Bone, BookOpen, ChevronDown, Cpu, Download, Lock, Maximize2, Minimize2, Moon, MousePointerClick, Search, ShieldCheck, Sparkles, Sun } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { Activity, ArrowRight, Bone, BookOpen, Brain, ChevronDown, Download, Gauge, Layers, Lock, Maximize2, Minimize2, Moon, MousePointerClick, Rows3, ScanLine, Search, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
@@ -23,6 +24,7 @@ const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/Neur
 const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
 const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
+const ResourcesCredits = lazy(() => import('./components/ResourcesCredits/ResourcesCredits'));
 const LandingBone = lazy(() => import('./components/LandingBone'));
 
 const EASE = [0.22, 0.8, 0.24, 1] as const;
@@ -264,13 +266,6 @@ const App: React.FC = () => {
           <Workspace workspaceMaximized={workspaceMaximized} setWorkspaceMaximized={setWorkspaceMaximized} />
         </section>
 
-        <section className={landing.tech}>
-          <Reveal className={landing.techInner}>
-            <span className={landing.iconBadge}><Cpu size={18}/></span>
-            <p><strong>Under the hood.</strong> React 19, Three.js and React Three Fiber render Draco-compressed anatomy meshes on the GPU. Heavy modules load only when you open them, and 3D scenes pause when they scroll out of view, so the page stays smooth.</p>
-          </Reveal>
-        </section>
-
         <section className={landing.faq} id="faq">
           <Reveal className={landing.sectionIntro}>
             <span className={landing.eyebrow}>06 · FAQ</span>
@@ -381,6 +376,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
                 {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
                 {activePage === 'studies'   && <div className={styles.scrollPage}><StudyGuidePage /></div>}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
+                {activePage === 'resources' && <div className={styles.scrollPage}><ResourcesCredits /></div>}
               </Suspense>
             </motion.div>
           </AnimatePresence>
@@ -407,25 +403,74 @@ const SettingsPlaceholder: React.FC = () => {
 function pageName(page: string): string {
   const map: Record<string, string> = {
     dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro Explorer', brain: 'Brain Anatomy', spine: 'Spine Explorer',
-    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Study Guide', settings: 'Settings',
+    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Study Guide', settings: 'Settings', resources: 'Resources & Credits',
   };
   return map[page] ?? page;
 }
 
 const HeaderSearch: React.FC = () => {
   const [query, setQuery] = useState('');
+  const [activeIndex, setActiveIndex] = useState(0);
   const { anatomyStructures, muscleStructures, neuroBrainManifest, neuroNervesManifest, selectedBones, selectedNeuroStructures, toggleBoneSelection, toggleNeuroStructure, clearMuscleSelection, setActivePage, setMusclePreset, setMuscleQuery, setNeuroMode, setViewMode, activePage } = useAppStore();
-  const matches = query.trim() ? anatomyStructures.filter((item) => `${item.name_en} ${item.ta2_latin}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
-  const muscleMatches = query.trim() ? muscleStructures.filter((item) => `${item.name} ${item.fmaId ?? ''} ${item.side}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
+  const normalizedQuery = query.trim().toLowerCase();
+  const matches = normalizedQuery ? anatomyStructures.filter((item) => `${item.name_en} ${item.ta2_latin}`.toLowerCase().includes(normalizedQuery)).slice(0, 6) : [];
+  const muscleMatches = normalizedQuery ? muscleStructures.filter((item) => `${item.name} ${item.fmaId ?? ''} ${item.side}`.toLowerCase().includes(normalizedQuery)).slice(0, 6) : [];
   const neuroStructures = [...(neuroBrainManifest?.structures ?? []), ...(neuroNervesManifest?.structures ?? [])];
-  const neuroMatches = query.trim() ? filterNeuroStructures(neuroStructures, query).slice(0, 6) : [];
+  const neuroMatches = normalizedQuery ? filterNeuroStructures(neuroStructures, normalizedQuery).slice(0, 6) : [];
+  const resultCount = matches.length + muscleMatches.length + neuroMatches.length;
+
+  useEffect(() => { setActiveIndex(0); }, [query]);
+
+  const selectResult = (index: number) => {
+    if (index < matches.length) {
+      const item = matches[index];
+      if (activePage === 'muscles') clearMuscleSelection();
+      if (!selectedBones.has(item.organ_id)) toggleBoneSelection(item.organ_id);
+      setActivePage('viewer');
+      setViewMode('bone');
+    } else if (index < matches.length + muscleMatches.length) {
+      const item = muscleMatches[index - matches.length];
+      if (!selectedBones.has(item.id)) toggleBoneSelection(item.id);
+      setMusclePreset(item.kind === 'bone' ? 'combined' : item.layer ?? 'superficial');
+      setMuscleQuery('');
+      setViewMode('bone');
+      setActivePage('muscles');
+    } else {
+      const item = neuroMatches[index - matches.length - muscleMatches.length];
+      if (!item) return;
+      const isBrain = item.id.startsWith('neuro:brain:');
+      setNeuroMode(isBrain ? 'brain-atlas' : 'nervous-system');
+      if (!selectedNeuroStructures.has(item.id)) toggleNeuroStructure(item.id);
+      setActivePage(isBrain ? 'brain' : 'neuro');
+    }
+    setQuery('');
+  };
+
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      setQuery('');
+      if (activePage === 'muscles') setMuscleQuery('');
+      return;
+    }
+    if (!resultCount) return;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
+      setActiveIndex((index) => (index + direction + resultCount) % resultCount);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      selectResult(activeIndex);
+    }
+  };
+
+  let optionIndex = 0;
   return <div className={styles.searchWrap}>
     <Search size={16} aria-hidden="true" />
-    <input value={query} onChange={(event) => { setQuery(event.target.value); if (activePage === 'muscles') setMuscleQuery(event.target.value); }} placeholder="Search anatomy structures…" aria-label="Search anatomy structures" />
-    {query && <div className={styles.searchResults} role="listbox" aria-label="Anatomy search results">
-      {matches.map((item) => <button key={item.organ_id} role="option" aria-selected="false" onClick={() => { if (activePage === 'muscles') clearMuscleSelection(); if (!selectedBones.has(item.organ_id)) toggleBoneSelection(item.organ_id); setActivePage('viewer'); setViewMode('bone'); setQuery(''); }}><span>{item.name_en}</span><small>{item.ta2_latin}</small></button>)}
-      {muscleMatches.map((item) => <button key={item.id} role="option" aria-selected="false" onClick={() => { if (!selectedBones.has(item.id)) toggleBoneSelection(item.id); setMusclePreset(item.kind === 'bone' ? 'combined' : item.layer ?? 'superficial'); setMuscleQuery(''); setViewMode('bone'); setActivePage('muscles'); setQuery(''); }}><span>{item.name}</span><small>{item.fmaId ?? item.side} · {item.layer ?? 'Écorché skeleton'}</small></button>)}
-      {neuroMatches.map((item) => { const isBrain = item.id.startsWith('neuro:brain:'); return <button key={item.id} role="option" aria-selected={selectedNeuroStructures.has(item.id)} onClick={() => { setNeuroMode(isBrain ? 'brain-atlas' : 'nervous-system'); if (!selectedNeuroStructures.has(item.id)) toggleNeuroStructure(item.id); setActivePage(isBrain ? 'brain' : 'neuro'); setQuery(''); }}><span>{item.name}</span><small>{item.category} · {item.region ?? item.side}</small></button>; })}
+    <input value={query} onChange={(event) => { setQuery(event.target.value); if (activePage === 'muscles') setMuscleQuery(event.target.value); }} onKeyDown={handleSearchKeyDown} aria-expanded={Boolean(query)} aria-controls="anatomy-search-results" aria-activedescendant={resultCount ? `anatomy-search-option-${activeIndex}` : undefined} placeholder="Search anatomy structures…" aria-label="Search anatomy structures" />
+    {query && <div id="anatomy-search-results" className={styles.searchResults} role="listbox" aria-label="Anatomy search results">
+      {matches.map((item) => { const index = optionIndex++; return <button key={item.organ_id} id={`anatomy-search-option-${index}`} role="option" aria-selected={activeIndex === index} onMouseEnter={() => setActiveIndex(index)} onClick={() => selectResult(index)}><span>{item.name_en}</span><small>{item.ta2_latin}</small></button>; })}
+      {muscleMatches.map((item) => { const index = optionIndex++; return <button key={item.id} id={`anatomy-search-option-${index}`} role="option" aria-selected={activeIndex === index} onMouseEnter={() => setActiveIndex(index)} onClick={() => selectResult(index)}><span>{item.name}</span><small>{item.fmaId ?? item.side} · {item.layer ?? 'Écorché skeleton'}</small></button>; })}
+      {neuroMatches.map((item) => { const index = optionIndex++; return <button key={item.id} id={`anatomy-search-option-${index}`} role="option" aria-selected={activeIndex === index} onMouseEnter={() => setActiveIndex(index)} onClick={() => selectResult(index)}><span>{item.name}</span><small>{item.category} · {item.region ?? item.side}</small></button>; })}
       {!matches.length && !muscleMatches.length && !neuroMatches.length && <p>{anatomyStructures.length ? 'No matching anatomy structures.' : 'Loading atlas labels…'}</p>}
     </div>}
   </div>;

@@ -19,5 +19,4 @@ export interface NeuroExplorerViewProps extends Omit<CoreViewProps, 'structures'
 export const NEURO_MODE_META: Record<NeuroMode, { label: string; description: string }> = {
   'nervous-system': { label: 'Whole Nervous System', description: 'Brain and available nerves at whole-body scale.' },
   'brain-atlas': { label: 'Brain Atlas', description: 'Selectable structures from the detailed brain mesh.' },
-  'neuron-lab': { label: 'Neuron Lab', description: 'Separate microscopic-scale neuron experience.' },
 };

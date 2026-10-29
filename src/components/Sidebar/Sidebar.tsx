@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, Bone, Dumbbell, Brain, Network, AlignCenter, Upload, Activity, BookOpen, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
@@ -38,7 +38,14 @@ const Sidebar: React.FC = () => {
       </button>)}
       <div className={styles.navDivider} />
       {!sidebarCollapsed && <span className={styles.navLabel}>PREFERENCES</span>}
-      <button className={`${styles.navItem} ${activePage === 'settings' ? styles.active : ''}`} onClick={() => setActivePage('settings')} aria-current={activePage === 'settings' ? 'page' : undefined} title={sidebarCollapsed ? 'Settings' : undefined}><Settings size={18} /><span className={styles.navText}>{!sidebarCollapsed && 'Settings'}</span></button>
+      <button className={`${styles.navItem} ${activePage === 'settings' ? styles.active : ''}`} onClick={() => setActivePage('settings')} aria-current={activePage === 'settings' ? 'page' : undefined} title={sidebarCollapsed ? 'Settings' : undefined}>
+        <Settings size={18} />
+        <span className={styles.navText}>{!sidebarCollapsed && 'Settings'}</span>
+      </button>
+      <button className={`${styles.navItem} ${activePage === 'resources' ? styles.active : ''}`} onClick={() => setActivePage('resources')} aria-current={activePage === 'resources' ? 'page' : undefined} title={sidebarCollapsed ? 'Resources & Credits' : undefined}>
+        <BookOpen size={18} />
+        <span className={styles.navText}>{!sidebarCollapsed && 'Resources & Credits'}</span>
+      </button>
     </nav>
     <div className={styles.spacer} />
     <div className={styles.brandFooter}>

@@ -247,7 +247,7 @@ const NeuroViewport3D: React.FC<{ active: boolean }> = ({ active }) => {
 
   return <div className={styles.viewport} data-testid="neuro-3d-viewport" data-model-state={neuroStatus} data-model-mode={neuroMode}>
     <div className={styles.attribution}>Brain Project / Z-Anatomy · CC BY-SA 4.0</div>
-    <div className={styles.assetCount}>{neuroMode === 'brain-atlas' ? `${neuroBrainManifest?.structures.length ?? 0} brain structures` : neuroMode === 'nervous-system' ? `${neuroNervesManifest?.structures.length ?? 0} nerve structures · spinal cord unavailable` : 'Neuron Lab integration pending'}</div>
+    <div className={styles.assetCount}>{neuroMode === 'brain-atlas' ? `${neuroBrainManifest?.structures.length ?? 0} brain structures` : `${neuroNervesManifest?.structures.length ?? 0} nerve structures · spinal cord unavailable`}</div>
     <Canvas frameloop={active ? (isRotating ? 'always' : 'demand') : 'never'} camera={{ position: [0, 0.15, 5.5], fov: 36, near: 0.01, far: 100 }} dpr={[1, 1.5]} onPointerMissed={() => useAppStore.getState().clearNeuroSelection()}>
       <color attach="background" args={['#080d10']} />
       <hemisphereLight args={['#d7f3ff', '#171f23', 1.8]} />
@@ -270,7 +270,6 @@ const NeuroViewport3D: React.FC<{ active: boolean }> = ({ active }) => {
     </Canvas>
     {(neuroStatus === 'idle' || neuroStatus === 'loading') && <div className={styles.modelOverlay}><div className={styles.loading}>Loading neuro atlas…</div></div>}
     {neuroStatus === 'error' && <div className={styles.modelOverlay}><div className={styles.loadError} role="alert">Neuro atlas failed to load. <button type="button" onClick={retryNeuroLoad}>Retry</button></div></div>}
-    {neuroMode === 'neuron-lab' && <div className={styles.modelOverlay}><div className={styles.loading} role="status">Neuron Lab is reserved for integration of your separate Neuron branch.</div></div>}
     <div className={styles.hint}>DRAG TO ROTATE · SCROLL TO ZOOM · SHIFT + DRAG TO PAN</div>
   </div>;
 };

@@ -1,4 +1,4 @@
-export type NeuroMode = 'nervous-system' | 'brain-atlas' | 'neuron-lab';
+export type NeuroMode = 'nervous-system' | 'brain-atlas';
 
 export interface NeuroStructure {
   id: string;
@@ -44,7 +44,6 @@ export interface NeuroExplorerViewProps {
   onModeChange: (mode: NeuroMode) => void;
   loading: boolean;
   error?: string;
-  modeNotice?: string;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   structures: NeuroStructureView[];
