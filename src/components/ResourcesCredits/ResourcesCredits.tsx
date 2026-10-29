@@ -52,6 +52,16 @@ export const ResourcesCredits: React.FC = () => {
     mode: 'all'
   });
 
+  // Close modal on Escape key
+  React.useEffect(() => {
+    if (!modalState.isOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal();
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [modalState.isOpen]);
+
   // Handle clipboard copy with feedback
   const handleCopyCitation = async (text: string, id: string) => {
     try {
@@ -300,7 +310,13 @@ export const ResourcesCredits: React.FC = () => {
 
       {/* 6. Detail Drawer/Modal for Multi-Source Cards */}
       {modalState.isOpen && modalState.category && (
-        <div className={styles.modalBackdrop} onClick={closeModal}>
+        <div
+          className={styles.modalBackdrop}
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${modalState.category.title} — Sources and Licensing`}
+        >
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <div className={styles.modalHeaderLeft}>
