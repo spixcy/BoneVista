@@ -103,7 +103,7 @@ export const ResourcesCredits: React.FC = () => {
             </div>
           </div>
 
-          {/* GitHub link + branch */}
+          {/* GitHub repository link */}
           <div className={styles.repoBadgeRow}>
             <a
               href="https://github.com/spixcy/BoneVista"
@@ -116,7 +116,6 @@ export const ResourcesCredits: React.FC = () => {
               <span>spixcy / BoneVista</span>
               <ExternalLink size={11} className={styles.repoArrow} />
             </a>
-            <span className={styles.repoBranchPill}>Ui branch</span>
           </div>
 
           {/* Meta info */}
@@ -124,8 +123,6 @@ export const ResourcesCredits: React.FC = () => {
             <span className={styles.repoMetaItem}>Public Repository</span>
             <span className={styles.repoMetaSep}>•</span>
             <span className={styles.repoMetaItem}>MIT &amp; CC BY-SA 4.0</span>
-            <span className={styles.repoMetaSep}>•</span>
-            <span className={styles.repoMetaItem}>React 19 + Three.js</span>
           </div>
         </div>
       </div>

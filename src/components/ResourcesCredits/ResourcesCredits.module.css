@@ -129,20 +129,6 @@
   opacity: 1;
 }
 
-.repoBranchPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid rgba(59, 130, 246, 0.30);
-  border-radius: 9999px;
-  color: #93c5fd;
-  font-size: 10.5px;
-  font-family: var(--font-mono);
-  font-weight: 600;
-}
-
 /* Meta row */
 .repoMetaRow {
   display: flex;

@@ -116,6 +116,7 @@ const App: React.FC = () => {
   const { setAnatomyStructures, theme } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -277,10 +278,18 @@ const App: React.FC = () => {
           <div className={landing.faqList}>
             {FAQ.map((item, i) => (
               <Reveal key={item.q} delay={i * 0.05}>
-                <details className={landing.faqItem}>
-                  <summary>{item.q}<ChevronDown size={18}/></summary>
-                  <p>{item.a}</p>
-                </details>
+                <div className={landing.faqItem} data-open={openFaqIndex === i}>
+                  <button
+                    type="button"
+                    className={landing.faqQuestion}
+                    aria-expanded={openFaqIndex === i}
+                    aria-controls={`faq-answer-${i}`}
+                    onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
+                  >
+                    <span>{item.q}</span><ChevronDown size={18} aria-hidden="true" />
+                  </button>
+                  {openFaqIndex === i && <p className={landing.faqAnswer} id={`faq-answer-${i}`}>{item.a}</p>}
+                </div>
               </Reveal>
             ))}
           </div>
