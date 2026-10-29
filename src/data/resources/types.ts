@@ -18,6 +18,7 @@ export interface ResourceItem {
   authorsOrOrganization: string;
   description: string;
   sourceUrl: string;
+  githubUrl?: string;
   licenseName: string;
   licenseUrl: string;
   citationText: string;
