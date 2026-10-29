@@ -9,11 +9,12 @@
 [![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev/)
 [![Three.js](https://img.shields.io/badge/Three.js-3D%20graphics-black?logo=threedotjs&logoColor=white)](https://threejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-typed%20UI-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Deployment](https://img.shields.io/badge/deployed%20on-Vercel-black?logo=vercel)](https://bonevista.vercel.app/)
 [![License](https://img.shields.io/badge/Code%20license-MIT-5277c3)](LICENSES.md)
 
 <br />
 
-[**Open BoneVista**](https://spixcy.github.io/BoneVista/) · [Explore the modules](#the-workspace) · [Run it locally](#run-locally)
+[**Open the live app**](https://bonevista.vercel.app/) · [Explore the modules](#the-workspace) · [Run it locally](#run-locally)
 
 <br />
 
@@ -146,6 +147,18 @@ The repository also provides an end-to-end test command:
 npm run test:e2e
 ```
 
+## Deployment
+
+The live app is hosted on [Vercel](https://bonevista.vercel.app/) as a static Vite site. The Vercel project uses the repository root, runs `npm run build`, and serves the generated `dist/` directory. No backend service or runtime environment variables are required for the current frontend.
+
+The X-ray workspace is a local viewing and reference-matching tool: it does not send images to an API or generate a patient-specific 3D model. The separate `xray-reconstruction-service/` directory is an experimental FastAPI scaffold and is not part of the live deployment.
+
+The current production deployment was created from the Vercel CLI. Connect the GitHub repository in Vercel project settings to enable automatic preview deployments for pull requests and production deployments from the configured branch. Until Git integration is enabled, publish a new version from the project root with:
+
+```bash
+vercel deploy --prod --project bonevista
+```
+
 ## Built with
 
 | Area | Tools |
@@ -187,6 +200,6 @@ For anatomy assets, include the source and required attribution and license deta
 
 **BoneVista** · Explore anatomy. Understand the connections.
 
-[Open the live workspace](https://spixcy.github.io/BoneVista/) · [Report an issue](https://github.com/spixcy/BoneVista/issues)
+[Open the live app](https://bonevista.vercel.app/) · [Report an issue](https://github.com/spixcy/BoneVista/issues)
 
 </div>
