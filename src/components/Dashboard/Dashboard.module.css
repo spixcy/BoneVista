@@ -462,8 +462,8 @@
 
 .studyDescription {
   margin: 0 auto 0 0;
-  color: var(--text-secondary, #a0aec0);
-  font: 400 12px/1.5 var(--font-sans);
+  color: var(--color-text-primary, #e8eefc);
+  font: 500 13px/1.5 var(--font-sans);
 }
 
 .studyCaseButton:hover {

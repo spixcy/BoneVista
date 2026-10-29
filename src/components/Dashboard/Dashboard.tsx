@@ -96,8 +96,8 @@ const actions: QuickAction[] = [
     title: 'NEET PG Physiology',
     detail: 'Watch high-yield physiology unfold, then test your recall',
     icon: GraduationCap,
-    art: '/branding/card-neuro.jpg',
-    tone: 'indigo',
+    art: '/branding/neet-pg-physiology.svg',
+    tone: 'blue',
   },
 ];
 
