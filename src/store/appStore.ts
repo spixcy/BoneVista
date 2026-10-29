@@ -53,21 +53,6 @@ export interface AnatomyStructure {
   path: string[];
 }
 
-export type ReconstructionStatus = 'idle' | 'uploading' | 'processing' | 'complete' | 'error' | 'demo';
-
-export interface ReconstructionResult {
-  status: ReconstructionStatus;
-  modelUrl: string | null;
-  metrics: {
-    meanError: number | null;
-    hausdorff95: number | null;
-    foldsUsed: number | null;
-    inferenceTime: number | null;
-  };
-  errorMessage: string | null;
-  isDemoMode: boolean;
-}
-
 interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
@@ -145,11 +130,8 @@ interface AppState {
   xrayUpload: XrayUpload;
   setXrayAP: (file: File | null) => void;
   setXrayLateral: (file: File | null) => void;
-  reconstructionAnatomyTarget: string | null;
-  setReconstructionAnatomyTarget: (target: string | null) => void;
-  reconstruction: ReconstructionResult;
-  runReconstruction: () => Promise<void>;
-  resetReconstruction: () => void;
+  xrayTargetBoneId: string | null;
+  setXrayTargetBone: (id: string | null) => void;
 
   // Studies
   studies: Study[];
@@ -162,14 +144,6 @@ interface AppState {
   rightPanelOpen: boolean;
   setRightPanelOpen: (v: boolean) => void;
 }
-
-const defaultReconstruction: ReconstructionResult = {
-  status: 'idle',
-  modelUrl: null,
-  metrics: { meanError: null, hausdorff95: null, foldsUsed: null, inferenceTime: null },
-  errorMessage: null,
-  isDemoMode: false,
-};
 
 export const useAppStore = create<AppState>((set, get) => ({
   theme: (() => {
@@ -292,20 +266,13 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (prev.lateralPreview) URL.revokeObjectURL(prev.lateralPreview);
     set({ xrayUpload: { ...prev, lateral: file, lateralPreview: file ? URL.createObjectURL(file) : null } });
   },
-  reconstructionAnatomyTarget: null,
-  setReconstructionAnatomyTarget: (target) => set({ reconstructionAnatomyTarget: target }),
-  reconstruction: defaultReconstruction,
-  runReconstruction: async () => {
-    const { xrayUpload } = get();
-    if (!xrayUpload.ap || !xrayUpload.lateral) return;
-
-    set({ reconstruction: {
-      ...defaultReconstruction,
-      status: 'error',
-      errorMessage: 'Reconstruction is unavailable. No validated inference service or compatible checkpoint is configured.',
-    } });
-  },
-  resetReconstruction: () => set({ reconstruction: defaultReconstruction }),
+  xrayTargetBoneId: null,
+  setXrayTargetBone: (id) => set({
+    xrayTargetBoneId: id,
+    selectedBones: id ? new Set([id]) : new Set(),
+    hiddenBones: new Set([...get().hiddenBones].filter((hiddenId) => hiddenId !== id)),
+    isolationMode: false,
+  }),
 
   studies: [],
   activeStudyId: null,

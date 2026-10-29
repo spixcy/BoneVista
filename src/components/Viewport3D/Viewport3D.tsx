@@ -29,7 +29,7 @@ const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>
     clone.position.copy(center).multiplyScalar(-scale);
     return clone;
   }, [scene]);
-  const { anatomyStructures, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView, viewMode, stressTargetId, stressResultMPa } = useAppStore();
+  const { anatomyStructures, selectedBones, hiddenBones, isolationMode, toggleBoneSelection, isRotating, anatomicalView, viewMode, stressTargetId, stressResultMPa, xrayTargetBoneId } = useAppStore();
   useEffect(() => onReady(model), [model, onReady]);
   const selectedId = Array.from(selectedBones).pop() ?? null;
   const group = useRef<THREE.Group>(null);
@@ -46,19 +46,20 @@ const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>
       object.visible = !id || (!hiddenBones.has(id) && (!isolationMode || selectedBones.has(id)));
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       const isStressTarget = viewMode === 'stress' && stressResultMPa !== null && id === stressTargetId;
+      const isXrayTarget = viewMode === 'bone' && id === xrayTargetBoneId;
       const stressColor = isStressTarget
         ? new THREE.Color('#2864d7').lerp(new THREE.Color('#ed493b'), Math.max(0, Math.min(1, stressResultMPa / 10)))
         : null;
       materials.forEach((material) => {
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.color.set(stressColor ?? (id && selectedBones.has(id) ? '#668cff' : '#d4d3c8'));
-          material.emissive.set(isStressTarget && stressColor ? stressColor.clone().multiplyScalar(0.18) : id && selectedBones.has(id) ? '#182b68' : '#000000');
+          material.color.set(stressColor ?? (isXrayTarget ? '#ef4444' : id && selectedBones.has(id) ? '#668cff' : '#d4d3c8'));
+          material.emissive.set(isStressTarget && stressColor ? stressColor.clone().multiplyScalar(0.18) : isXrayTarget ? '#581515' : id && selectedBones.has(id) ? '#182b68' : '#000000');
           material.roughness = 0.78;
           material.metalness = 0.02;
         }
       });
     });
-  }, [model, byNode, selectedBones, hiddenBones, isolationMode, viewMode, stressTargetId, stressResultMPa]);
+  }, [model, byNode, selectedBones, hiddenBones, isolationMode, viewMode, stressTargetId, stressResultMPa, xrayTargetBoneId]);
 
   useEffect(() => {
     if (!selectedId || !controls.current) return;
