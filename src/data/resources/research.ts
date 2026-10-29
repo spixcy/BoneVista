@@ -8,6 +8,7 @@ export const researchResources: ResourceItem[] = [
     authorsOrOrganization: 'NAAMII (Nepal Applied Mathematics and Informatics Institute for Research)',
     description: 'Benchmark survey and deep-learning methodology evaluating 3D anatomical surface reconstruction from bi-planar radiographs.',
     sourceUrl: 'https://github.com/naamiinepal/xrayto3D-benchmark',
+    githubUrl: 'https://github.com/naamiinepal/xrayto3D-benchmark',
     licenseName: 'GPL-3.0',
     licenseUrl: 'https://github.com/naamiinepal/xrayto3D-benchmark/blob/main/LICENSE',
     citationText: 'Karki, M., et al. (2023). Xrayto3D: A benchmark for 3D anatomy reconstruction from bi-planar X-rays. NAAMII Research. GitHub. https://github.com/naamiinepal/xrayto3D-benchmark',

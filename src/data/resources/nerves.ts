@@ -8,6 +8,7 @@ export const nerveResources: ResourceItem[] = [
     authorsOrOrganization: 'Seema Bansal and contributors',
     description: 'Segmented 3D model of 255 peripheral nerves and cranial pathways mapped into 44 functional clinical groups.',
     sourceUrl: 'https://github.com/SeemaBansal1/3d-human-body-anatomy',
+    githubUrl: 'https://github.com/SeemaBansal1/3d-human-body-anatomy',
     licenseName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
     citationText: 'Bansal, S. (2026). 3D Human Body Anatomy: Peripheral & Cranial Nerve Models (Commit 28912432581accd7a1c62129d55f0e9758221d48) [3D Model]. GitHub. https://github.com/SeemaBansal1/3d-human-body-anatomy',
