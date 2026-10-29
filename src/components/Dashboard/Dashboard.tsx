@@ -11,7 +11,6 @@ import {
   Layers3,
   Sparkles,
   BookOpen,
-  Compass,
   ShieldCheck,
 } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
@@ -204,38 +203,14 @@ const Dashboard: React.FC = () => {
         </div>
       </section>
 
-      {/* Chotu Skeleton Guide & Companion Card */}
-      <section className={styles.chotuGuideSection}>
-        <div className={styles.chotuCard}>
-          <div className={styles.chotuArtWrap}>
-            <img
-              src="/branding/learning-guide.webp"
-              alt="Chotu - BoneVista anatomy companion"
-              className={styles.chotuImg}
-            />
-            <div className={styles.chotuBadge}>
-              <Sparkles size={12} />
-              <span>Chotu &middot; Companion</span>
-            </div>
-          </div>
-          <div className={styles.chotuContent}>
-            <div className={styles.chotuText}>
-              <span className={styles.chotuEyebrow}>FIELD GUIDE &middot; COMPANION</span>
-              <h3>Meet Chotu, Your Anatomy Companion</h3>
-              <p>
-                Use short study paths to connect anatomy concepts with the 3D atlas, spine, muscle, brain, and biomechanics tools.
-              </p>
-            </div>
-            <div className={styles.chotuActions}>
-              <button className={styles.chotuPrimaryBtn} onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}>
-                <Compass size={14} /> Jump into 3D Atlas
-              </button>
-              <button className={styles.chotuSecondaryBtn} onClick={() => setActivePage('studies')}>
-                <BookOpen size={14} /> Open Study Guide
-              </button>
-            </div>
-          </div>
+      {/* Compact study callout */}
+      <section className={styles.studyCallout} aria-label="Case study">
+        <div className={styles.studyMascot}>
+          <img src="/branding/learning-guide.webp" alt="Cute skeleton reading an anatomy book" loading="lazy" decoding="async" />
         </div>
+        <button className={styles.studyCaseButton} onClick={() => setActivePage('studies')}>
+          Case Study <ArrowRight size={15} />
+        </button>
       </section>
 
       {/* Compact Overview: Reference Atlas & Study Guide */}

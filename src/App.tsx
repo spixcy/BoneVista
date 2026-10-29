@@ -65,7 +65,7 @@ const PILLARS = [
 const FAQ = [
   { q: 'What is BoneVista?', a: 'BoneVista is a browser-based 3D anatomy workspace. It combines a segmented skeleton, muscle layers, brain and nerve atlases, a spine explorer, an educational stress solver and an X-ray viewer in one place.' },
   { q: 'Is it a medical or diagnostic tool?', a: 'No. BoneVista is an educational and research prototype. It is not a medical device and must not be used for diagnosis or treatment planning.' },
-  { q: 'Do my X-ray images get uploaded anywhere?', a: 'No. Radiographs are opened and processed locally in your browser session. An optional reconstruction service can be run on your own machine, but nothing is sent to a remote server.' },
+  { q: 'Do my X-ray images get uploaded anywhere?', a: 'No. Radiographs stay in your browser. Image viewing and manual atlas matching happen locally; the app does not analyze the X-rays.' },
   { q: 'Where does the anatomy data come from?', a: 'The 3D meshes are based on the open Z-Anatomy and BodyParts3D datasets, licensed under CC BY-SA 4.0.' },
   { q: 'What do I need to run it?', a: 'A modern desktop browser with WebGL 2 — recent Chrome, Edge, Firefox or Safari. A dedicated GPU helps with the larger muscle and brain models.' },
 ];
@@ -109,7 +109,7 @@ const LazyMount: React.FC<{ children: React.ReactNode; className?: string; minHe
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 const App: React.FC = () => {
-  const { setAnatomyStructures, theme } = useAppStore();
+  const { setAnatomyStructures, setActivePage, theme } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
 
@@ -233,19 +233,12 @@ const App: React.FC = () => {
 
         <section className={landing.scanner} id="scanner">
           <Reveal className={landing.scannerCopy}>
-            <div>
-              <span className={landing.eyebrow}>03 · Try it</span>
-              <h2 className={landing.displayTitle}>One atlas. <em>Every angle.</em></h2>
+            <div className={landing.scannerMascot}>
+              <img src="/branding/learning-guide.webp" alt="Cute skeleton reading an anatomy book" loading="lazy" decoding="async" />
             </div>
-            <div>
-            <p className={landing.bodyCopy}>Pick a body region, choose a bone, then drag to orbit it or toggle a wireframe view. Hit <strong>Full screen</strong> to open any bone in the Bone Explorer.</p>
-            <ul className={landing.checkList}>
-              <li>19 bones across the limbs, spine, trunk and head</li>
-              <li>Smooth orbit, zoom and auto-rotate controls</li>
-              <li>Solid and wireframe display modes</li>
-            </ul>
-            <a className={landing.explorerLink} href="#/bone-explorer">Open the full Bone Explorer · all 335 structures <ArrowRight size={15}/></a>
-            </div>
+            <button className={landing.caseStudyButton} onClick={() => { setActivePage('studies'); scrollToId('platform'); }}>
+              Case Study <ArrowRight size={15}/>
+            </button>
           </Reveal>
           <LazyMount className={landing.scannerFigure} minHeight={560}>
             <Suspense fallback={<div className={landing.loadingFigure}>Preparing 3D preview…</div>}>

@@ -411,157 +411,61 @@
 }
 
 
-/* ── Chotu Skeleton Guide & Companion Section ── */
-.chotuGuideSection {
-  width: 100%;
-}
-
-.chotuCard {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: auto 1fr;
+.studyCallout {
+  display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 22px;
-  padding: 16px 22px;
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  width: 100%;
+  min-height: 132px;
+  padding: 10px 24px;
+  border: 1px solid rgba(96, 165, 250, 0.22);
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(20, 24, 45, 0.85) 0%, rgba(13, 18, 36, 0.95) 100%);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  background: linear-gradient(115deg, rgba(17, 30, 52, 0.8), rgba(8, 17, 34, 0.96));
 }
 
-.chotuCard:hover {
-  border-color: rgba(168, 85, 247, 0.55);
-  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.2);
+.studyMascot {
+  width: 104px;
+  height: 112px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: #11172a;
+  box-shadow: 0 8px 28px rgba(91, 115, 210, 0.2);
 }
 
-.chotuArtWrap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.chotuImg {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  border-radius: 12px;
-  filter: drop-shadow(0 6px 14px rgba(139, 92, 246, 0.4));
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
-}
-
-.chotuCard:hover .chotuImg {
-  transform: translateY(-2px) scale(1.05);
-}
-
-.chotuBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  border-radius: 20px;
-  background: rgba(139, 92, 246, 0.15);
-  color: #d8b4fe;
-  font: 600 10.5px var(--font-mono);
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-}
-
-.chotuBadge svg {
-  color: #c084fc;
-  flex-shrink: 0;
-}
-
-.chotuContent {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.chotuText {
-  max-width: 560px;
-}
-
-.chotuEyebrow {
-  color: #c084fc;
-  font: 700 9.5px var(--font-mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.studyMascot img {
   display: block;
+  width: 164px;
+  height: 164px;
+  max-width: none;
+  object-fit: cover;
+  object-position: left center;
+  transform: translate(-18px, -18px);
 }
 
-.chotuText h3 {
-  color: #f1f5f9;
-  font: 650 16px/1.3 var(--font-sans);
-  letter-spacing: -0.02em;
-  margin: 3px 0 5px;
-}
-
-.chotuText p {
-  color: #94a3b8;
-  font-size: 12.5px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.chotuActions {
-  display: flex;
+.studyCaseButton {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  flex-shrink: 0;
-}
-
-.chotuPrimaryBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
-  border: 1px solid #7c3aed;
-  border-radius: 8px;
-  background: #6d28d9;
-  color: #ffffff;
-  font: 600 12px var(--font-sans);
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(125, 162, 255, 0.58);
+  border-radius: 999px;
+  background: rgba(125, 162, 255, 0.1);
+  color: #a9c0ff;
+  font: 650 12px var(--font-sans);
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
-  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.chotuPrimaryBtn:hover {
-  background: #7c3aed;
+.studyCaseButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(109, 40, 217, 0.45);
+  background: #7da2ff;
+  color: #081122;
+  box-shadow: 0 8px 24px rgba(91, 130, 230, 0.28);
 }
-
-.chotuSecondaryBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
-  font: 550 12px var(--font-sans);
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  white-space: nowrap;
-}
-
-.chotuSecondaryBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
 /* ── Compact Structured Overview Row (Reference Atlas & Studies) ── */
 .overviewRow {
   display: grid;
@@ -707,9 +611,6 @@
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .chotuCard {
-    grid-template-columns: 1fr;
-  }
   .overviewRow {
     grid-template-columns: 1fr;
   }
@@ -737,8 +638,23 @@
     width: 100%;
     justify-content: center;
   }
-  .chotuContent {
-    flex-direction: column;
-    align-items: flex-start;
+  .studyCallout {
+    min-height: 116px;
+    gap: 16px;
+    padding: 8px 14px;
+  }
+  .studyMascot {
+    width: 88px;
+    height: 96px;
+  }
+  .studyMascot img {
+    width: 142px;
+    height: 142px;
+    transform: translate(-16px, -16px);
+  }
+  .studyCaseButton {
+    min-height: 36px;
+    padding: 0 13px;
+    font-size: 11px;
   }
 }
