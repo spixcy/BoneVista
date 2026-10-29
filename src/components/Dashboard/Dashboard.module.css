@@ -468,12 +468,6 @@
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.studyPgButton {
-  border-color: rgba(125, 162, 255, 0.72);
-  background: #7da2ff;
-  color: #081122;
-}
-
 .studyDescription {
   margin: 0 auto 0 0;
   color: var(--color-text-primary, #e8eefc);
