@@ -439,7 +439,7 @@ const SettingsPlaceholder: React.FC = () => {
 function pageName(page: string): string {
   const map: Record<string, string> = {
     dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro & Brain Explorer', spine: 'Spine Explorer',
-    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings',
+    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings', resources: 'Resources & Credits',
   };
   return map[page] ?? page;
 }
