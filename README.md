@@ -147,17 +147,11 @@ The repository also provides an end-to-end test command:
 npm run test:e2e
 ```
 
-## Deployment
+## Live app
 
-The live app is hosted on [Vercel](https://bonevista.vercel.app/) as a static Vite site. The Vercel project uses the repository root, runs `npm run build`, and serves the generated `dist/` directory. No backend service or runtime environment variables are required for the current frontend.
+**Try BoneVista:** [bonevista.vercel.app](https://bonevista.vercel.app/)
 
-The X-ray workspace is a local viewing and reference-matching tool: it does not send images to an API or generate a patient-specific 3D model. The separate `xray-reconstruction-service/` directory is an experimental FastAPI scaffold and is not part of the live deployment.
-
-The current production deployment was created from the Vercel CLI. Connect the GitHub repository in Vercel project settings to enable automatic preview deployments for pull requests and production deployments from the configured branch. Until Git integration is enabled, publish a new version from the project root with:
-
-```bash
-vercel deploy --prod --project bonevista
-```
+The site is deployed as a static frontend. X-rays stay in the browser for viewing and manual reference matching; the experimental reconstruction API scaffold is not part of the live app.
 
 ## Built with
 
