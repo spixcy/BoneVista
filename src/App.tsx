@@ -109,7 +109,7 @@ const LazyMount: React.FC<{ children: React.ReactNode; className?: string; minHe
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 const App: React.FC = () => {
-  const { setAnatomyStructures, setActivePage, theme } = useAppStore();
+  const { setAnatomyStructures, theme } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
 
@@ -232,14 +232,6 @@ const App: React.FC = () => {
         <BoneBiology eyebrowClassName={landing.eyebrow} titleClassName={landing.displayTitle} />
 
         <section className={landing.scanner} id="scanner">
-          <Reveal className={landing.scannerCopy}>
-            <div className={landing.scannerMascot}>
-              <img src="/branding/learning-guide.webp" alt="Cute skeleton reading an anatomy book" loading="lazy" decoding="async" />
-            </div>
-            <button className={landing.caseStudyButton} onClick={() => { setActivePage('studies'); scrollToId('platform'); }}>
-              Case Study <ArrowRight size={15}/>
-            </button>
-          </Reveal>
           <LazyMount className={landing.scannerFigure} minHeight={560}>
             <Suspense fallback={<div className={landing.loadingFigure}>Preparing 3D preview…</div>}>
               <ScannerTarget3D />
