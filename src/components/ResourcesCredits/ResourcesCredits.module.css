@@ -378,6 +378,47 @@
   background: rgba(16, 26, 44, 0.6);
 }
 
+.modalTabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 20px 0;
+  background: rgba(16, 26, 44, 0.4);
+  border-bottom: 1px solid rgba(45, 75, 125, 0.25);
+}
+
+.modalTab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #8da2c0;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modalTab:hover {
+  color: #dbeafe;
+}
+
+.modalTabActive {
+  color: #60a5fa;
+  border-bottom-color: #3b82f6;
+  font-weight: 600;
+}
+
+.attributionBox {
+  background: rgba(10, 18, 34, 0.6);
+  border-left: 2px solid #3b82f6;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #a5b9d6;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
 .modalHeaderLeft {
   display: flex;
   align-items: center;

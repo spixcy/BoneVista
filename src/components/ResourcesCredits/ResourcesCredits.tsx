@@ -330,6 +330,27 @@ export const ResourcesCredits: React.FC = () => {
               </button>
             </div>
 
+            <div className={styles.modalTabs}>
+              <button
+                className={`${styles.modalTab} ${modalState.mode === 'all' ? styles.modalTabActive : ''}`}
+                onClick={() => setModalState(prev => ({ ...prev, mode: 'all' }))}
+              >
+                All Details ({modalState.category.resources.length})
+              </button>
+              <button
+                className={`${styles.modalTab} ${modalState.mode === 'source' ? styles.modalTabActive : ''}`}
+                onClick={() => setModalState(prev => ({ ...prev, mode: 'source' }))}
+              >
+                Sources &amp; Commits
+              </button>
+              <button
+                className={`${styles.modalTab} ${modalState.mode === 'license' ? styles.modalTabActive : ''}`}
+                onClick={() => setModalState(prev => ({ ...prev, mode: 'license' }))}
+              >
+                Licenses &amp; Verification
+              </button>
+            </div>
+
             <div className={styles.modalBody}>
               <p className={styles.modalIntro}>
                 Individual source provenance, exact commits, verified licenses, and attribution records for {modalState.category.title}:
@@ -364,6 +385,12 @@ export const ResourcesCredits: React.FC = () => {
 
                     <p className={styles.resourceItemDesc}>{item.description}</p>
                     <p className={styles.resourceItemDesc}><em>Usage: {item.boneVistaUsage}</em></p>
+
+                    {(modalState.mode === 'license' || modalState.mode === 'all') && item.attributionText && (
+                      <div className={styles.attributionBox}>
+                        <strong>Attribution:</strong> {item.attributionText}
+                      </div>
+                    )}
 
                     <div className={styles.resourceItemActions}>
                       <a
