@@ -101,6 +101,7 @@ All processing runs **locally in the browser** or through an optional local Fast
 - 🔬 **1D Axial FEA Stress Solver:** Direct stiffness method matrix assembly ($[K]\{u\} = \{F\}$) with live Gaussian elimination and real-time 0–10 MPa heatmapped mesh rendering.
 - 🩻 **Bi-Planar Radiograph Studio:** Orthogonal AP/Lateral radiograph viewer with 10%–800% zoom, 90° rotation, contrast/brightness sliders, and manual anatomical registration.
 - ⚡ **Local AI Microservice:** Decoupled FastAPI backend for local, privacy-first bi-planar X-ray to 3D reconstruction.
+- 📚 **Resources & Credits:** A compact, searchable library of every anatomy dataset, research reference, and open-source library powering BoneVista — with individual source links, verified license records, and one-click citation copying. See [LICENSES.md](LICENSES.md) for full attribution terms.
 
 <details>
 <summary><b>🔍 View Included Hip Arthroplasty Teaching Dataset</b></summary>
