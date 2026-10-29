@@ -53,7 +53,7 @@ test('Resources & Credits: search filters cards by query', async ({ page }) => {
 
   // At least one card should remain
   const cards = page.locator('article');
-  await expect(cards).toHaveCount({ minimum: 1 } as never);
+  expect(await cards.count()).toBeGreaterThanOrEqual(1);
 
   // Clear search restores all 4 cards
   await page.getByTitle('Clear search').click();
