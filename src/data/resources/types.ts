@@ -38,5 +38,7 @@ export interface ResourceCategoryInfo {
   description: string;
   thumbnailUrl: string;
   thumbnailAlt: string;
+  thumbnailScale?: number;
+  thumbnailPosition?: string;
   resources: ResourceItem[];
 }

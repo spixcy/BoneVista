@@ -136,6 +136,10 @@ export const ResourcesCredits: React.FC = () => {
                     alt={cat.thumbnailAlt}
                     className={styles.cardThumbnail}
                     loading="lazy"
+                    style={{
+                      transform: `scale(${cat.thumbnailScale ?? 1})`,
+                      objectPosition: cat.thumbnailPosition ?? 'center'
+                    }}
                   />
                 </div>
                 <div className={styles.cardBody}>

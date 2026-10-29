@@ -266,25 +266,26 @@
 }
 
 .cardThumbnailWrap {
-  width: 82px;
-  height: 82px;
-  border-radius: 8px;
+  width: 96px;
+  height: 80px;
+  border-radius: 9px;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(60, 95, 150, 0.3);
-  background: #091120;
+  border: 1px solid rgba(60, 95, 150, 0.4);
+  background: #040812;
   position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .cardThumbnail {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s ease;
 }
 
 .card:hover .cardThumbnail {
-  transform: scale(1.05);
+  filter: brightness(1.15) contrast(1.04);
 }
 
 .cardBody {

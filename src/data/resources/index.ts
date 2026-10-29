@@ -36,6 +36,8 @@ export const resourceCategories: ResourceCategoryInfo[] = [
     description: 'Reference skeletal models, anatomical labels and related anatomy resources.',
     thumbnailUrl: '/branding/3d-anatomy-card.jpg',
     thumbnailAlt: '3D Skeletal Anatomy reference thumbnail',
+    thumbnailScale: 1.15,
+    thumbnailPosition: 'center',
     resources: skeletalResources
   },
   {
@@ -45,6 +47,8 @@ export const resourceCategories: ResourceCategoryInfo[] = [
     description: 'Superficial and deep muscle anatomy, with attribution to the original model and its upstream sources.',
     thumbnailUrl: '/branding/card-muscles.jpg',
     thumbnailAlt: 'Écorché human muscle atlas illustration',
+    thumbnailScale: 1.55,
+    thumbnailPosition: 'center',
     resources: muscleResources
   },
   {
@@ -54,6 +58,8 @@ export const resourceCategories: ResourceCategoryInfo[] = [
     description: 'Brain structures and peripheral nerve models, with links to their individual sources and attribution records.',
     thumbnailUrl: '/branding/card-neuro.jpg',
     thumbnailAlt: 'Brain and peripheral neuroanatomy model illustration',
+    thumbnailScale: 1.55,
+    thumbnailPosition: 'center',
     resources: neuroResources
   },
   {
@@ -63,6 +69,8 @@ export const resourceCategories: ResourceCategoryInfo[] = [
     description: 'Software dependencies, research repositories, datasets and educational references used by BoneVista.',
     thumbnailUrl: '/branding/card-studies.jpg',
     thumbnailAlt: 'Open-source scientific libraries and research illustration',
+    thumbnailScale: 1.45,
+    thumbnailPosition: 'center',
     resources: librariesAndResearchResources
   }
 ];
