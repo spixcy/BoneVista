@@ -647,6 +647,20 @@
     flex-direction: column;
     align-items: stretch;
   }
+  .categoryPills {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 740px) {
+  .container {
+    padding: 20px 16px 40px;
+    gap: 18px;
+  }
+  .modalContent {
+    max-width: 100%;
+    max-height: 92vh;
+  }
 }
 
 @media (max-width: 560px) {
@@ -663,5 +677,22 @@
   .cardThumbnailWrap {
     width: 68px;
     height: 68px;
+  }
+  .actionsRow {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .inlineActionBtn {
+    font-size: 11px;
+    padding: 3px 5px;
+  }
+  .resourceCountBadge {
+    display: none;
+  }
+  .filterBar {
+    padding: 8px;
+  }
+  .footerLinks {
+    gap: 6px;
   }
 }
