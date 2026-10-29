@@ -25,6 +25,7 @@ const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExp
 const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
 const ResourcesCredits = lazy(() => import('./components/ResourcesCredits/ResourcesCredits'));
+const NeetPgPage = lazy(() => import('./pages/NeetPg/NeetPgPage'));
 const LandingBone = lazy(() => import('./components/LandingBone'));
 
 const EASE = [0.22, 0.8, 0.24, 1] as const;
@@ -53,22 +54,22 @@ const STATS = [
 ];
 
 const STEPS = [
-  { icon: MousePointerClick, title: 'Choose a tool', text: 'Open the skeleton, muscles, brain, nerves, spine, stress lab or X-ray studio from the workspace sidebar.' },
-  { icon: Activity, title: 'Explore & isolate', text: 'Orbit, zoom and search by English or Latin name. Click a structure to isolate it and read its details.' },
-  { icon: Download, title: 'Capture & export', text: 'Save the current model as GLB or OBJ, or export a PDF snapshot for notes and study sessions.' },
+  { icon: MousePointerClick, title: 'Choose a tool', text: 'Open an anatomy atlas, study guide, NEET PG lesson, or imaging and biomechanics tool from the workspace.' },
+  { icon: Activity, title: 'Explore & inspect', text: 'Rotate, zoom, and search atlas structures by English or Latin name. Select a structure to inspect its available details.' },
+  { icon: Download, title: 'Save your work', text: 'Export supported 3D models as GLB or OBJ, or create a PDF anatomy summary for later study.' },
 ];
 
 const PILLARS = [
   { icon: BookOpen, title: 'Built for learning', text: 'Designed for students, educators and researchers who want to understand form and function in three dimensions.' },
-  { icon: Lock, title: 'Private by design', text: 'Everything runs on your machine. Your images and selections never leave the browser.' },
-  { icon: ShieldCheck, title: 'Open anatomical data', text: 'Reference meshes come from Z-Anatomy and BodyParts3D, published under CC BY-SA 4.0.' },
+  { icon: Lock, title: 'Private by design', text: 'Radiographs are viewed in your browser for local reference. BoneVista does not upload or interpret them.' },
+  { icon: ShieldCheck, title: 'Open anatomical data', text: 'Atlas sources include Z-Anatomy and BodyParts3D. See Resources & Credits for dataset-specific licenses and attribution.' },
 ];
 
 const FAQ = [
   { q: 'What is BoneVista?', a: 'BoneVista is a browser-based 3D anatomy workspace. It combines a segmented skeleton, muscle layers, brain and nerve atlases, a spine explorer, an educational stress solver and an X-ray viewer in one place.' },
   { q: 'Is it a medical or diagnostic tool?', a: 'No. BoneVista is an educational and research prototype. It is not a medical device and must not be used for diagnosis or treatment planning.' },
   { q: 'Do my X-ray images get uploaded anywhere?', a: 'No. Radiographs stay in your browser. Image viewing and manual atlas matching happen locally; the app does not analyze the X-rays.' },
-  { q: 'Where does the anatomy data come from?', a: 'The 3D meshes are based on the open Z-Anatomy and BodyParts3D datasets, licensed under CC BY-SA 4.0.' },
+  { q: 'Where does the anatomy data come from?', a: 'BoneVista uses sources including Z-Anatomy and BodyParts3D. Their licenses and attribution details vary by dataset and are listed in Resources & Credits.' },
   { q: 'What do I need to run it?', a: 'A modern desktop browser with WebGL 2 — recent Chrome, Edge, Firefox or Safari. A dedicated GPU helps with the larger muscle and brain models.' },
 ];
 
@@ -181,7 +182,7 @@ const App: React.FC = () => {
               ))}
             </h1>
             <motion.p className={landing.heroDescription} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.6, ease: EASE }}>
-              BoneVista is an interactive anatomy studio in your browser. Explore a segmented skeleton, muscle layers, the brain and nerves, simulate bone stress and study radiographs — privately, on your own device.
+              Explore a segmented skeleton, layered muscles, brain and nerve atlases, and the spine. Use guided study, NEET PG physiology lessons, local radiograph viewing, and an educational bone-stress model—all in your browser.
             </motion.p>
             <motion.div className={landing.heroActions} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.75, ease: EASE }}>
               <a className={landing.primaryCta} href="#platform">Enter the Workspace <ArrowRight size={16}/></a>
@@ -218,8 +219,8 @@ const App: React.FC = () => {
           <Reveal className={landing.aboutIntro}>
             <span className={landing.eyebrow}>01 · About</span>
             <h2 className={landing.displayTitle}>What is <em>BoneVista?</em></h2>
-            <p className={landing.lead}>BoneVista brings a full anatomy lab to the browser. Instead of flipping through flat diagrams, you can turn the body around, peel back its layers and focus on a single structure in seconds.</p>
-            <p className={landing.bodyCopy}>The workspace brings focused anatomy tools together — from a 335-structure skeletal atlas to an educational stress solver — so you can move from <em>what it looks like</em> to <em>how it behaves</em> without switching apps.</p>
+            <p className={landing.lead}>BoneVista brings anatomy into an interactive 3D workspace. Rotate the reference skeleton, compare muscle layers, and explore structures across the brain, nerves, and spine.</p>
+            <p className={landing.bodyCopy}>Use the atlases, guided study paths, NEET PG physiology lessons, local radiograph viewer, and educational stress model together — connecting <em>what a structure looks like</em> with <em>how it works.</em></p>
           </Reveal>
           <div className={landing.pillars}>
             {PILLARS.map((pillar, i) => (
@@ -261,7 +262,7 @@ const App: React.FC = () => {
         <section className={landing.platform} id="platform">
           <Reveal className={landing.platformHeading}>
             <div><span className={landing.eyebrow}>05 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
-            <p>The full BoneVista app runs right here. Use the sidebar to switch modules, search any structure, or maximise the window for focused study.</p>
+            <p>Explore anatomy, study, and imaging tools in one place. Switch modules from the sidebar, search available structures, or expand the workspace for more room.</p>
           </Reveal>
           <Workspace workspaceMaximized={workspaceMaximized} setWorkspaceMaximized={setWorkspaceMaximized} />
         </section>
@@ -286,14 +287,14 @@ const App: React.FC = () => {
         <section className={landing.cta}>
           <Reveal className={landing.ctaInner}>
             <h2 className={landing.displayTitle}>Ready to look <em>inside?</em></h2>
-            <p className={landing.bodyCopy}>No sign-up, no upload. Open the workspace and start exploring.</p>
+            <p className={landing.bodyCopy}>No account or cloud upload needed. Open the workspace and explore at your own pace.</p>
             <a className={landing.primaryCta} href="#platform">Launch BoneVista <ArrowRight size={16}/></a>
           </Reveal>
         </section>
 
         <footer className={landing.footer}>
           <div className={landing.footerBrand}><span className={landing.brandMark}><Bone size={16}/></span><span>Bone<em>Vista</em></span></div>
-          <p className={landing.disclaimer}>Educational and research prototype. Not a medical device and not intended for diagnosis or treatment. Anatomy data © Z-Anatomy / BodyParts3D, CC BY-SA 4.0.</p>
+          <p className={landing.disclaimer}>Educational and research prototype. Not a medical device and not intended for diagnosis or treatment. Dataset credits, licenses, and attributions are listed in Resources &amp; Credits.</p>
           <a href="#top">Back to top ↑</a>
         </footer>
       </main>
@@ -375,6 +376,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
                 {activePage === 'xray'      && <div className={styles.scrollPage}><XrayWorkspace /></div>}
                 {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
                 {activePage === 'studies'   && <div className={styles.scrollPage}><StudyGuidePage /></div>}
+                {activePage === 'neet'      && <div className={styles.scrollPage}><NeetPgPage embedded /></div>}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
                 {activePage === 'resources' && <div className={styles.scrollPage}><ResourcesCredits /></div>}
               </Suspense>
@@ -403,7 +405,7 @@ const SettingsPlaceholder: React.FC = () => {
 function pageName(page: string): string {
   const map: Record<string, string> = {
     dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro Explorer', brain: 'Brain Anatomy', spine: 'Spine Explorer',
-    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Study Guide', settings: 'Settings', resources: 'Resources & Credits',
+    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Study Guide', neet: 'NEET PG', settings: 'Settings', resources: 'Resources & Credits',
   };
   return map[page] ?? page;
 }

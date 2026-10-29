@@ -11,13 +11,14 @@ import {
   Layers3,
   Sparkles,
   BookOpen,
+  GraduationCap,
   ShieldCheck,
 } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
 
 interface QuickAction {
-  page: 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies';
+  page: 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies' | 'neet';
   title: string;
   detail: string;
   icon: React.ComponentType<{ size?: number }>;
@@ -90,6 +91,14 @@ const actions: QuickAction[] = [
     art: '/branding/card-studies.jpg',
     tone: 'blue',
   },
+  {
+    page: 'neet',
+    title: 'NEET PG Physiology',
+    detail: 'Watch high-yield physiology unfold, then test your recall',
+    icon: GraduationCap,
+    art: '/branding/card-neuro.jpg',
+    tone: 'indigo',
+  },
 ];
 
 const Dashboard: React.FC = () => {
@@ -155,11 +164,11 @@ const Dashboard: React.FC = () => {
         <div className={styles.introCopy}>
           <span className={styles.eyebrow}>YOUR ANATOMY WORKSPACE</span>
           <h1>Explore Human Anatomy in 3D</h1>
-          <p>Segmented 3D skeletal atlas, muscle layers, neural pathways, and local radiograph suite in one unified environment.</p>
+          <p>Explore the skeleton, muscles, brain, nerves, and spine in 3D. Study physiology, view radiographs locally, and model bone stress in one workspace.</p>
           <div className={styles.introMeta}>
             <span><Layers3 size={13} /> {anatomyStructures.length || '335'} Atlas Structures</span>
             <span><Sparkles size={13} /> {spineCount || '26'} Isolated Vertebrae</span>
-            <span><ShieldCheck size={13} /> 100% Client-Side Private</span>
+            <span><ShieldCheck size={13} /> Browser-based workspace</span>
           </div>
         </div>
         <div className={styles.introCtaWrap}>
@@ -208,6 +217,7 @@ const Dashboard: React.FC = () => {
         <div className={styles.studyMascot}>
           <img src="/branding/learning-guide.webp" alt="Cute skeleton reading an anatomy book" loading="lazy" decoding="async" />
         </div>
+        <p className={styles.studyDescription}>Explore a focused anatomy lesson and test your recall.</p>
         <button className={styles.studyCaseButton} onClick={() => setActivePage('studies')}>
           Case Study <ArrowRight size={15} />
         </button>
@@ -223,11 +233,11 @@ const Dashboard: React.FC = () => {
               <h4>High-Fidelity Segmented Anatomy</h4>
             </div>
           </div>
-          <p>Segmented standard reference skeleton with indexed, selectable bone and muscle hierarchies.</p>
+          <p>Browse the segmented reference skeleton and select available structures for closer study.</p>
           <div className={styles.atlasStatsCompact}>
             <span className={styles.statPill}><strong>{anatomyStructures.length || '335'}</strong> Structures</span>
             <span className={styles.statPill}><strong>{spineCount || '26'}</strong> Vertebrae</span>
-            <span className={styles.statPill}><strong>100%</strong> Local</span>
+            <span className={styles.statPill}><strong>Local</strong> in-browser tools</span>
           </div>
         </div>
 

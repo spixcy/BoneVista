@@ -57,7 +57,7 @@ interface AppState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   // Navigation
-  activePage: 'dashboard' | 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies' | 'settings' | 'resources';
+  activePage: 'dashboard' | 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies' | 'neet' | 'settings' | 'resources';
   setActivePage: (page: AppState['activePage']) => void;
 
   // 3D Viewer

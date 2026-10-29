@@ -460,6 +460,12 @@
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.studyDescription {
+  margin: 0 auto 0 0;
+  color: var(--text-secondary, #a0aec0);
+  font: 400 12px/1.5 var(--font-sans);
+}
+
 .studyCaseButton:hover {
   transform: translateY(-2px);
   background: #7da2ff;
@@ -655,6 +661,9 @@
   .studyCaseButton {
     min-height: 36px;
     padding: 0 13px;
+    font-size: 11px;
+  }
+  .studyDescription {
     font-size: 11px;
   }
 }

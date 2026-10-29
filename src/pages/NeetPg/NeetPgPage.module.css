@@ -11,6 +11,7 @@
   background: var(--np-ink);
   color: var(--np-white);
 }
+.embedded { min-height: 100%; }
 
 /* ─── Header ─── */
 .header {
@@ -38,6 +39,7 @@
   text-decoration: none;
   transition: color .2s, border-color .2s;
 }
+.back, .headerLink { background: transparent; cursor: pointer; }
 .back:hover, .headerLink:hover { color: var(--np-white); border-color: rgba(125, 162, 255, .45); }
 .headerLink { margin-left: auto; }
 .brand { display: flex; align-items: center; gap: 10px; font: 500 21px/1 var(--font-display); white-space: nowrap; }

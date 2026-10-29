@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Bone, Dumbbell, Brain, Network, AlignCenter, Upload, Activity, BookOpen, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Bone, Dumbbell, Brain, Network, AlignCenter, Upload, Activity, BookOpen, GraduationCap, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../../store/appStore';
 import styles from './Sidebar.module.css';
 
@@ -14,6 +14,7 @@ const navItems = [
   { id: 'xray', label: 'X-Ray Workspace', icon: Upload },
   { id: 'stress', label: 'Stress Analysis', icon: Activity },
   { id: 'studies', label: 'Study Guide', icon: BookOpen },
+  { id: 'neet', label: 'NEET PG', icon: GraduationCap },
 ] as const;
 
 const Sidebar: React.FC = () => {

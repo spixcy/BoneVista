@@ -96,16 +96,19 @@ const Reveal: React.FC<{ children: React.ReactNode; className?: string }> = ({ c
   </motion.div>
 );
 
-const NeetPgPage: React.FC = () => {
+const NeetPgPage: React.FC<{ embedded?: boolean }> = ({ embedded = false }) => {
   const theme = useAppStore((state) => state.theme);
+  const setActivePage = useAppStore((state) => state.setActivePage);
+  const setViewMode = useAppStore((state) => state.setViewMode);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    document.title = 'NEET PG · Physiology in Motion — BoneVista';
-  }, [theme]);
+    if (!embedded) document.title = 'NEET PG · Physiology in Motion — BoneVista';
+  }, [theme, embedded]);
 
   // Links such as #/neet-pg/synapse scroll straight to that topic.
   useEffect(() => {
+    if (embedded) return;
     const go = (smooth: boolean) => {
       const id = topicFromHash();
       if (!id) { if (!smooth) window.scrollTo(0, 0); return; }
@@ -115,14 +118,23 @@ const NeetPgPage: React.FC = () => {
     const onHash = () => go(true);
     window.addEventListener('hashchange', onHash);
     return () => { window.clearTimeout(timer); window.removeEventListener('hashchange', onHash); };
-  }, []);
+  }, [embedded]);
+
+  const openTopic = (id: string) => {
+    if (!embedded) return;
+    document.getElementById(`topic-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${embedded ? styles.embedded : ''}`}>
       <header className={styles.header}>
-        <a className={styles.back} href="#top"><ArrowLeft size={16} /> BoneVista</a>
+        {embedded
+          ? <button type="button" className={styles.back} onClick={() => setActivePage('dashboard')}><ArrowLeft size={16} /> Workspace</button>
+          : <a className={styles.back} href="#top"><ArrowLeft size={16} /> BoneVista</a>}
         <div className={styles.brand}><span className={styles.brandMark}><Brain size={16} /></span><span>NEET PG <em>· Physiology in Motion</em></span></div>
-        <a className={styles.headerLink} href="#/bone-explorer">Bone Explorer</a>
+        {embedded
+          ? <button type="button" className={styles.headerLink} onClick={() => { setViewMode('bone'); setActivePage('viewer'); }}>3D Anatomy</button>
+          : <a className={styles.headerLink} href="#/bone-explorer">Bone Explorer</a>}
       </header>
 
       <section className={styles.hero}>
@@ -142,7 +154,9 @@ const NeetPgPage: React.FC = () => {
             <span><b>6</b> animated topics</span><span><b>{NEET_TOPICS.reduce((n, t) => n + t.steps.length, 0)}</b> narrated steps</span><span><b>{NEET_TOPICS.reduce((n, t) => n + t.highYield.length, 0)}</b> high-yield facts</span>
           </motion.div>
         </div>
-        <a className={styles.scrollCue} href={`${NEET_HASH}/${NEET_TOPICS[0].id}`} aria-label="Scroll to the first topic"><ChevronDown size={18} /></a>
+        {embedded
+          ? <button type="button" className={styles.scrollCue} onClick={() => openTopic(NEET_TOPICS[0].id)} aria-label="Scroll to the first topic"><ChevronDown size={18} /></button>
+          : <a className={styles.scrollCue} href={`${NEET_HASH}/${NEET_TOPICS[0].id}`} aria-label="Scroll to the first topic"><ChevronDown size={18} /></a>}
       </section>
 
       <main>
