@@ -39,7 +39,7 @@ const GithubIcon: React.FC<{ size?: number; className?: string }> = ({ size = 15
 interface ModalState {
   isOpen: boolean;
   category: ResourceCategoryInfo | null;
-  mode: 'source' | 'license' | 'citation' | 'all';
+  mode: 'source' | 'github' | 'license' | 'citation' | 'all';
 }
 
 export const ResourcesCredits: React.FC = () => {
@@ -112,7 +112,7 @@ export const ResourcesCredits: React.FC = () => {
       .filter((cat): cat is ResourceCategoryInfo => cat !== null);
   }, [searchQuery, selectedCategory]);
 
-  const openCategoryModal = (cat: ResourceCategoryInfo, mode: 'source' | 'license' | 'citation' | 'all') => {
+  const openCategoryModal = (cat: ResourceCategoryInfo, mode: 'source' | 'github' | 'license' | 'citation' | 'all') => {
     setModalState({ isOpen: true, category: cat, mode });
   };
 
@@ -122,20 +122,32 @@ export const ResourcesCredits: React.FC = () => {
 
   return (
     <div className={styles.container} data-testid="resources-credits-page">
-      {/* 1. Centered GitHub Repository Identity Link */}
+      {/* 1. Centered GitHub Repository Identity Link & Details */}
       <div className={styles.repoLinkWrap}>
-        <a
-          href="https://github.com/spixcy/BoneVista"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.repoBadge}
-          title="Open BoneVista on GitHub"
-        >
-          <GithubIcon size={15} />
-          <span>spixcy / BoneVista</span>
-          <span className={styles.repoDot}>•</span>
-          <ExternalLink size={12} className={styles.repoArrow} />
-        </a>
+        <div className={styles.repoHero}>
+          <div className={styles.repoBadgeRow}>
+            <a
+              href="https://github.com/spixcy/BoneVista"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.repoBadge}
+              title="Open BoneVista on GitHub"
+            >
+              <GithubIcon size={16} />
+              <span>spixcy / BoneVista</span>
+              <span className={styles.repoDot}>•</span>
+              <ExternalLink size={12} className={styles.repoArrow} />
+            </a>
+            <span className={styles.repoBranchPill}>Ui branch</span>
+          </div>
+          <div className={styles.repoMetaRow}>
+            <span className={styles.repoMetaItem}>Public Repository</span>
+            <span className={styles.repoMetaSep}>•</span>
+            <span className={styles.repoMetaItem}>MIT &amp; CC BY-SA 4.0</span>
+            <span className={styles.repoMetaSep}>•</span>
+            <span className={styles.repoMetaItem}>React 19 + Three.js</span>
+          </div>
+        </div>
       </div>
 
       {/* 2. Header: Title and Explanatory Subtitle */}
@@ -195,6 +207,7 @@ export const ResourcesCredits: React.FC = () => {
           filteredCategories.map((cat) => {
             const isCopied = copiedId === cat.id;
             const groupCitation = formatGroupCitations(cat.title, cat.resources);
+            const githubResources = cat.resources.filter((r) => !!r.githubUrl);
 
             return (
               <article key={cat.id} className={styles.card}>
@@ -249,6 +262,31 @@ export const ResourcesCredits: React.FC = () => {
                   )}
 
                   <span className={styles.actionSeparator}>|</span>
+
+                  {githubResources.length === 1 ? (
+                    <a
+                      href={githubResources[0].githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.inlineActionBtn}
+                      title={`GitHub: ${githubResources[0].title}`}
+                    >
+                      <GithubIcon size={12} />
+                      <span>GitHub ↗</span>
+                    </a>
+                  ) : githubResources.length > 1 ? (
+                    <button
+                      type="button"
+                      className={styles.inlineActionBtn}
+                      onClick={() => openCategoryModal(cat, 'github')}
+                      title={`View ${githubResources.length} GitHub repositories`}
+                    >
+                      <GithubIcon size={12} />
+                      <span>GitHub ({githubResources.length}) ↗</span>
+                    </button>
+                  ) : null}
+
+                  {githubResources.length > 0 && <span className={styles.actionSeparator}>|</span>}
 
                   {cat.resources.length === 1 ? (
                     <a
@@ -338,6 +376,12 @@ export const ResourcesCredits: React.FC = () => {
                 All Details ({modalState.category.resources.length})
               </button>
               <button
+                className={`${styles.modalTab} ${modalState.mode === 'github' ? styles.modalTabActive : ''}`}
+                onClick={() => setModalState(prev => ({ ...prev, mode: 'github' }))}
+              >
+                GitHub Repositories ({modalState.category.resources.filter(r => !!r.githubUrl).length})
+              </button>
+              <button
                 className={`${styles.modalTab} ${modalState.mode === 'source' ? styles.modalTabActive : ''}`}
                 onClick={() => setModalState(prev => ({ ...prev, mode: 'source' }))}
               >
@@ -356,7 +400,10 @@ export const ResourcesCredits: React.FC = () => {
                 Individual source provenance, exact commits, verified licenses, and attribution records for {modalState.category.title}:
               </p>
 
-              {modalState.category.resources.map((item) => {
+              {(modalState.mode === 'github'
+                ? modalState.category.resources.filter(r => !!r.githubUrl)
+                : modalState.category.resources
+              ).map((item) => {
                 const singleCitation = formatCitation(item);
                 const isSingleCopied = copiedId === item.id;
 
@@ -393,6 +440,18 @@ export const ResourcesCredits: React.FC = () => {
                     )}
 
                     <div className={styles.resourceItemActions}>
+                      {item.githubUrl && (
+                        <a
+                          href={item.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.resourceGithubLink}
+                          title={`Open ${item.title} on GitHub`}
+                        >
+                          <GithubIcon size={12} />
+                          <span>GitHub ↗</span>
+                        </a>
+                      )}
                       <a
                         href={item.sourceUrl}
                         target="_blank"

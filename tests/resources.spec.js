@@ -24,6 +24,16 @@ test('Resources & Credits: centered GitHub repository link appears at the top', 
   await expect(repoLink).toBeVisible();
   await expect(repoLink).toHaveAttribute('href', 'https://github.com/spixcy/BoneVista');
   await expect(repoLink).toHaveAttribute('target', '_blank');
+  await expect(page.getByText('Ui branch')).toBeVisible();
+});
+
+test('Resources & Credits: GitHub links are rendered on cards with upstream repositories', async ({ page }) => {
+  await page.goto('/');
+  await openResourcesPage(page);
+
+  // Cards with GitHub repos have GitHub action links or buttons
+  const githubActions = page.locator('article').locator('text=GitHub');
+  expect(await githubActions.count()).toBeGreaterThanOrEqual(1);
 });
 
 test('Resources & Credits: exactly four resource category cards are displayed', async ({ page }) => {
