@@ -12,18 +12,19 @@ import styles from './NeuroModeTabs.module.css';
 interface NeuroModeTabsProps {
   activeMode: NeuroMode;
   onModeChange: (mode: NeuroMode) => void;
+  modes?: NeuroMode[];
 }
 
 const MODES: NeuroMode[] = ['nervous-system', 'brain-atlas', 'neuron-lab'];
 
-export const NeuroModeTabs: React.FC<NeuroModeTabsProps> = ({ activeMode, onModeChange }) => {
+export const NeuroModeTabs: React.FC<NeuroModeTabsProps> = ({ activeMode, onModeChange, modes = MODES }) => {
   return (
     <div
       className={styles.tabBar}
       role="tablist"
-      aria-label="Neuro & Brain Explorer modes"
+      aria-label="Anatomy exploration modes"
     >
-      {MODES.map((mode) => {
+      {modes.map((mode) => {
         const meta = NEURO_MODE_META[mode];
         const isActive = activeMode === mode;
         return (

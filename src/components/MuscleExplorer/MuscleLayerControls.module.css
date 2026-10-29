@@ -1,8 +1,8 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 8px);
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 10px 12px;
   background: var(--color-bg-surface, #0e1625);
   border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
 }
@@ -28,24 +28,22 @@
 
 .presetTabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 3px;
-  background: var(--color-bg-base, #080d18);
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  border-radius: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .presetTab {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 6px 4px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 10px;
+  background: var(--color-bg-elevated, #131e30);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 9px;
   color: var(--color-text-secondary, #a2afc6);
   font: 600 11px/1.2 var(--font-sans, 'Inter', sans-serif);
   cursor: pointer;
@@ -68,7 +66,7 @@
   background: var(--color-accent-dim, rgba(94, 132, 245, 0.15));
   border-color: var(--color-accent, #7da2ff);
   color: #fff;
-  box-shadow: 0 0 12px var(--color-accent-glow, rgba(94, 132, 245, 0.35));
+  box-shadow: 0 5px 16px var(--color-accent-glow, rgba(94, 132, 245, 0.18));
 }
 
 .tabIcon {
@@ -76,6 +74,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0.85;
+  flex: none;
 }
 
 .presetTabActive .tabIcon {
@@ -83,12 +82,10 @@
   color: var(--color-accent, #7da2ff);
 }
 
-.tabLabel {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
+.tabCopy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 3px; }
+.tabLabel { display: block; max-width: 100%; color: inherit; font-size: 11px; line-height: 1.2; white-space: normal; }
+.tabSublabel { color: var(--color-text-tertiary, #71809a); font: 500 9px/1.15 var(--font-mono, monospace); white-space: normal; }
+.presetTabActive .tabSublabel { color: #b6c9ff; }
 
 .actionsRow {
   display: flex;
@@ -165,10 +162,4 @@
 .returnBonesButton:hover {
   color: var(--color-accent, #7da2ff);
   border-color: var(--color-accent, #7da2ff);
-}
-
-@media (max-width: 768px) {
-  .presetTabs {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }

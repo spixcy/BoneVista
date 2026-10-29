@@ -5,9 +5,9 @@ import {
   Bone,
   Dumbbell,
   Brain,
+  Network,
   ImageUp,
   Activity,
-  ClipboardList,
   Layers3,
   Sparkles,
   BookOpen,
@@ -18,13 +18,12 @@ import { useAppStore } from '../../store/appStore';
 import styles from './Dashboard.module.css';
 
 interface QuickAction {
-  page: 'viewer' | 'muscles' | 'neuro' | 'spine' | 'xray' | 'stress' | 'studies';
-  brainAtlas?: boolean;
+  page: 'viewer' | 'muscles' | 'neuro' | 'brain' | 'spine' | 'xray' | 'stress' | 'studies';
   title: string;
   detail: string;
   icon: React.ComponentType<{ size?: number }>;
   art: string;
-  tone: 'blue' | 'indigo' | 'purple' | 'teal' | 'violet' | 'amber' | 'emerald';
+  tone: 'blue' | 'indigo' | 'purple' | 'teal' | 'violet' | 'amber';
 }
 
 const actions: QuickAction[] = [
@@ -46,15 +45,14 @@ const actions: QuickAction[] = [
   },
   {
     page: 'neuro',
-    title: 'Neuro & Brain Explorer',
-    detail: 'Inspect cerebral cortex lobes, neural pathways, and spinal nerves',
-    icon: Brain,
+    title: 'Neuro Explorer',
+    detail: 'Follow neural pathways and explore the peripheral nervous system',
+    icon: Network,
     art: '/branding/card-neuro.jpg',
     tone: 'purple',
   },
   {
-    page: 'neuro',
-    brainAtlas: true,
+    page: 'brain',
     title: 'Brain Anatomy',
     detail: 'Open the 3D brain atlas directly and explore cerebral structures',
     icon: Brain,
@@ -87,11 +85,11 @@ const actions: QuickAction[] = [
   },
   {
     page: 'studies',
-    title: 'Studies & Cases',
-    detail: 'Organize local inspection dossiers, radiograph series, and notes',
-    icon: ClipboardList,
-    art: '/branding/card-studies.jpg',
-    tone: 'emerald',
+    title: 'Anatomy Study Guide',
+    detail: 'Review key concepts and follow guided paths into the atlas',
+    icon: BookOpen,
+    art: '/branding/3d-anatomy-card.jpg',
+    tone: 'blue',
   },
 ];
 
@@ -113,8 +111,10 @@ const Dashboard: React.FC = () => {
       setViewMode('bone');
     } else if (page === 'muscles') {
       if (muscleStatus === 'idle') setMusclePreset('superficial');
-    } else if (page === 'neuro' && action.brainAtlas) {
+    } else if (page === 'brain') {
       setNeuroMode('brain-atlas');
+    } else if (page === 'neuro') {
+      setNeuroMode('nervous-system');
     } else if (page === 'xray') {
       setViewMode('xray');
     } else if (page === 'stress') {
@@ -223,7 +223,7 @@ const Dashboard: React.FC = () => {
               <span className={styles.chotuEyebrow}>FIELD GUIDE &middot; COMPANION</span>
               <h3>Meet Chotu, Your Anatomy Companion</h3>
               <p>
-                Your interactive assistant for 3D exploration, layered biomechanics, and clinical inspection. Guided tours, anatomical quizzes, and interactive learning walkthroughs coming soon!
+                Use short study paths to connect anatomy concepts with the 3D atlas, spine, muscle, brain, and biomechanics tools.
               </p>
             </div>
             <div className={styles.chotuActions}>
@@ -231,14 +231,14 @@ const Dashboard: React.FC = () => {
                 <Compass size={14} /> Jump into 3D Atlas
               </button>
               <button className={styles.chotuSecondaryBtn} onClick={() => setActivePage('studies')}>
-                <BookOpen size={14} /> Review Case Studies
+                <BookOpen size={14} /> Open Study Guide
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Compact Overview: Reference Atlas & Clinical Studies */}
+      {/* Compact Overview: Reference Atlas & Study Guide */}
       <section className={styles.overviewRow}>
         <div className={styles.atlasCard}>
           <div className={styles.overviewHeader}>
@@ -258,19 +258,19 @@ const Dashboard: React.FC = () => {
 
         <div className={styles.studiesCard}>
           <div className={styles.overviewHeader}>
-            <div className={styles.overviewIconStudies}><ClipboardList size={16} /></div>
+            <div className={styles.overviewIconStudies}><BookOpen size={16} /></div>
             <div>
-              <span className={styles.eyebrow}>STUDIES & CASE MANAGEMENT</span>
-              <h4>Clinical Inspection Dossiers</h4>
+              <span className={styles.eyebrow}>STUDY PATHS</span>
+              <h4>Guided Anatomy Learning</h4>
             </div>
           </div>
-          <p>Organize radiographs, compare orthogonal views, and review local stress simulation sessions.</p>
+          <p>Build a learning route from core skeletal landmarks to muscles, nerves, imaging, and biomechanics.</p>
           <div className={styles.studiesActionRowCompact}>
             <button className={styles.secondaryButton} onClick={() => setActivePage('studies')}>
-              Open Dossiers <ArrowRight size={13} />
+              Open Study Guide <ArrowRight size={13} />
             </button>
-            <button className={styles.subtleButton} onClick={() => setActivePage('xray')}>
-              Upload Radiograph <ArrowRight size={13} />
+            <button className={styles.subtleButton} onClick={() => setActivePage('spine')}>
+              Explore the Spine <ArrowRight size={13} />
             </button>
           </div>
         </div>

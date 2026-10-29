@@ -410,24 +410,6 @@
   color: #fcd34d;
 }
 
-.actionCard.emerald:hover {
-  border-color: rgba(16, 185, 129, 0.7);
-  box-shadow: 0 14px 34px rgba(16, 185, 129, 0.25);
-}
-.actionCard.emerald .actionIcon {
-  background: rgba(16, 185, 129, 0.12);
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.25);
-}
-.actionCard.emerald:hover .actionIcon {
-  background: #10b981;
-  color: #ffffff;
-  border-color: #34d399;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.55);
-}
-.actionCard.emerald:hover .actionArrow {
-  color: #34d399;
-}
 
 /* ── Chotu Skeleton Guide & Companion Section ── */
 .chotuGuideSection {
@@ -635,8 +617,8 @@
 }
 
 .overviewIconStudies {
-  background: rgba(16, 185, 129, 0.12);
-  color: #34d399;
+  background: rgba(59, 130, 246, 0.12);
+  color: #7da2ff;
 }
 
 .atlasCard p,
@@ -699,9 +681,9 @@
 }
 
 .secondaryButton:hover {
-  border-color: #34d399;
-  background: rgba(16, 185, 129, 0.1);
-  color: #34d399;
+  border-color: #7da2ff;
+  background: rgba(125, 162, 255, 0.1);
+  color: #7da2ff;
 }
 
 .subtleButton {

@@ -100,7 +100,10 @@ export const MuscleLayerControls: React.FC<MuscleLayerControlsProps> = ({
               <span className={styles.tabIcon} aria-hidden="true">
                 <Icon size={14} />
               </span>
-              <span className={styles.tabLabel}>{label}</span>
+              <span className={styles.tabCopy}>
+                <span className={styles.tabLabel}>{label}</span>
+                <small className={styles.tabSublabel}>{sublabel}</small>
+              </span>
             </button>
           );
         })}

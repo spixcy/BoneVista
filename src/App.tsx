@@ -1,7 +1,6 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, animate, useInView } from 'framer-motion';
-import type { LucideIcon } from 'lucide-react';
-import { Activity, ArrowRight, Bone, BookOpen, Brain, ChevronDown, Cpu, Download, Gauge, Layers, Lock, Maximize2, Minimize2, Moon, MousePointerClick, Rows3, ScanLine, Search, ShieldCheck, Sparkles, Sun } from 'lucide-react';
+import { Activity, ArrowRight, Bone, BookOpen, ChevronDown, Cpu, Download, Lock, Maximize2, Minimize2, Moon, MousePointerClick, Search, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar/Sidebar';
 import ViewerToolbar from './components/ViewerToolbar/ViewerToolbar';
 import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
@@ -18,14 +17,13 @@ const SpineExplorer  = lazy(() => import('./components/SpineExplorer/SpineExplor
 const XrayWorkspace  = lazy(() => import('./components/XrayWorkspace/XrayWorkspace'));
 const StressAnalysis = lazy(() => import('./components/StressAnalysis/StressAnalysis'));
 const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
+const StudyGuidePage = lazy(() => import('./components/StudyGuide/StudyGuidePage'));
 const MuscleExplorerHost = lazy(() => import('./components/MuscleExplorer/MuscleExplorerHost'));
 const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/NeuroExplorerDataHost'));
 const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
 const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
 const LandingBone = lazy(() => import('./components/LandingBone'));
-
-type Page = ReturnType<typeof useAppStore.getState>['activePage'];
 
 const EASE = [0.22, 0.8, 0.24, 1] as const;
 
@@ -52,17 +50,8 @@ const STATS = [
   { value: 100, suffix: '%', label: 'Runs in your browser' },
 ];
 
-const MODULES: { page: Page; icon: LucideIcon; title: string; tag: string; text: string; art: string }[] = [
-  { page: 'viewer', icon: Bone, title: 'Skeletal Atlas', tag: '335+ bones', text: 'Rotate a fully segmented reference skeleton, isolate any bone with one click and view it from six camera presets.', art: '/branding/3d-anatomy-card.jpg' },
-  { page: 'muscles', icon: Layers, title: 'Muscle Explorer', tag: 'Écorché model', text: 'Peel back superficial and deep muscle layers, or combine them with the skeleton to see how they attach.', art: '/branding/card-muscles.jpg' },
-  { page: 'neuro', icon: Brain, title: 'Neuro & Brain', tag: '44 pathways', text: 'Browse 437 cerebral structures and 255 peripheral nerves grouped into functional pathways.', art: '/branding/card-neuro.jpg' },
-  { page: 'spine', icon: Rows3, title: 'Spine Explorer', tag: 'C1 – Coccyx', text: 'Filter the vertebral column by region — cervical, thoracic, lumbar, sacrum — synced live with the 3D view.', art: '/branding/card-spine.jpg' },
-  { page: 'stress', icon: Gauge, title: 'Stress Analysis', tag: '1D axial FEA', text: 'Apply loads and watch a direct-stiffness solver colour the bone with a live 0–10 MPa stress heatmap.', art: '/branding/card-stress.jpg' },
-  { page: 'xray', icon: ScanLine, title: 'X-Ray Studio', tag: 'AP + Lateral', text: 'Open radiographs side by side with zoom, rotation and contrast controls — processed locally, never uploaded.', art: '/branding/card-xray.jpg' },
-];
-
 const STEPS = [
-  { icon: MousePointerClick, title: 'Pick a module', text: 'Choose the skeleton, muscles, nervous system, spine, stress lab or X-ray studio from the sidebar.' },
+  { icon: MousePointerClick, title: 'Choose a tool', text: 'Open the skeleton, muscles, brain, nerves, spine, stress lab or X-ray studio from the workspace sidebar.' },
   { icon: Activity, title: 'Explore & isolate', text: 'Orbit, zoom and search by English or Latin name. Click a structure to isolate it and read its details.' },
   { icon: Download, title: 'Capture & export', text: 'Save the current model as GLB or OBJ, or export a PDF snapshot for notes and study sessions.' },
 ];
@@ -120,7 +109,7 @@ const LazyMount: React.FC<{ children: React.ReactNode; className?: string; minHe
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 const App: React.FC = () => {
-  const { setActivePage, setAnatomyStructures, theme } = useAppStore();
+  const { setAnatomyStructures, theme } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
 
@@ -158,15 +147,13 @@ const App: React.FC = () => {
     return () => { active = false; };
   }, [setAnatomyStructures]);
 
-  const openModule = (page: Page) => { setActivePage(page); scrollToId('workspace'); };
-
   return (
     <div className={landing.site}>
       <div className={landing.grain} aria-hidden="true" />
       <header className={`${landing.nav} ${scrolled ? landing.navScrolled : ''}`}>
         <a className={landing.brand} href="#top"><span className={landing.brandMark}><Bone size={18}/></span><span>Bone<em>Vista</em></span></a>
         <nav className={landing.navLinks} aria-label="Main site navigation">
-          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#/neet-pg">NEET PG</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#/neet-pg">NEET PG</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
         </nav>
         <div className={landing.navActions}>
           <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
@@ -230,7 +217,7 @@ const App: React.FC = () => {
             <span className={landing.eyebrow}>01 · About</span>
             <h2 className={landing.displayTitle}>What is <em>BoneVista?</em></h2>
             <p className={landing.lead}>BoneVista brings a full anatomy lab to the browser. Instead of flipping through flat diagrams, you can turn the body around, peel back its layers and focus on a single structure in seconds.</p>
-            <p className={landing.bodyCopy}>It brings six tools together in one workspace — from a 335-bone skeletal atlas to a simple finite-element stress solver — so you can move from <em>what it looks like</em> to <em>how it behaves</em> without switching apps.</p>
+            <p className={landing.bodyCopy}>The workspace brings focused anatomy tools together — from a 335-structure skeletal atlas to an educational stress solver — so you can move from <em>what it looks like</em> to <em>how it behaves</em> without switching apps.</p>
           </Reveal>
           <div className={landing.pillars}>
             {PILLARS.map((pillar, i) => (
@@ -267,30 +254,9 @@ const App: React.FC = () => {
           </LazyMount>
         </section>
 
-        <section className={landing.modules} id="modules">
-          <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>04 · Modules</span>
-            <h2 className={landing.displayTitle}>Six instruments. <em>One studio.</em></h2>
-            <p className={landing.bodyCopy}>Each module opens directly in the workspace below. Click a card to jump straight in.</p>
-          </Reveal>
-          <div className={landing.moduleGrid}>
-            {MODULES.map((module, i) => (
-              <Reveal key={module.page} delay={(i % 3) * 0.08}>
-                <button type="button" className={landing.moduleCard} onClick={() => openModule(module.page)}>
-                  <img className={landing.moduleArt} src={module.art} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-                  <span className={landing.moduleTop}><span className={landing.iconBadge}><module.icon size={20}/></span><small>{module.tag}</small></span>
-                  <h3>{module.title}</h3>
-                  <p>{module.text}</p>
-                  <span className={landing.moduleLink}>Open module <ArrowRight size={14}/></span>
-                </button>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
         <section className={landing.how} id="how">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>05 · How it works</span>
+            <span className={landing.eyebrow}>04 · How it works</span>
             <h2 className={landing.displayTitle}>From curiosity <em>to clarity.</em></h2>
           </Reveal>
           <ol className={landing.steps}>
@@ -307,7 +273,7 @@ const App: React.FC = () => {
 
         <section className={landing.platform} id="platform">
           <Reveal className={landing.platformHeading}>
-            <div><span className={landing.eyebrow}>06 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
+            <div><span className={landing.eyebrow}>05 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
             <p>The full BoneVista app runs right here. Use the sidebar to switch modules, search any structure, or maximise the window for focused study.</p>
           </Reveal>
           <Workspace workspaceMaximized={workspaceMaximized} setWorkspaceMaximized={setWorkspaceMaximized} />
@@ -322,7 +288,7 @@ const App: React.FC = () => {
 
         <section className={landing.faq} id="faq">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>07 · FAQ</span>
+            <span className={landing.eyebrow}>06 · FAQ</span>
             <h2 className={landing.displayTitle}>Good <em>questions.</em></h2>
           </Reveal>
           <div className={landing.faqList}>
@@ -360,7 +326,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
   const { activePage, rightPanelOpen, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const isMuscleExplorer = activePage === 'muscles';
-  const isNeuroExplorer = activePage === 'neuro';
+  const isNeuroExplorer = activePage === 'neuro' || activePage === 'brain';
   const isAnatomyWorkspace = isViewer || isMuscleExplorer || isNeuroExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -428,7 +394,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
                 {activePage === 'spine'     && <div className={styles.scrollPage}><SpineExplorer /></div>}
                 {activePage === 'xray'      && <div className={styles.scrollPage}><XrayWorkspace /></div>}
                 {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
-                {activePage === 'studies'   && <StudiesPlaceholder />}
+                {activePage === 'studies'   && <div className={styles.scrollPage}><StudyGuidePage /></div>}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
               </Suspense>
             </motion.div>
@@ -439,15 +405,6 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
           </div>
           </WorkspaceVisibleContext.Provider>
   );
-};
-
-// Simple placeholder pages
-const StudiesPlaceholder: React.FC = () => {
-  const setActivePage = useAppStore((state) => state.setActivePage);
-  return <section className={styles.utilityPage}>
-    <span className="mono-label">WORKSPACE</span><h2>Studies</h2>
-    <div className={styles.utilityCard}><div><p>No studies are saved in this prototype. You can preview radiographs locally, but there is no patient record store.</p></div><button className={styles.utilityAction} onClick={() => setActivePage('xray')}>Open X-Ray Workspace <ArrowRight size={15}/></button></div>
-  </section>;
 };
 
 const SettingsPlaceholder: React.FC = () => {
@@ -464,8 +421,8 @@ const SettingsPlaceholder: React.FC = () => {
 
 function pageName(page: string): string {
   const map: Record<string, string> = {
-    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro & Brain Explorer', spine: 'Spine Explorer',
-    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings',
+    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro Explorer', brain: 'Brain Anatomy', spine: 'Spine Explorer',
+    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Study Guide', settings: 'Settings',
   };
   return map[page] ?? page;
 }
@@ -483,7 +440,7 @@ const HeaderSearch: React.FC = () => {
     {query && <div className={styles.searchResults} role="listbox" aria-label="Anatomy search results">
       {matches.map((item) => <button key={item.organ_id} role="option" aria-selected="false" onClick={() => { if (activePage === 'muscles') clearMuscleSelection(); if (!selectedBones.has(item.organ_id)) toggleBoneSelection(item.organ_id); setActivePage('viewer'); setViewMode('bone'); setQuery(''); }}><span>{item.name_en}</span><small>{item.ta2_latin}</small></button>)}
       {muscleMatches.map((item) => <button key={item.id} role="option" aria-selected="false" onClick={() => { if (!selectedBones.has(item.id)) toggleBoneSelection(item.id); setMusclePreset(item.kind === 'bone' ? 'combined' : item.layer ?? 'superficial'); setMuscleQuery(''); setViewMode('bone'); setActivePage('muscles'); setQuery(''); }}><span>{item.name}</span><small>{item.fmaId ?? item.side} · {item.layer ?? 'Écorché skeleton'}</small></button>)}
-      {neuroMatches.map((item) => <button key={item.id} role="option" aria-selected={selectedNeuroStructures.has(item.id)} onClick={() => { setNeuroMode(item.id.startsWith('neuro:brain:') ? 'brain-atlas' : 'nervous-system'); if (!selectedNeuroStructures.has(item.id)) toggleNeuroStructure(item.id); setActivePage('neuro'); setQuery(''); }}><span>{item.name}</span><small>{item.category} · {item.region ?? item.side}</small></button>)}
+      {neuroMatches.map((item) => { const isBrain = item.id.startsWith('neuro:brain:'); return <button key={item.id} role="option" aria-selected={selectedNeuroStructures.has(item.id)} onClick={() => { setNeuroMode(isBrain ? 'brain-atlas' : 'nervous-system'); if (!selectedNeuroStructures.has(item.id)) toggleNeuroStructure(item.id); setActivePage(isBrain ? 'brain' : 'neuro'); setQuery(''); }}><span>{item.name}</span><small>{item.category} · {item.region ?? item.side}</small></button>; })}
       {!matches.length && !muscleMatches.length && !neuroMatches.length && <p>{anatomyStructures.length ? 'No matching anatomy structures.' : 'Loading atlas labels…'}</p>}
     </div>}
   </div>;
