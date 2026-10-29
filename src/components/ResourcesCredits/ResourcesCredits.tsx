@@ -111,7 +111,7 @@ export const ResourcesCredits: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="resources-credits-page">
       {/* 1. Centered GitHub Repository Identity Link */}
       <div className={styles.repoLinkWrap}>
         <a
@@ -147,6 +147,7 @@ export const ResourcesCredits: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Search resources and citations"
+            data-testid="resources-search-input"
           />
           {searchQuery && (
             <button
