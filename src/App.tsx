@@ -23,6 +23,7 @@ const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/Neur
 const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
 const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
+const ResourcesCredits = lazy(() => import('./components/ResourcesCredits/ResourcesCredits'));
 
 type Page = ReturnType<typeof useAppStore.getState>['activePage'];
 
@@ -404,6 +405,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
                 {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
                 {activePage === 'studies'   && <StudiesPlaceholder />}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
+                {activePage === 'resources' && <div className={styles.scrollPage}><ResourcesCredits /></div>}
               </Suspense>
             </motion.div>
           </AnimatePresence>
