@@ -30,10 +30,9 @@ const Sidebar: React.FC = () => {
   return <motion.aside data-collapsed={sidebarCollapsed} className={styles.sidebar} animate={{ width: sidebarCollapsed ? 68 : 248 }} transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}>
     <div className={styles.logo}>
       <div className={styles.logoIcon}><Bone size={21} strokeWidth={2.2} /></div>
-      {!sidebarCollapsed && <div className={styles.brandCopy}><span className={styles.logoText}>BoneVista</span><span className={styles.logoSub}>ANATOMY WORKSPACE</span></div>}
+      {!sidebarCollapsed && <div className={styles.brandCopy}><span className={styles.logoText}>BoneVista</span></div>}
     </div>
     <nav className={styles.nav} aria-label="Main navigation">
-      {!sidebarCollapsed && <span className={styles.navLabel}>WORKSPACE</span>}
       {navItems.map(({ id, label, icon: Icon }) => <button key={id} className={`${styles.navItem} ${activePage === id ? styles.active : ''}`} onClick={() => { if (activePage === 'muscles' && id !== 'muscles') clearMuscleSelection(); if (id === 'viewer') setViewMode('bone'); if (id === 'muscles' && muscleStatus === 'idle') setMusclePreset('superficial'); if (id === 'xray') setViewMode('xray'); if (id === 'stress') setViewMode('stress'); if (id === 'brain') setNeuroMode('brain-atlas'); if (id === 'neuro') setNeuroMode('nervous-system'); setActivePage(id); }} aria-current={activePage === id ? 'page' : undefined} title={sidebarCollapsed ? label : undefined}>
         <Icon size={18} /><span className={styles.navText}>{!sidebarCollapsed && label}</span>{activePage === id && <motion.div layoutId="nav-indicator" className={styles.indicator} />}
       </button>)}
