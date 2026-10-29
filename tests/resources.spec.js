@@ -54,51 +54,6 @@ test('Resources & Credits: card titles are correct', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Libraries & Research', exact: true })).toBeVisible();
 });
 
-test('Resources & Credits: search filters cards by query', async ({ page }) => {
-  await page.goto('/');
-  await openResourcesPage(page);
-
-  const searchInput = page.getByRole('textbox', { name: /Search resources/ });
-  await searchInput.fill('Z-Anatomy');
-
-  // At least one card should remain
-  const cards = page.locator('article');
-  expect(await cards.count()).toBeGreaterThanOrEqual(1);
-
-  // Clear search restores all 4 cards
-  await page.getByTitle('Clear search').click();
-  await expect(page.locator('article')).toHaveCount(4);
-});
-
-test('Resources & Credits: category filter works correctly', async ({ page }) => {
-  await page.goto('/');
-  await openResourcesPage(page);
-
-  // Click Muscle Atlas category pill
-  await page.getByRole('button', { name: 'Muscle Atlas', exact: true }).click();
-  await expect(page.locator('article')).toHaveCount(1);
-  await expect(page.getByRole('heading', { name: 'Muscle Atlas', exact: true })).toBeVisible();
-
-  // Click All Resources to restore
-  await page.getByRole('button', { name: 'All Resources', exact: true }).click();
-  await expect(page.locator('article')).toHaveCount(4);
-});
-
-test('Resources & Credits: empty state shows when no results match', async ({ page }) => {
-  await page.goto('/');
-  await openResourcesPage(page);
-
-  const searchInput = page.getByRole('textbox', { name: /Search resources/ });
-  await searchInput.fill('xyznonexistentterm12345');
-
-  await expect(page.getByText('No resources match your search')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Reset Filters' })).toBeVisible();
-
-  // Reset button restores all cards
-  await page.getByRole('button', { name: 'Reset Filters' }).click();
-  await expect(page.locator('article')).toHaveCount(4);
-});
-
 test('Resources & Credits: Sources modal opens for multi-source cards', async ({ page }) => {
   await page.goto('/');
   await openResourcesPage(page);

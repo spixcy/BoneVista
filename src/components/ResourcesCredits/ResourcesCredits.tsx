@@ -1,19 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   ExternalLink,
   Copy,
   Check,
-  Search,
-  X,
   FileText,
   ShieldCheck,
-  BookOpen,
-  Info
+  BookOpen
 } from 'lucide-react';
 import {
   resourceCategories,
-  searchResources,
-  type ResourceCategory,
   type ResourceCategoryInfo
 } from '../../data/resources';
 import { formatCitation, formatGroupCitations } from '../../data/resources/citationFormatter';
@@ -43,8 +38,6 @@ interface ModalState {
 }
 
 export const ResourcesCredits: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<ResourceCategory | 'all'>('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
@@ -80,37 +73,6 @@ export const ResourcesCredits: React.FC = () => {
       setTimeout(() => setCopiedId(null), 2200);
     }
   };
-
-  // Filter cards and matching resources
-  const filteredCategories = useMemo(() => {
-    return resourceCategories
-      .map((cat) => {
-        // If category filter active and not matching, omit
-        if (selectedCategory !== 'all' && cat.id !== selectedCategory) {
-          return null;
-        }
-
-        if (!searchQuery.trim()) {
-          return cat;
-        }
-
-        const matchingItems = searchResources(searchQuery, cat.id);
-        const matchesCatMeta =
-          cat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.description.toLowerCase().includes(searchQuery.toLowerCase());
-
-        if (matchingItems.length > 0 || matchesCatMeta) {
-          return {
-            ...cat,
-            resources: matchingItems.length > 0 ? matchingItems : cat.resources
-          };
-        }
-
-        return null;
-      })
-      .filter((cat): cat is ResourceCategoryInfo => cat !== null);
-  }, [searchQuery, selectedCategory]);
 
   const openCategoryModal = (cat: ResourceCategoryInfo, mode: 'source' | 'github' | 'license' | 'citation' | 'all') => {
     setModalState({ isOpen: true, category: cat, mode });
@@ -158,195 +120,133 @@ export const ResourcesCredits: React.FC = () => {
         </p>
       </header>
 
-      {/* 3. Search Field and Category Filter */}
-      <div className={styles.filterBar}>
-        <div className={styles.searchBox}>
-          <Search size={14} />
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search anatomy, creators, licenses, or research…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search resources and citations"
-            data-testid="resources-search-input"
-          />
-          {searchQuery && (
-            <button
-              className={styles.clearSearchBtn}
-              onClick={() => setSearchQuery('')}
-              title="Clear search"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        <div className={styles.categoryPills}>
-          <button
-            className={`${styles.categoryPill} ${selectedCategory === 'all' ? styles.categoryPillActive : ''}`}
-            onClick={() => setSelectedCategory('all')}
-          >
-            All Resources
-          </button>
-          {resourceCategories.map((cat) => (
-            <button
-              key={cat.id}
-              className={`${styles.categoryPill} ${selectedCategory === cat.id ? styles.categoryPillActive : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
-            >
-              {cat.title}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 4. Exactly Four Resource Cards in Centered 2x2 Desktop Grid */}
+      {/* 3. Exactly Four Resource Cards in Centered 2x2 Desktop Grid */}
       <div className={styles.cardsGrid}>
-        {filteredCategories.length > 0 ? (
-          filteredCategories.map((cat) => {
-            const isCopied = copiedId === cat.id;
-            const groupCitation = formatGroupCitations(cat.title, cat.resources);
-            const githubResources = cat.resources.filter((r) => !!r.githubUrl);
+        {resourceCategories.map((cat) => {
+          const isCopied = copiedId === cat.id;
+          const groupCitation = formatGroupCitations(cat.title, cat.resources);
+          const githubResources = cat.resources.filter((r) => !!r.githubUrl);
 
-            return (
-              <article key={cat.id} className={styles.card}>
-                <div className={styles.cardTop}>
-                  <div className={styles.cardThumbnailWrap}>
-                    <img
-                      src={cat.thumbnailUrl}
-                      alt={cat.thumbnailAlt}
-                      className={styles.cardThumbnail}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className={styles.cardBody}>
-                    <div className={styles.cardHeaderRow}>
-                      <h2 className={styles.cardTitle}>{cat.title}</h2>
-                      <span className={styles.resourceCountBadge}>
-                        {cat.resources.length} {cat.resources.length === 1 ? 'source' : 'sources'}
-                      </span>
-                    </div>
-                    <div className={styles.cardSubtitle} title={cat.subtitle}>
-                      {cat.subtitle}
-                    </div>
-                    <p className={styles.cardDesc}>{cat.description}</p>
-                  </div>
+          return (
+            <article key={cat.id} className={styles.card}>
+              <div className={styles.cardTop}>
+                <div className={styles.cardThumbnailWrap}>
+                  <img
+                    src={cat.thumbnailUrl}
+                    alt={cat.thumbnailAlt}
+                    className={styles.cardThumbnail}
+                    loading="lazy"
+                  />
                 </div>
+                <div className={styles.cardBody}>
+                  <div className={styles.cardHeaderRow}>
+                    <h2 className={styles.cardTitle}>{cat.title}</h2>
+                    <span className={styles.resourceCountBadge}>
+                      {cat.resources.length} {cat.resources.length === 1 ? 'source' : 'sources'}
+                    </span>
+                  </div>
+                  <div className={styles.cardSubtitle} title={cat.subtitle}>
+                    {cat.subtitle}
+                  </div>
+                  <p className={styles.cardDesc}>{cat.description}</p>
+                </div>
+              </div>
 
-                <div className={styles.cardDivider} />
+              <div className={styles.cardDivider} />
 
-                {/* 5. Focus Fox-Style Inline Actions */}
-                <div className={styles.actionsRow}>
-                  {cat.resources.length === 1 ? (
-                    <a
-                      href={cat.resources[0].sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.inlineActionBtn}
-                      title={`Open source: ${cat.resources[0].title}`}
-                    >
-                      <ExternalLink size={12} />
-                      <span>Source ↗</span>
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.inlineActionBtn}
-                      onClick={() => openCategoryModal(cat, 'source')}
-                      title="View all individual source repositories"
-                    >
-                      <ExternalLink size={12} />
-                      <span>Sources ↗</span>
-                    </button>
-                  )}
-
-                  <span className={styles.actionSeparator}>|</span>
-
-                  {githubResources.length === 1 ? (
-                    <a
-                      href={githubResources[0].githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.inlineActionBtn}
-                      title={`GitHub: ${githubResources[0].title}`}
-                    >
-                      <GithubIcon size={12} />
-                      <span>GitHub ↗</span>
-                    </a>
-                  ) : githubResources.length > 1 ? (
-                    <button
-                      type="button"
-                      className={styles.inlineActionBtn}
-                      onClick={() => openCategoryModal(cat, 'github')}
-                      title={`View ${githubResources.length} GitHub repositories`}
-                    >
-                      <GithubIcon size={12} />
-                      <span>GitHub ({githubResources.length}) ↗</span>
-                    </button>
-                  ) : null}
-
-                  {githubResources.length > 0 && <span className={styles.actionSeparator}>|</span>}
-
-                  {cat.resources.length === 1 ? (
-                    <a
-                      href={cat.resources[0].licenseUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.inlineActionBtn}
-                      title={`View license: ${cat.resources[0].licenseName}`}
-                    >
-                      <ShieldCheck size={12} />
-                      <span>{cat.resources[0].licenseName} ↗</span>
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.inlineActionBtn}
-                      onClick={() => openCategoryModal(cat, 'license')}
-                      title="View individual licenses and verification status"
-                    >
-                      <ShieldCheck size={12} />
-                      <span>Licenses ↗</span>
-                    </button>
-                  )}
-
-                  <span className={styles.actionSeparator}>|</span>
-
+              {/* Focus Fox-Style Inline Actions */}
+              <div className={styles.actionsRow}>
+                {cat.resources.length === 1 ? (
+                  <a
+                    href={cat.resources[0].sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.inlineActionBtn}
+                    title={`Open source: ${cat.resources[0].title}`}
+                  >
+                    <ExternalLink size={12} />
+                    <span>Source ↗</span>
+                  </a>
+                ) : (
                   <button
                     type="button"
-                    className={`${styles.inlineActionBtn} ${isCopied ? styles.copiedTag : ''}`}
-                    onClick={() => handleCopyCitation(groupCitation, cat.id)}
-                    title="Copy formatted citation references for this category"
+                    className={styles.inlineActionBtn}
+                    onClick={() => openCategoryModal(cat, 'source')}
+                    title="View all individual source repositories"
                   >
-                    {isCopied ? <Check size={12} /> : <Copy size={12} />}
-                    <span>{isCopied ? 'Copied!' : 'Copy Citation'}</span>
+                    <ExternalLink size={12} />
+                    <span>Sources ↗</span>
                   </button>
-                </div>
-              </article>
-            );
-          })
-        ) : (
-          <div className={styles.emptyState}>
-            <Info size={28} color="#60a5fa" />
-            <div className={styles.emptyStateTitle}>No resources match your search</div>
-            <p className={styles.emptyStateText}>
-              We couldn't find any resources matching "{searchQuery}". Try searching by organ, author, standard (TA2), or license (CC BY-SA).
-            </p>
-            <button
-              className={styles.resetFilterBtn}
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('all');
-              }}
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
+                )}
+
+                <span className={styles.actionSeparator}>|</span>
+
+                {githubResources.length === 1 ? (
+                  <a
+                    href={githubResources[0].githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.inlineActionBtn}
+                    title={`GitHub: ${githubResources[0].title}`}
+                  >
+                    <GithubIcon size={12} />
+                    <span>GitHub ↗</span>
+                  </a>
+                ) : githubResources.length > 1 ? (
+                  <button
+                    type="button"
+                    className={styles.inlineActionBtn}
+                    onClick={() => openCategoryModal(cat, 'github')}
+                    title={`View ${githubResources.length} GitHub repositories`}
+                  >
+                    <GithubIcon size={12} />
+                    <span>GitHub ({githubResources.length}) ↗</span>
+                  </button>
+                ) : null}
+
+                {githubResources.length > 0 && <span className={styles.actionSeparator}>|</span>}
+
+                {cat.resources.length === 1 ? (
+                  <a
+                    href={cat.resources[0].licenseUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.inlineActionBtn}
+                    title={`View license: ${cat.resources[0].licenseName}`}
+                  >
+                    <ShieldCheck size={12} />
+                    <span>{cat.resources[0].licenseName} ↗</span>
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.inlineActionBtn}
+                    onClick={() => openCategoryModal(cat, 'license')}
+                    title="View individual licenses and verification status"
+                  >
+                    <ShieldCheck size={12} />
+                    <span>Licenses ↗</span>
+                  </button>
+                )}
+
+                <span className={styles.actionSeparator}>|</span>
+
+                <button
+                  type="button"
+                  className={`${styles.inlineActionBtn} ${isCopied ? styles.copiedTag : ''}`}
+                  onClick={() => handleCopyCitation(groupCitation, cat.id)}
+                  title="Copy formatted citation references for this category"
+                >
+                  {isCopied ? <Check size={12} /> : <Copy size={12} />}
+                  <span>{isCopied ? 'Copied!' : 'Copy Citation'}</span>
+                </button>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
-      {/* 6. Detail Drawer/Modal for Multi-Source Cards */}
+      {/* Detail Drawer/Modal for Multi-Source Cards */}
       {modalState.isOpen && modalState.category && (
         <div
           className={styles.modalBackdrop}
@@ -364,7 +264,7 @@ export const ResourcesCredits: React.FC = () => {
                 </h3>
               </div>
               <button className={styles.modalCloseBtn} onClick={closeModal} title="Close dialog">
-                <X size={18} />
+                <XCloseIcon size={18} />
               </button>
             </div>
 
@@ -506,7 +406,7 @@ export const ResourcesCredits: React.FC = () => {
         </div>
       )}
 
-      {/* 7. Subtle Attribution and Legal Documentation Footer */}
+      {/* Subtle Attribution and Legal Documentation Footer */}
       <footer className={styles.footer}>
         <p className={styles.footerNote}>
           For complete license terms and attribution requirements, see LICENSES.md and the asset-specific notices:
@@ -553,5 +453,12 @@ export const ResourcesCredits: React.FC = () => {
     </div>
   );
 };
+
+const XCloseIcon: React.FC<{ size?: number }> = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
 
 export default ResourcesCredits;
