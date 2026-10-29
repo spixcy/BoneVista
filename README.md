@@ -17,7 +17,7 @@
 
 <br />
 
-<img src="public/branding/anatomy-workspace-banner.png" alt="BoneVista 3D anatomy workspace" width="100%" />
+<img src="public/branding/bonevista-hero-banner.png" alt="BoneVista 3D anatomy workspace" width="100%" style="border-radius: 14px;" />
 
 </div>
 
