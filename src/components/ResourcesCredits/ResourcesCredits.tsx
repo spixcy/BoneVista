@@ -84,9 +84,26 @@ export const ResourcesCredits: React.FC = () => {
 
   return (
     <div className={styles.container} data-testid="resources-credits-page">
-      {/* 1. Centered GitHub Repository Identity Link & Details */}
+      {/* 1. Centered BoneVista Repo Hero */}
       <div className={styles.repoLinkWrap}>
         <div className={styles.repoHero}>
+          {/* App icon + name */}
+          <div className={styles.repoIconRow}>
+            <div className={styles.repoAppIconWrap}>
+              <img
+                src="/branding/bonevista-mascot.webp"
+                alt="BoneVista mascot"
+                className={styles.repoAppIcon}
+                draggable={false}
+              />
+            </div>
+            <div className={styles.repoAppNameBlock}>
+              <span className={styles.repoAppName}>BoneVista</span>
+              <span className={styles.repoAppTagline}>3D Anatomical Workspace</span>
+            </div>
+          </div>
+
+          {/* GitHub link + branch */}
           <div className={styles.repoBadgeRow}>
             <a
               href="https://github.com/spixcy/BoneVista"
@@ -95,13 +112,14 @@ export const ResourcesCredits: React.FC = () => {
               className={styles.repoBadge}
               title="Open BoneVista on GitHub"
             >
-              <GithubIcon size={16} />
+              <GithubIcon size={14} />
               <span>spixcy / BoneVista</span>
-              <span className={styles.repoDot}>•</span>
-              <ExternalLink size={12} className={styles.repoArrow} />
+              <ExternalLink size={11} className={styles.repoArrow} />
             </a>
             <span className={styles.repoBranchPill}>Ui branch</span>
           </div>
+
+          {/* Meta info */}
           <div className={styles.repoMetaRow}>
             <span className={styles.repoMetaItem}>Public Repository</span>
             <span className={styles.repoMetaSep}>•</span>

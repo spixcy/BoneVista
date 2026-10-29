@@ -14,35 +14,88 @@
   box-sizing: border-box;
 }
 
-/* ── 1. Centered GitHub Repository Identity Link & Details ── */
+/* ── 1. Centered BoneVista Repo Hero ── */
 .repoLinkWrap {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 8px;
+  gap: 0;
 }
 
 .repoHero {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
-  padding: 8px 18px;
-  background: rgba(14, 23, 40, 0.75);
-  border: 1px solid rgba(56, 96, 160, 0.35);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  transition: all 0.2s ease;
+  gap: 14px;
+  padding: 28px 40px 24px;
+  background: rgba(10, 18, 35, 0.85);
+  border: 1px solid rgba(56, 96, 160, 0.40);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(96, 165, 250, 0.05) inset;
+  width: 100%;
+  max-width: 560px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .repoHero:hover {
-  border-color: rgba(90, 145, 230, 0.55);
-  background: rgba(18, 30, 52, 0.9);
-  box-shadow: 0 6px 20px rgba(24, 76, 160, 0.25);
+  border-color: rgba(90, 145, 230, 0.60);
+  box-shadow: 0 10px 36px rgba(24, 76, 160, 0.30), 0 0 0 1px rgba(96, 165, 250, 0.08) inset;
 }
 
+/* App icon + name row */
+.repoIconRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.repoAppIconWrap {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(22, 37, 66, 0.9);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.repoAppIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transform: scale(1.1);
+  transform-origin: top center;
+}
+
+.repoAppNameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+.repoAppName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e8f0fc;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  font-family: var(--font-display, inherit);
+}
+
+.repoAppTagline {
+  font-size: 12px;
+  color: #7a9cbf;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+
+/* GitHub link row */
 .repoBadgeRow {
   display: flex;
   align-items: center;
@@ -52,26 +105,37 @@
 .repoBadge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: #e2ecfa;
-  font-size: 13px;
-  font-weight: 600;
+  gap: 7px;
+  color: #a8c4ea;
+  font-size: 12.5px;
+  font-weight: 500;
   text-decoration: none;
-  letter-spacing: 0.015em;
+  letter-spacing: 0.01em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.10);
+  border: 1px solid rgba(59, 130, 246, 0.22);
   transition: all 0.2s ease;
 }
 
 .repoBadge:hover {
-  color: #60a5fa;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.40);
+}
+
+.repeBadge:hover .repoArrow {
+  transform: translate(2px, -2px);
+  opacity: 1;
 }
 
 .repoBranchPill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 7px;
-  background: rgba(59, 130, 246, 0.18);
-  border: 1px solid rgba(59, 130, 246, 0.35);
+  padding: 3px 9px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.30);
   border-radius: 9999px;
   color: #93c5fd;
   font-size: 10.5px;
@@ -79,14 +143,18 @@
   font-weight: 600;
 }
 
+/* Meta row */
 .repoMetaRow {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px 10px;
+  gap: 5px 10px;
   font-size: 11px;
-  color: #8da8cc;
+  color: #6a88aa;
+  padding-top: 2px;
+  border-top: 1px solid rgba(56, 96, 160, 0.18);
+  width: 100%;
 }
 
 .repoMetaItem {
@@ -96,7 +164,7 @@
 }
 
 .repoMetaSep {
-  color: rgba(70, 105, 160, 0.4);
+  color: rgba(70, 105, 160, 0.35);
   font-size: 10px;
 }
 
