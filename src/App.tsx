@@ -450,10 +450,11 @@ const HeaderSearch: React.FC = () => {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const { anatomyStructures, muscleStructures, neuroBrainManifest, neuroNervesManifest, selectedBones, selectedNeuroStructures, toggleBoneSelection, toggleNeuroStructure, clearMuscleSelection, setActivePage, setMusclePreset, setMuscleQuery, setNeuroMode, setViewMode, activePage } = useAppStore();
-  const matches = query.trim() ? anatomyStructures.filter((item) => `${item.name_en} ${item.ta2_latin}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
-  const muscleMatches = query.trim() ? muscleStructures.filter((item) => `${item.name} ${item.fmaId ?? ''} ${item.side}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
+  const normalizedQuery = query.trim().toLowerCase();
+  const matches = normalizedQuery ? anatomyStructures.filter((item) => `${item.name_en} ${item.ta2_latin}`.toLowerCase().includes(normalizedQuery)).slice(0, 6) : [];
+  const muscleMatches = normalizedQuery ? muscleStructures.filter((item) => `${item.name} ${item.fmaId ?? ''} ${item.side}`.toLowerCase().includes(normalizedQuery)).slice(0, 6) : [];
   const neuroStructures = [...(neuroBrainManifest?.structures ?? []), ...(neuroNervesManifest?.structures ?? [])];
-  const neuroMatches = query.trim() ? filterNeuroStructures(neuroStructures, query).slice(0, 6) : [];
+  const neuroMatches = normalizedQuery ? filterNeuroStructures(neuroStructures, normalizedQuery).slice(0, 6) : [];
   const resultCount = matches.length + muscleMatches.length + neuroMatches.length;
 
   useEffect(() => { setActiveIndex(0); }, [query]);
