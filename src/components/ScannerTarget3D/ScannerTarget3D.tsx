@@ -78,7 +78,7 @@ const BoneMesh: React.FC<BoneMeshProps> = ({ boneDef, isWireframe, yawRef, pitch
       if (belongs) {
         if (isWireframe) {
           obj.material = new THREE.MeshBasicMaterial({
-            color: '#d4af37',
+            color: '#7da2ff',
             wireframe: true,
             transparent: true,
             opacity: 0.9,
@@ -168,7 +168,7 @@ export const ScannerTarget3D: React.FC = () => {
         <div className={styles.hudTargetInfo}>
           <span>ANATOMY:</span>
           <span className={styles.targetNameHighlight}>{selectedBone.name.toUpperCase()}</span>
-          <span style={{ color: '#d4af37', marginLeft: 8 }}>[{selectedBone.region.toUpperCase()}]</span>
+          <span style={{ color: '#7da2ff', marginLeft: 8 }}>[{selectedBone.region.toUpperCase()}]</span>
         </div>
       </div>
 
@@ -181,12 +181,12 @@ export const ScannerTarget3D: React.FC = () => {
           <ambientLight intensity={0.7} />
           {/* Main Key Light */}
           <directionalLight position={[2, 3, 3]} intensity={1.4} color="#ffffff" />
-          {/* Gold Rim Light */}
-          <directionalLight position={[-3, -2, -2]} intensity={2.4} color="#d4af37" />
+          {/* Blue Rim Light */}
+          <directionalLight position={[-3, -2, -2]} intensity={2.4} color="#7da2ff" />
           {/* Warm Depth Light */}
-          <directionalLight position={[2, -3, -2]} intensity={1.6} color="#f1d78a" />
+          <directionalLight position={[2, -3, -2]} intensity={1.6} color="#a9c1ff" />
           {/* Top Soft Light */}
-          <directionalLight position={[0, 4, 1]} intensity={0.8} color="#fff4d6" />
+          <directionalLight position={[0, 4, 1]} intensity={0.8} color="#c7d2fe" />
 
           <Suspense fallback={null}>
             <BoneMesh
@@ -214,36 +214,36 @@ export const ScannerTarget3D: React.FC = () => {
       <svg className={styles.reticleOverlay} viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
         {/* Outer segmented rotating compass ring */}
         <g className={styles.rotatingRing}>
-          <circle cx="250" cy="250" r="195" fill="none" stroke="rgba(212, 175, 55, 0.25)" strokeWidth="1.2" strokeDasharray="8 6 2 6" />
-          <circle cx="250" cy="250" r="180" fill="none" stroke="rgba(212, 175, 55, 0.15)" strokeWidth="1" strokeDasharray="3 9" />
+          <circle cx="250" cy="250" r="195" fill="none" stroke="rgba(125, 162, 255, 0.25)" strokeWidth="1.2" strokeDasharray="8 6 2 6" />
+          <circle cx="250" cy="250" r="180" fill="none" stroke="rgba(125, 162, 255, 0.15)" strokeWidth="1" strokeDasharray="3 9" />
         </g>
 
         {/* Counter-rotating inner ring */}
         <g className={styles.reverseRing}>
-          <circle cx="250" cy="250" r="145" fill="none" stroke="rgba(212, 175, 55, 0.3)" strokeWidth="1" strokeDasharray="14 18" />
+          <circle cx="250" cy="250" r="145" fill="none" stroke="rgba(125, 162, 255, 0.3)" strokeWidth="1" strokeDasharray="14 18" />
         </g>
 
         {/* Static center crosshairs and targeting frame */}
-        <circle cx="250" cy="250" r="105" fill="none" stroke="rgba(212, 175, 55, 0.45)" strokeWidth="1.2" />
-        <circle cx="250" cy="250" r="32" fill="none" stroke="rgba(212, 175, 55, 0.55)" strokeWidth="1" strokeDasharray="4 4" />
+        <circle cx="250" cy="250" r="105" fill="none" stroke="rgba(125, 162, 255, 0.45)" strokeWidth="1.2" />
+        <circle cx="250" cy="250" r="32" fill="none" stroke="rgba(125, 162, 255, 0.55)" strokeWidth="1" strokeDasharray="4 4" />
 
         {/* Precision Target Crosshairs */}
-        <line x1="250" y1="40" x2="250" y2="100" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.7" />
-        <line x1="250" y1="400" x2="250" y2="460" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.7" />
-        <line x1="40" y1="250" x2="100" y2="250" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.7" />
-        <line x1="400" y1="250" x2="460" y2="250" stroke="#d4af37" strokeWidth="1.5" strokeOpacity="0.7" />
+        <line x1="250" y1="40" x2="250" y2="100" stroke="#7da2ff" strokeWidth="1.5" strokeOpacity="0.7" />
+        <line x1="250" y1="400" x2="250" y2="460" stroke="#7da2ff" strokeWidth="1.5" strokeOpacity="0.7" />
+        <line x1="40" y1="250" x2="100" y2="250" stroke="#7da2ff" strokeWidth="1.5" strokeOpacity="0.7" />
+        <line x1="400" y1="250" x2="460" y2="250" stroke="#7da2ff" strokeWidth="1.5" strokeOpacity="0.7" />
 
         {/* Center Target Box */}
-        <path d="M 238 238 L 244 238 M 238 238 L 238 244" fill="none" stroke="#d4af37" strokeWidth="1.5" />
-        <path d="M 262 238 L 256 238 M 262 238 L 262 244" fill="none" stroke="#d4af37" strokeWidth="1.5" />
-        <path d="M 238 262 L 244 262 M 238 262 L 238 256" fill="none" stroke="#d4af37" strokeWidth="1.5" />
-        <path d="M 262 262 L 256 262 M 262 262 L 262 256" fill="none" stroke="#d4af37" strokeWidth="1.5" />
+        <path d="M 238 238 L 244 238 M 238 238 L 238 244" fill="none" stroke="#7da2ff" strokeWidth="1.5" />
+        <path d="M 262 238 L 256 238 M 262 238 L 262 244" fill="none" stroke="#7da2ff" strokeWidth="1.5" />
+        <path d="M 238 262 L 244 262 M 238 262 L 238 256" fill="none" stroke="#7da2ff" strokeWidth="1.5" />
+        <path d="M 262 262 L 256 262 M 262 262 L 262 256" fill="none" stroke="#7da2ff" strokeWidth="1.5" />
 
         {/* Compass Degree Markers */}
-        <text x="250" y="32" fill="#d4af37" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">000°</text>
-        <text x="475" y="254" fill="#d4af37" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">090°</text>
-        <text x="250" y="480" fill="#d4af37" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">180°</text>
-        <text x="25" y="254" fill="#d4af37" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">270°</text>
+        <text x="250" y="32" fill="#7da2ff" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">000°</text>
+        <text x="475" y="254" fill="#7da2ff" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">090°</text>
+        <text x="250" y="480" fill="#7da2ff" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">180°</text>
+        <text x="25" y="254" fill="#7da2ff" fontSize="10" fontFamily="monospace" textAnchor="middle" fontWeight="bold">270°</text>
       </svg>
 
       {/* Bottom HUD & Interactive Controls */}
@@ -260,7 +260,7 @@ export const ScannerTarget3D: React.FC = () => {
             <span ref={pitchRef} className={styles.coordsReadout}>0°</span>
           </div>
           <div>
-            <span style={{ color: '#b5ae9f' }}>DRAG TO ROTATE 360°</span>
+            <span style={{ color: '#a2afc6' }}>DRAG TO ROTATE 360°</span>
           </div>
         </div>
 

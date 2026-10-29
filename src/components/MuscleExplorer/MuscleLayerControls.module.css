@@ -1,9 +1,9 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 8px);
-  padding: 10px 14px;
-  background: var(--color-bg-surface, #0b0b0b);
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg-surface, #0e1625);
   border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
 }
 
@@ -16,37 +16,35 @@
 
 .label {
   font: 700 10px/1 var(--font-mono, 'JetBrains Mono', monospace);
-  color: var(--color-accent, #d4af37);
+  color: var(--color-accent, #7da2ff);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .metaStats {
   font: 600 10.5px/1 var(--font-mono, 'JetBrains Mono', monospace);
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
 }
 
 .presetTabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 3px;
-  background: var(--color-bg-base, #050505);
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  border-radius: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .presetTab {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 6px 4px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  color: var(--color-text-secondary, #b5ae9f);
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 10px;
+  background: var(--color-bg-elevated, #131e30);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 9px;
+  color: var(--color-text-secondary, #a2afc6);
   font: 600 11px/1.2 var(--font-sans, 'Inter', sans-serif);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -55,20 +53,20 @@
 }
 
 .presetTab:hover:not(:disabled) {
-  color: var(--color-text-primary, #f6f3eb);
-  background: var(--color-bg-elevated, #131312);
+  color: var(--color-text-primary, #eef3ff);
+  background: var(--color-bg-elevated, #131e30);
 }
 
 .presetTab:focus-visible {
-  outline: 2px solid var(--color-accent, #d4af37);
+  outline: 2px solid var(--color-accent, #7da2ff);
   outline-offset: -1px;
 }
 
 .presetTabActive {
-  background: var(--color-accent-dim, rgba(212, 175, 55, 0.15));
-  border-color: var(--color-accent, #d4af37);
+  background: var(--color-accent-dim, rgba(94, 132, 245, 0.15));
+  border-color: var(--color-accent, #7da2ff);
   color: #fff;
-  box-shadow: 0 0 12px var(--color-accent-glow, rgba(212, 175, 55, 0.35));
+  box-shadow: 0 5px 16px var(--color-accent-glow, rgba(94, 132, 245, 0.18));
 }
 
 .tabIcon {
@@ -76,19 +74,18 @@
   align-items: center;
   justify-content: center;
   opacity: 0.85;
+  flex: none;
 }
 
 .presetTabActive .tabIcon {
   opacity: 1;
-  color: var(--color-accent, #d4af37);
+  color: var(--color-accent, #7da2ff);
 }
 
-.tabLabel {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
+.tabCopy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 3px; }
+.tabLabel { display: block; max-width: 100%; color: inherit; font-size: 11px; line-height: 1.2; white-space: normal; }
+.tabSublabel { color: var(--color-text-tertiary, #71809a); font: 500 9px/1.15 var(--font-mono, monospace); white-space: normal; }
+.presetTabActive .tabSublabel { color: #b6c9ff; }
 
 .actionsRow {
   display: flex;
@@ -111,17 +108,17 @@
   padding: 5px 9px;
   border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
   border-radius: 6px;
-  background: var(--color-bg-elevated, #131312);
-  color: var(--color-text-secondary, #b5ae9f);
+  background: var(--color-bg-elevated, #131e30);
+  color: var(--color-text-secondary, #a2afc6);
   font: 550 11px/1 var(--font-sans, 'Inter', sans-serif);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .actionButton:hover:not(:disabled) {
-  border-color: var(--color-accent, #d4af37);
-  color: var(--color-text-primary, #f6f3eb);
-  background: var(--color-bg-hover, #1c1a16);
+  border-color: var(--color-accent, #7da2ff);
+  color: var(--color-text-primary, #eef3ff);
+  background: var(--color-bg-hover, #1a2940);
 }
 
 .actionButton:disabled {
@@ -130,7 +127,7 @@
 }
 
 .actionButton:focus-visible {
-  outline: 2px solid var(--color-accent, #d4af37);
+  outline: 2px solid var(--color-accent, #7da2ff);
   outline-offset: 1px;
 }
 
@@ -142,7 +139,7 @@
   height: 16px;
   padding: 0 4px;
   border-radius: 999px;
-  background: var(--color-accent, #d4af37);
+  background: var(--color-accent, #7da2ff);
   color: #06080d;
   font: 700 9px/1 var(--font-mono, monospace);
 }
@@ -156,19 +153,13 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   background: transparent;
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
   font: 550 10.5px/1 var(--font-mono, monospace);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .returnBonesButton:hover {
-  color: var(--color-accent, #d4af37);
-  border-color: var(--color-accent, #d4af37);
-}
-
-@media (max-width: 768px) {
-  .presetTabs {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  color: var(--color-accent, #7da2ff);
+  border-color: var(--color-accent, #7da2ff);
 }

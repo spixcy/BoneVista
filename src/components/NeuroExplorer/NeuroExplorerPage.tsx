@@ -19,6 +19,7 @@ const NeuroExplorerPage: React.FC = () => {
   // All model/state wiring — Codex will inject real camera callbacks here
   const model = useNeuroExplorerModel();
   const hiddenIds = useAppStore((state) => state.hiddenNeuroStructures);
+  const activePage = useAppStore((state) => state.activePage);
   const toggleStructureVisibility = useAppStore((state) => state.toggleNeuroStructureVisibility);
   const workspaceVisible = useWorkspaceVisible();
 
@@ -37,6 +38,8 @@ const NeuroExplorerPage: React.FC = () => {
           {...model}
           hiddenIds={hiddenIds}
           onToggleStructureVisibility={toggleStructureVisibility}
+          availableModes={activePage === 'brain' ? ['brain-atlas'] : ['nervous-system']}
+          sectionTitle={activePage === 'brain' ? 'BRAIN ANATOMY' : 'NEURO EXPLORER'}
         />
       </div>
     </div>

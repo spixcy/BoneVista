@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none">
   <defs>
     <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="matrix(0 190 -190 0 300 150)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#D4AF37" stop-opacity=".2"/>
-      <stop offset="1" stop-color="#D4AF37" stop-opacity="0"/>
+      <stop stop-color="#7DA2FF" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#7DA2FF" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="cortex" x1="156" x2="348" y1="75" y2="242" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F6D979"/>
-      <stop offset=".52" stop-color="#D4AF37"/>
-      <stop offset="1" stop-color="#9A7120"/>
+      <stop stop-color="#C8D8FF"/>
+      <stop offset=".52" stop-color="#7DA2FF"/>
+      <stop offset="1" stop-color="#4F75D0"/>
     </linearGradient>
     <filter id="glow" width="1.5" height="1.6" x="-.25" y="-.3" color-interpolation-filters="sRGB">
       <feGaussianBlur stdDeviation="5" result="blur"/>
@@ -23,8 +23,8 @@
     <!-- cerebellar folds -->
     <path stroke-width="2.5" d="M296 219c11-10 27-11 39-3 12 9 14 25 4 36-10 11-26 12-37 3-9-7-10-19-3-27 6-7 16-8 22-2m-34 2c-7 1-13 5-17 10m51-17c5 5 7 11 5 17m-32 23c8 4 17 4 24 0"/>
   </g>
-  <g fill="#F6D979">
+  <g fill="#C8D8FF">
     <circle cx="137" cy="159" r="3"/><circle cx="365" cy="146" r="3"/><circle cx="276" cy="280" r="3"/>
   </g>
-  <path stroke="#D4AF37" stroke-opacity=".24" d="M92 269h293M113 285h245"/>
+  <path stroke="#7DA2FF" stroke-opacity=".24" d="M92 269h293M113 285h245"/>
 </svg>

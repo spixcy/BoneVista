@@ -14,7 +14,7 @@
 
 import React, { useMemo } from 'react';
 import { AlertCircle, RotateCcw } from 'lucide-react';
-import type { NeuroExplorerViewProps, NeuroStructureView } from './types';
+import type { NeuroExplorerViewProps, NeuroMode, NeuroStructureView } from './types';
 import { NEURO_MODE_META } from './types';
 import NeuroModeTabs from './NeuroModeTabs';
 import NeuroLayerControls from './NeuroLayerControls';
@@ -29,6 +29,8 @@ interface NeuroExplorerPanelProps extends NeuroExplorerViewProps {
   /** Optional: hidden structure IDs from the 3D core (Codex wire-in) */
   hiddenIds?: Set<string>;
   onToggleStructureVisibility?: (id: string) => void;
+  availableModes?: NeuroMode[];
+  sectionTitle?: string;
 }
 
 export const NeuroExplorerPanel: React.FC<NeuroExplorerPanelProps> = ({
@@ -52,6 +54,8 @@ export const NeuroExplorerPanel: React.FC<NeuroExplorerPanelProps> = ({
   className = '',
   hiddenIds,
   onToggleStructureVisibility,
+  availableModes,
+  sectionTitle = 'NEURO EXPLORER',
 }) => {
   // Derive the first selected structure for the detail panel
   const selectedStructure = useMemo<NeuroStructureView | null>(() => {
@@ -64,19 +68,19 @@ export const NeuroExplorerPanel: React.FC<NeuroExplorerPanelProps> = ({
   return (
     <aside
       className={`${styles.panel} ${className}`}
-      aria-label="Neuro & Brain Explorer panel"
+      aria-label={`${sectionTitle} panel`}
       data-testid="neuro-explorer-panel"
     >
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className={styles.header}>
-        <span className={styles.headerTitle}>NEURO &amp; BRAIN</span>
+        <span className={styles.headerTitle}>{sectionTitle}</span>
         <span className={styles.selectionCount}>
           {selectedIds.length} selected
         </span>
       </div>
 
       {/* ── Mode tabs ───────────────────────────────────────────── */}
-      <NeuroModeTabs activeMode={activeMode} onModeChange={onModeChange} />
+      <NeuroModeTabs activeMode={activeMode} onModeChange={onModeChange} modes={availableModes} />
 
       {/* ── Loading state ───────────────────────────────────────── */}
       {loading && (

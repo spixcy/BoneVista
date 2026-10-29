@@ -78,7 +78,7 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
           const fade = 1 - d / (LINK_DISTANCE * 1.4);
           const ex = a.x + (b.x - a.x) * next;
           const ey = a.y + (b.y - a.y) * next;
-          ctx.strokeStyle = `rgba(212,175,55,${0.08 + 0.32 * fade * next})`;
+          ctx.strokeStyle = `rgba(125,162,255,${0.08 + 0.32 * fade * next})`;
           ctx.lineWidth = 0.6 + next * 0.7;
           ctx.beginPath();
           // A slight curve makes the links read as axons rather than straight wires.
@@ -88,13 +88,13 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
           ctx.quadraticCurveTo(mx, my, ex, ey);
           ctx.stroke();
           if (next >= 1) {
-            ctx.fillStyle = `rgba(241,215,138,${0.35 * fade + 0.2})`;
+            ctx.fillStyle = `rgba(183,203,255,${0.35 * fade + 0.2})`;
             ctx.beginPath();
             ctx.arc(b.x + (a.x - b.x) * 0.06, b.y + (a.y - b.y) * 0.06, 1.8, 0, Math.PI * 2);
             ctx.fill();
           } else {
             // Growth cone at the tip of a growing axon.
-            ctx.fillStyle = 'rgba(255,240,190,.85)';
+            ctx.fillStyle = 'rgba(220,230,255,.85)';
             ctx.beginPath();
             ctx.arc(ex, ey, 1.6, 0, Math.PI * 2);
             ctx.fill();
@@ -121,9 +121,9 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
         const x = a.x + (b.x - a.x) * imp.t;
         const y = a.y + (b.y - a.y) * imp.t;
         const glow = ctx.createRadialGradient(x, y, 0, x, y, 12);
-        glow.addColorStop(0, 'rgba(255,244,204,1)');
-        glow.addColorStop(0.35, 'rgba(241,215,138,.6)');
-        glow.addColorStop(1, 'rgba(212,175,55,0)');
+        glow.addColorStop(0, 'rgba(234,240,255,1)');
+        glow.addColorStop(0.35, 'rgba(183,203,255,.6)');
+        glow.addColorStop(1, 'rgba(125,162,255,0)');
         ctx.fillStyle = glow;
         ctx.beginPath();
         ctx.arc(x, y, 12, 0, Math.PI * 2);
@@ -146,7 +146,7 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
       // Somata with short dendrites.
       for (const n of neurons) {
         const glow = n.flash;
-        ctx.strokeStyle = `rgba(212,175,55,${0.35 + glow * 0.5})`;
+        ctx.strokeStyle = `rgba(125,162,255,${0.35 + glow * 0.5})`;
         ctx.lineWidth = 0.8;
         for (const angle of n.spikes) {
           ctx.beginPath();
@@ -156,14 +156,14 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
         }
         if (glow > 0) {
           const halo = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 26 * glow + 6);
-          halo.addColorStop(0, `rgba(255,236,170,${0.7 * glow})`);
-          halo.addColorStop(1, 'rgba(212,175,55,0)');
+          halo.addColorStop(0, `rgba(220,230,255,${0.7 * glow})`);
+          halo.addColorStop(1, 'rgba(125,162,255,0)');
           ctx.fillStyle = halo;
           ctx.beginPath();
           ctx.arc(n.x, n.y, 26 * glow + 6, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.fillStyle = glow > 0.2 ? '#fff4cc' : '#d4af37';
+        ctx.fillStyle = glow > 0.2 ? '#eaf0ff' : '#7da2ff';
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r + glow * 1.5, 0, Math.PI * 2);
         ctx.fill();

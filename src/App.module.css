@@ -93,7 +93,7 @@
   inset: 0;
   z-index: 5;
   overflow: auto;
-  background: rgba(5, 5, 5, .96);
+  background: rgba(8, 13, 16, .96);
   backdrop-filter: blur(8px);
 }
 
@@ -102,7 +102,7 @@
   width: min(540px, 52%);
   border: 1px solid var(--color-border-strong);
   border-radius: 10px;
-  background: rgba(5, 5, 5, .94);
+  background: rgba(8, 13, 16, .94);
   box-shadow: 0 16px 50px rgba(0,0,0,.38);
 }
 

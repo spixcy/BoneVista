@@ -18,16 +18,32 @@ const SpineExplorer  = lazy(() => import('./components/SpineExplorer/SpineExplor
 const XrayWorkspace  = lazy(() => import('./components/XrayWorkspace/XrayWorkspace'));
 const StressAnalysis = lazy(() => import('./components/StressAnalysis/StressAnalysis'));
 const Dashboard      = lazy(() => import('./components/Dashboard/Dashboard'));
+const StudyGuidePage = lazy(() => import('./components/StudyGuide/StudyGuidePage'));
 const MuscleExplorerHost = lazy(() => import('./components/MuscleExplorer/MuscleExplorerHost'));
 const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/NeuroExplorerDataHost'));
 const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
 const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
 const ResourcesCredits = lazy(() => import('./components/ResourcesCredits/ResourcesCredits'));
-
-type Page = ReturnType<typeof useAppStore.getState>['activePage'];
+const LandingBone = lazy(() => import('./components/LandingBone'));
 
 const EASE = [0.22, 0.8, 0.24, 1] as const;
+
+type LandingBoneSpec = {
+  name: string;
+  x: number;
+  y: number;
+  scale: number;
+  rotation: [number, number, number];
+  speed: number;
+  freeFloat?: boolean;
+};
+
+const HERO_BONES: LandingBoneSpec[] = [
+  { name: 'Femur.l', x: 0.34, y: -0.16, scale: 1.1, rotation: [0.2, 0.45, -0.4], speed: 0.24 },
+  { name: 'Hip bone.l', x: -0.35, y: 0.08, scale: 1.15, rotation: [-0.2, 0.5, 0.15], speed: 0.14, freeFloat: true },
+  { name: 'Scapula.l', x: 0.12, y: -0.28, scale: 0.85, rotation: [-0.4, 1.1, -0.3], speed: 0.18, freeFloat: true },
+];
 
 const STATS = [
   { value: 335, suffix: '+', label: 'Segmented bones' },
@@ -36,17 +52,8 @@ const STATS = [
   { value: 100, suffix: '%', label: 'Runs in your browser' },
 ];
 
-const MODULES: { page: Page; icon: LucideIcon; title: string; tag: string; text: string }[] = [
-  { page: 'viewer', icon: Bone, title: 'Skeletal Atlas', tag: '335+ bones', text: 'Rotate a fully segmented reference skeleton, isolate any bone with one click and view it from six camera presets.' },
-  { page: 'muscles', icon: Layers, title: 'Muscle Explorer', tag: 'Écorché model', text: 'Peel back superficial and deep muscle layers, or combine them with the skeleton to see how they attach.' },
-  { page: 'neuro', icon: Brain, title: 'Neuro & Brain', tag: '44 pathways', text: 'Browse 437 cerebral structures and 255 peripheral nerves grouped into functional pathways.' },
-  { page: 'spine', icon: Rows3, title: 'Spine Explorer', tag: 'C1 – Coccyx', text: 'Filter the vertebral column by region — cervical, thoracic, lumbar, sacrum — synced live with the 3D view.' },
-  { page: 'stress', icon: Gauge, title: 'Stress Analysis', tag: '1D axial FEA', text: 'Apply loads and watch a direct-stiffness solver colour the bone with a live 0–10 MPa stress heatmap.' },
-  { page: 'xray', icon: ScanLine, title: 'X-Ray Studio', tag: 'AP + Lateral', text: 'Open radiographs side by side with zoom, rotation and contrast controls — processed locally, never uploaded.' },
-];
-
 const STEPS = [
-  { icon: MousePointerClick, title: 'Pick a module', text: 'Choose the skeleton, muscles, nervous system, spine, stress lab or X-ray studio from the sidebar.' },
+  { icon: MousePointerClick, title: 'Choose a tool', text: 'Open the skeleton, muscles, brain, nerves, spine, stress lab or X-ray studio from the workspace sidebar.' },
   { icon: Activity, title: 'Explore & isolate', text: 'Orbit, zoom and search by English or Latin name. Click a structure to isolate it and read its details.' },
   { icon: Download, title: 'Capture & export', text: 'Save the current model as GLB or OBJ, or export a PDF snapshot for notes and study sessions.' },
 ];
@@ -60,7 +67,7 @@ const PILLARS = [
 const FAQ = [
   { q: 'What is BoneVista?', a: 'BoneVista is a browser-based 3D anatomy workspace. It combines a segmented skeleton, muscle layers, brain and nerve atlases, a spine explorer, an educational stress solver and an X-ray viewer in one place.' },
   { q: 'Is it a medical or diagnostic tool?', a: 'No. BoneVista is an educational and research prototype. It is not a medical device and must not be used for diagnosis or treatment planning.' },
-  { q: 'Do my X-ray images get uploaded anywhere?', a: 'No. Radiographs are opened and processed locally in your browser session. An optional reconstruction service can be run on your own machine, but nothing is sent to a remote server.' },
+  { q: 'Do my X-ray images get uploaded anywhere?', a: 'No. Radiographs stay in your browser. Image viewing and manual atlas matching happen locally; the app does not analyze the X-rays.' },
   { q: 'Where does the anatomy data come from?', a: 'The 3D meshes are based on the open Z-Anatomy and BodyParts3D datasets, licensed under CC BY-SA 4.0.' },
   { q: 'What do I need to run it?', a: 'A modern desktop browser with WebGL 2 — recent Chrome, Edge, Firefox or Safari. A dedicated GPU helps with the larger muscle and brain models.' },
 ];
@@ -104,7 +111,7 @@ const LazyMount: React.FC<{ children: React.ReactNode; className?: string; minHe
 const scrollToId = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 const App: React.FC = () => {
-  const { setActivePage, setAnatomyStructures, theme } = useAppStore();
+  const { setAnatomyStructures, theme } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
   const [workspaceMaximized, setWorkspaceMaximized] = useState(false);
 
@@ -142,15 +149,13 @@ const App: React.FC = () => {
     return () => { active = false; };
   }, [setAnatomyStructures]);
 
-  const openModule = (page: Page) => { setActivePage(page); scrollToId('workspace'); };
-
   return (
     <div className={landing.site}>
       <div className={landing.grain} aria-hidden="true" />
       <header className={`${landing.nav} ${scrolled ? landing.navScrolled : ''}`}>
         <a className={landing.brand} href="#top"><span className={landing.brandMark}><Bone size={18}/></span><span>Bone<em>Vista</em></span></a>
         <nav className={landing.navLinks} aria-label="Main site navigation">
-          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#/neet-pg">NEET PG</a><a href="#modules">Modules</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+          <a href="#about">About</a><a href="#bones">Bones</a><a href="#/bone-explorer">Explorer</a><a href="#/neet-pg">NEET PG</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
         </nav>
         <div className={landing.navActions}>
           <a className={landing.launch} href="#platform">Launch App <ArrowRight size={14}/></a>
@@ -163,14 +168,15 @@ const App: React.FC = () => {
       <main>
         <section className={landing.hero} id="top">
           <div className={landing.heroGlow} aria-hidden="true" />
+          <Suspense fallback={null}><LandingBone className={landing.boneLayer} bones={HERO_BONES} /></Suspense>
           <div className={landing.heroCopy}>
             <motion.span className={landing.eyebrow} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE }}>
               <Sparkles size={13}/> 3D Anatomy &amp; Biomechanics Workspace
             </motion.span>
             <h1 className={landing.heroTitle}>
-              {['The human body,', 'rendered in', 'gold detail.'].map((line, i) => (
+              {['The human body,', 'rendered in', 'living detail.'].map((line, i) => (
                 <span key={line} className={landing.lineMask}>
-                  <motion.span initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }} className={i === 2 ? landing.goldText : undefined}>{line}</motion.span>
+                  <motion.span initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }} className={i === 2 ? landing.accentText : undefined}>{line}</motion.span>
                 </span>
               ))}
             </h1>
@@ -213,7 +219,7 @@ const App: React.FC = () => {
             <span className={landing.eyebrow}>01 · About</span>
             <h2 className={landing.displayTitle}>What is <em>BoneVista?</em></h2>
             <p className={landing.lead}>BoneVista brings a full anatomy lab to the browser. Instead of flipping through flat diagrams, you can turn the body around, peel back its layers and focus on a single structure in seconds.</p>
-            <p className={landing.bodyCopy}>It brings six tools together in one workspace — from a 335-bone skeletal atlas to a simple finite-element stress solver — so you can move from <em>what it looks like</em> to <em>how it behaves</em> without switching apps.</p>
+            <p className={landing.bodyCopy}>The workspace brings focused anatomy tools together — from a 335-structure skeletal atlas to an educational stress solver — so you can move from <em>what it looks like</em> to <em>how it behaves</em> without switching apps.</p>
           </Reveal>
           <div className={landing.pillars}>
             {PILLARS.map((pillar, i) => (
@@ -228,21 +234,6 @@ const App: React.FC = () => {
         <BoneBiology eyebrowClassName={landing.eyebrow} titleClassName={landing.displayTitle} />
 
         <section className={landing.scanner} id="scanner">
-          <Reveal className={landing.scannerCopy}>
-            <div>
-              <span className={landing.eyebrow}>03 · Try it</span>
-              <h2 className={landing.displayTitle}>One atlas. <em>Every angle.</em></h2>
-            </div>
-            <div>
-            <p className={landing.bodyCopy}>Pick a body region, choose a bone, then drag to orbit it or toggle a wireframe view. Hit <strong>Full screen</strong> to open any bone in the Bone Explorer.</p>
-            <ul className={landing.checkList}>
-              <li>19 bones across the limbs, spine, trunk and head</li>
-              <li>Smooth orbit, zoom and auto-rotate controls</li>
-              <li>Solid and wireframe display modes</li>
-            </ul>
-            <a className={landing.explorerLink} href="#/bone-explorer">Open the full Bone Explorer · all 335 structures <ArrowRight size={15}/></a>
-            </div>
-          </Reveal>
           <LazyMount className={landing.scannerFigure} minHeight={560}>
             <Suspense fallback={<div className={landing.loadingFigure}>Preparing 3D preview…</div>}>
               <ScannerTarget3D />
@@ -250,29 +241,9 @@ const App: React.FC = () => {
           </LazyMount>
         </section>
 
-        <section className={landing.modules} id="modules">
-          <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>04 · Modules</span>
-            <h2 className={landing.displayTitle}>Six instruments. <em>One studio.</em></h2>
-            <p className={landing.bodyCopy}>Each module opens directly in the workspace below. Click a card to jump straight in.</p>
-          </Reveal>
-          <div className={landing.moduleGrid}>
-            {MODULES.map((module, i) => (
-              <Reveal key={module.page} delay={(i % 3) * 0.08}>
-                <button type="button" className={landing.moduleCard} onClick={() => openModule(module.page)}>
-                  <span className={landing.moduleTop}><span className={landing.iconBadge}><module.icon size={20}/></span><small>{module.tag}</small></span>
-                  <h3>{module.title}</h3>
-                  <p>{module.text}</p>
-                  <span className={landing.moduleLink}>Open module <ArrowRight size={14}/></span>
-                </button>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
         <section className={landing.how} id="how">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>05 · How it works</span>
+            <span className={landing.eyebrow}>04 · How it works</span>
             <h2 className={landing.displayTitle}>From curiosity <em>to clarity.</em></h2>
           </Reveal>
           <ol className={landing.steps}>
@@ -289,7 +260,7 @@ const App: React.FC = () => {
 
         <section className={landing.platform} id="platform">
           <Reveal className={landing.platformHeading}>
-            <div><span className={landing.eyebrow}>06 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
+            <div><span className={landing.eyebrow}>05 · Workspace</span><h2 className={landing.displayTitle}>The <em>workspace.</em></h2></div>
             <p>The full BoneVista app runs right here. Use the sidebar to switch modules, search any structure, or maximise the window for focused study.</p>
           </Reveal>
           <Workspace workspaceMaximized={workspaceMaximized} setWorkspaceMaximized={setWorkspaceMaximized} />
@@ -297,7 +268,7 @@ const App: React.FC = () => {
 
         <section className={landing.faq} id="faq">
           <Reveal className={landing.sectionIntro}>
-            <span className={landing.eyebrow}>07 · FAQ</span>
+            <span className={landing.eyebrow}>06 · FAQ</span>
             <h2 className={landing.displayTitle}>Good <em>questions.</em></h2>
           </Reveal>
           <div className={landing.faqList}>
@@ -335,7 +306,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
   const { activePage, rightPanelOpen, theme, setTheme, viewMode } = useAppStore();
   const isViewer = activePage === 'viewer';
   const isMuscleExplorer = activePage === 'muscles';
-  const isNeuroExplorer = activePage === 'neuro';
+  const isNeuroExplorer = activePage === 'neuro' || activePage === 'brain';
   const isAnatomyWorkspace = isViewer || isMuscleExplorer || isNeuroExplorer;
   const [hasVisitedViewer, setHasVisitedViewer] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -403,7 +374,7 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
                 {activePage === 'spine'     && <div className={styles.scrollPage}><SpineExplorer /></div>}
                 {activePage === 'xray'      && <div className={styles.scrollPage}><XrayWorkspace /></div>}
                 {activePage === 'stress'    && <div className={styles.scrollPage}><StressAnalysis /></div>}
-                {activePage === 'studies'   && <StudiesPlaceholder />}
+                {activePage === 'studies'   && <div className={styles.scrollPage}><StudyGuidePage /></div>}
                 {activePage === 'settings'  && <SettingsPlaceholder />}
                 {activePage === 'resources' && <div className={styles.scrollPage}><ResourcesCredits /></div>}
               </Suspense>
@@ -415,15 +386,6 @@ const Workspace: React.FC<{ workspaceMaximized: boolean; setWorkspaceMaximized: 
           </div>
           </WorkspaceVisibleContext.Provider>
   );
-};
-
-// Simple placeholder pages
-const StudiesPlaceholder: React.FC = () => {
-  const setActivePage = useAppStore((state) => state.setActivePage);
-  return <section className={styles.utilityPage}>
-    <span className="mono-label">WORKSPACE</span><h2>Studies</h2>
-    <div className={styles.utilityCard}><div><p>No studies are saved in this prototype. You can preview radiographs locally, but there is no patient record store.</p></div><button className={styles.utilityAction} onClick={() => setActivePage('xray')}>Open X-Ray Workspace <ArrowRight size={15}/></button></div>
-  </section>;
 };
 
 const SettingsPlaceholder: React.FC = () => {
@@ -440,8 +402,8 @@ const SettingsPlaceholder: React.FC = () => {
 
 function pageName(page: string): string {
   const map: Record<string, string> = {
-    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro & Brain Explorer', spine: 'Spine Explorer',
-    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Studies', settings: 'Settings', resources: 'Resources & Credits',
+    dashboard: 'Home', viewer: '3D Anatomy', muscles: 'Muscle Explorer', neuro: 'Neuro Explorer', brain: 'Brain Anatomy', spine: 'Spine Explorer',
+    xray: 'X-Ray Workspace', stress: 'Stress Analysis', studies: 'Study Guide', settings: 'Settings', resources: 'Resources & Credits',
   };
   return map[page] ?? page;
 }
@@ -479,7 +441,7 @@ const HeaderSearch: React.FC = () => {
       const isBrain = item.id.startsWith('neuro:brain:');
       setNeuroMode(isBrain ? 'brain-atlas' : 'nervous-system');
       if (!selectedNeuroStructures.has(item.id)) toggleNeuroStructure(item.id);
-      setActivePage('neuro');
+      setActivePage(isBrain ? 'brain' : 'neuro');
     }
     setQuery('');
   };

@@ -5,10 +5,10 @@ import styles from './NeetPgPage.module.css';
 /* Every animation is a pure function of u ∈ [0, 1): the position within one loop. */
 type AnimProps = { u: number };
 
-const GOLD = '#d4af37';
-const SOFT = '#f1d78a';
+const ACCENT = '#7da2ff';
+const SOFT = '#a9c1ff';
 const IVORY = '#efe6d1';
-const DIM = 'rgba(212,175,55,.25)';
+const DIM = 'rgba(125,162,255,.25)';
 const CA = '#e8806f';
 const K = '#8fc7d8';
 const MUTED = '#7b7568';
@@ -65,17 +65,17 @@ export const NeuronConduction: React.FC<AnimProps> = ({ u }) => {
       <T x={210} y={150} on={conducting}>MYELINATED · SALTATORY (FAST)</T>
       {DENDRITES.map((d, i) => (
         <g key={i}>
-          <path d={toPath(d)} stroke={GOLD} strokeOpacity={0.55} strokeWidth={3} fill="none" strokeLinecap="round" />
-          <path d={toPath([d[0], [d[0][0] - 10, d[0][1] - 12]])} stroke={GOLD} strokeOpacity={0.4} strokeWidth={2} />
+          <path d={toPath(d)} stroke={ACCENT} strokeOpacity={0.55} strokeWidth={3} fill="none" strokeLinecap="round" />
+          <path d={toPath([d[0], [d[0][0] - 10, d[0][1] - 12]])} stroke={ACCENT} strokeOpacity={0.4} strokeWidth={2} />
           {input > 0 && input < 1 && <Pulse at={along(d, input)} r={4.5} filter="nc-glow" />}
         </g>
       ))}
-      <circle cx={130} cy={225} r={46} fill="rgba(212,175,55,.12)" stroke={GOLD} strokeWidth={2} />
+      <circle cx={130} cy={225} r={46} fill="rgba(125,162,255,.12)" stroke={ACCENT} strokeWidth={2} />
       <circle cx={130} cy={225} r={46} fill={SOFT} opacity={somaGlow * 0.35} filter="url(#nc-glow)" />
       <circle cx={124} cy={220} r={15} fill="rgba(239,230,209,.25)" stroke={IVORY} strokeOpacity={0.6} />
       <circle cx={127} cy={217} r={4} fill={IVORY} opacity={0.7} />
       {[[104, 200], [150, 246], [112, 252], [152, 204]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r={2.2} fill={IVORY} opacity={0.5} />)}
-      <path d="M176,212 L210,219 L210,231 L176,238 Z" fill={hillock > 0.05 ? SOFT : 'rgba(212,175,55,.35)'} opacity={0.35 + hillock * 0.65} filter={hillock > 0.05 ? 'url(#nc-glow)' : undefined} />
+      <path d="M176,212 L210,219 L210,231 L176,238 Z" fill={hillock > 0.05 ? SOFT : 'rgba(125,162,255,.35)'} opacity={0.35 + hillock * 0.65} filter={hillock > 0.05 ? 'url(#nc-glow)' : undefined} />
       <line x1={205} y1={225} x2={700} y2={225} stroke={IVORY} strokeWidth={3} strokeOpacity={0.7} />
       {MYELIN.map((x) => <rect key={x} x={x} y={213} width={66} height={24} rx={11} fill="rgba(239,230,209,.16)" stroke={IVORY} strokeOpacity={0.55} />)}
       {NODES.slice(1, -1).map((x, i) => <circle key={x} cx={x} cy={225} r={3} fill={conducting && i < j ? 'rgba(232,128,111,.8)' : MUTED} />)}
@@ -88,7 +88,7 @@ export const NeuronConduction: React.FC<AnimProps> = ({ u }) => {
       {[[760, 170], [772, 225], [760, 280]].map(([x, y]) => (
         <g key={y}>
           <path d={`M700,225 Q735,${(225 + y) / 2} ${x},${y}`} stroke={IVORY} strokeOpacity={0.6} strokeWidth={2} fill="none" />
-          <circle cx={x} cy={y} r={9} fill={terminals > 0.05 ? SOFT : 'rgba(212,175,55,.3)'} filter={terminals > 0.05 ? 'url(#nc-glow)' : undefined} opacity={0.5 + terminals * 0.5} />
+          <circle cx={x} cy={y} r={9} fill={terminals > 0.05 ? SOFT : 'rgba(125,162,255,.3)'} filter={terminals > 0.05 ? 'url(#nc-glow)' : undefined} opacity={0.5 + terminals * 0.5} />
         </g>
       ))}
       <line x1={210} y1={395} x2={700} y2={395} stroke={IVORY} strokeOpacity={0.45} strokeWidth={2} />
@@ -130,7 +130,7 @@ export const ActionPotential: React.FC<AnimProps> = ({ u }) => {
     <svg viewBox="0 0 800 470" className={styles.svg}>
       <defs><Glow id="ap-glow" /></defs>
       <rect x={gx(0.245)} y={40} width={gx(0.4) - gx(0.245)} height={260} fill="rgba(232,128,111,.08)" />
-      <rect x={gx(0.4)} y={40} width={gx(0.58) - gx(0.4)} height={260} fill="rgba(212,175,55,.05)" />
+      <rect x={gx(0.4)} y={40} width={gx(0.58) - gx(0.4)} height={260} fill="rgba(125,162,255,.05)" />
       <T x={(gx(0.245) + gx(0.4)) / 2} y={56} anchor="middle" on={u > 0.245 && u < 0.4}>ARP</T>
       <T x={(gx(0.4) + gx(0.58)) / 2} y={56} anchor="middle" on={u > 0.4 && u < 0.58}>RRP</T>
       {[30, 0, -55, -70, -90].map((v) => (
@@ -156,9 +156,9 @@ export const ActionPotential: React.FC<AnimProps> = ({ u }) => {
       ))}
       {[{ x: 300, open: naOpen, label: 'Voltage-gated Na⁺', color: SOFT }, { x: 520, open: kOpen, label: 'Voltage-gated K⁺', color: K }].map((ch) => (
         <g key={ch.x}>
-          <rect x={ch.x - 24} y={356} width={14} height={64} rx={4} fill={ch.open ? ch.color : 'rgba(212,175,55,.35)'} opacity={ch.open ? 0.9 : 1} />
-          <rect x={ch.x + 10} y={356} width={14} height={64} rx={4} fill={ch.open ? ch.color : 'rgba(212,175,55,.35)'} opacity={ch.open ? 0.9 : 1} />
-          {!ch.open && <rect x={ch.x - 10} y={384} width={20} height={8} fill="rgba(212,175,55,.35)" />}
+          <rect x={ch.x - 24} y={356} width={14} height={64} rx={4} fill={ch.open ? ch.color : 'rgba(125,162,255,.35)'} opacity={ch.open ? 0.9 : 1} />
+          <rect x={ch.x + 10} y={356} width={14} height={64} rx={4} fill={ch.open ? ch.color : 'rgba(125,162,255,.35)'} opacity={ch.open ? 0.9 : 1} />
+          {!ch.open && <rect x={ch.x - 10} y={384} width={20} height={8} fill="rgba(125,162,255,.35)" />}
           <T x={ch.x} y={466} anchor="middle" on={ch.open}>{ch.label}</T>
         </g>
       ))}
@@ -175,8 +175,8 @@ export const ActionPotential: React.FC<AnimProps> = ({ u }) => {
         return <circle key={i} cx={514 + (i % 3) * 6} cy={lerp(436, 330, p)} r={4} fill={K} opacity={0.9} />;
       })}
       <g transform={`translate(690,388) rotate(${pump * u * 1440})`} opacity={0.4 + pump * 0.6}>
-        <circle r={20} fill="none" stroke={GOLD} strokeWidth={2} strokeDasharray="10 6" />
-        <path d="M-6,-4 L6,0 L-6,4 Z" fill={GOLD} />
+        <circle r={20} fill="none" stroke={ACCENT} strokeWidth={2} strokeDasharray="10 6" />
+        <path d="M-6,-4 L6,0 L-6,4 Z" fill={ACCENT} />
       </g>
       <T x={690} y={446} anchor="middle" on={pump > 0.3}>Na⁺/K⁺ ATPase · 3 out, 2 in</T>
     </svg>
@@ -206,7 +206,7 @@ export const Synapse: React.FC<AnimProps> = ({ u }) => {
         <Glow id="sy-glow" />
         <linearGradient id="sy-ap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={SOFT} stopOpacity={0.9} /><stop offset="1" stopColor={SOFT} stopOpacity={0} /></linearGradient>
       </defs>
-      <path d="M370,0 L430,0 L430,60 C550,80 600,140 595,230 L205,230 C200,140 250,80 370,60 Z" fill="rgba(212,175,55,.08)" stroke={GOLD} strokeWidth={2} />
+      <path d="M370,0 L430,0 L430,60 C550,80 600,140 595,230 L205,230 C200,140 250,80 370,60 Z" fill="rgba(125,162,255,.08)" stroke={ACCENT} strokeWidth={2} />
       <rect x={370} y={0} width={60} height={70 + ap * 120} fill="url(#sy-ap)" opacity={ap} />
       <path d="M370,0 L430,0 L430,60 C550,80 600,140 595,230 L205,230 C200,140 250,80 370,60 Z" fill="none" stroke={SOFT} strokeWidth={4} opacity={ap * 0.7} filter="url(#sy-glow)" />
       {[240, 560].map((x) => <rect key={x} x={x - 9} y={222} width={18} height={16} rx={3} fill={u > 0.12 && u < 0.3 ? CA : 'rgba(232,128,111,.4)'} />)}
@@ -238,17 +238,17 @@ export const Synapse: React.FC<AnimProps> = ({ u }) => {
         const y = lerp(234, 266, release) - Math.sin(release * Math.PI) * 6 - reuptake * 28;
         return <circle key={`${i}-${k}`} cx={x} cy={y} r={3} fill={SOFT} opacity={1 - reuptake} filter="url(#sy-glow)" />;
       }))}
-      <path d="M150,268 L570,268 L570,470 L150,470 Z" fill="rgba(239,230,209,.05)" stroke={GOLD} strokeWidth={2} />
+      <path d="M150,268 L570,268 L570,470 L150,470 Z" fill="rgba(239,230,209,.05)" stroke={ACCENT} strokeWidth={2} />
       {RECEPTORS.map((x) => (
         <g key={x}>
-          <path d={`M${x - 11},264 L${x - 11},282 L${x + 11},282 L${x + 11},264`} fill="none" stroke={bound > 0.1 ? SOFT : GOLD} strokeWidth={3} filter={bound > 0.1 ? 'url(#sy-glow)' : undefined} />
+          <path d={`M${x - 11},264 L${x - 11},282 L${x + 11},282 L${x + 11},264`} fill="none" stroke={bound > 0.1 ? SOFT : ACCENT} strokeWidth={3} filter={bound > 0.1 ? 'url(#sy-glow)' : undefined} />
           {[0, 1].map((k) => {
             const p = ease(0.6 + k * 0.04, 0.76 + k * 0.04, u);
             return p > 0 && p < 1 ? <circle key={k} cx={x + (k ? 4 : -4)} cy={lerp(272, 340, p)} r={3.5} fill={SOFT} opacity={0.9} /> : null;
           })}
         </g>
       ))}
-      <rect x={590} y={380} width={194} height={74} rx={8} fill="rgba(5,5,5,.6)" stroke="rgba(212,175,55,.3)" />
+      <rect x={590} y={380} width={194} height={74} rx={8} fill="rgba(8,13,24,.6)" stroke="rgba(125,162,255,.3)" />
       <line x1={600} x2={770} y1={440} y2={440} stroke="rgba(255,255,255,.12)" />
       {epspTrace.length > 1 && <path d={toPath(epspTrace)} stroke={SOFT} strokeWidth={2.5} fill="none" />}
       <T x={604} y={398} on={epsp > 0.2}>EPSP</T>
@@ -283,14 +283,14 @@ export const ReflexArc: React.FC<AnimProps> = ({ u }) => {
   return (
     <svg viewBox="0 0 800 470" className={styles.svg}>
       <defs><Glow id="rx-glow" /></defs>
-      <ellipse cx={620} cy={140} rx={112} ry={82} fill="rgba(239,230,209,.05)" stroke="rgba(212,175,55,.45)" />
-      <g fill="rgba(212,175,55,.22)" stroke={GOLD} strokeOpacity={0.6}>
+      <ellipse cx={620} cy={140} rx={112} ry={82} fill="rgba(239,230,209,.05)" stroke="rgba(125,162,255,.45)" />
+      <g fill="rgba(125,162,255,.22)" stroke={ACCENT} strokeOpacity={0.6}>
         <path d="M620,128 C600,95 575,80 560,95 C552,105 570,125 585,135 C565,150 550,175 562,190 C578,200 600,170 620,152 Z" />
         <path d="M620,128 C600,95 575,80 560,95 C552,105 570,125 585,135 C565,150 550,175 562,190 C578,200 600,170 620,152 Z" transform="translate(1240,0) scale(-1,1)" />
       </g>
       <circle cx={620} cy={140} r={3} fill={IVORY} />
-      <ellipse cx={520} cy={70} rx={18} ry={12} fill={aff > 0.6 ? SOFT : 'rgba(212,175,55,.35)'} opacity={0.8} />
-      <circle cx={608} cy={176} r={8} fill={syn > 0.1 ? SOFT : GOLD} filter={syn > 0.1 ? 'url(#rx-glow)' : undefined} />
+      <ellipse cx={520} cy={70} rx={18} ry={12} fill={aff > 0.6 ? SOFT : 'rgba(125,162,255,.35)'} opacity={0.8} />
+      <circle cx={608} cy={176} r={8} fill={syn > 0.1 ? SOFT : ACCENT} filter={syn > 0.1 ? 'url(#rx-glow)' : undefined} />
       <circle cx={642} cy={172} r={6} fill={K} opacity={0.85} />
 
       <path d={toPath(AFFERENT)} stroke={DIM} strokeWidth={2.5} fill="none" />
@@ -304,14 +304,14 @@ export const ReflexArc: React.FC<AnimProps> = ({ u }) => {
 
       {/* Leg */}
       <line x1={170} y1={170} x2={290} y2={290} stroke={IVORY} strokeOpacity={0.85} strokeWidth={30} strokeLinecap="round" />
-      <ellipse cx={243} cy={217} rx={lerp(62, 54, contract)} ry={lerp(13, 16, contract)} transform="rotate(45 243 217)" fill={contract > 0.1 ? SOFT : 'rgba(212,175,55,.55)'} filter={contract > 0.1 ? 'url(#rx-glow)' : undefined} />
+      <ellipse cx={243} cy={217} rx={lerp(62, 54, contract)} ry={lerp(13, 16, contract)} transform="rotate(45 243 217)" fill={contract > 0.1 ? SOFT : 'rgba(125,162,255,.55)'} filter={contract > 0.1 ? 'url(#rx-glow)' : undefined} />
       <ellipse cx={217} cy={243} rx={58} ry={11} transform="rotate(45 217 243)" fill="rgba(143,199,216,.45)" opacity={inh > 0.95 && u < 0.9 ? 0.4 : 0.8} />
       <path d="M244,206 l6,-6 l4,8 l6,-8 l4,8" stroke={CA} strokeWidth={2} fill="none" />
       <line x1={290} y1={290} x2={ankle[0]} y2={ankle[1]} stroke={IVORY} strokeOpacity={0.85} strokeWidth={24} strokeLinecap="round" />
       <line x1={ankle[0]} y1={ankle[1]} x2={foot[0]} y2={foot[1]} stroke={IVORY} strokeOpacity={0.85} strokeWidth={14} strokeLinecap="round" />
-      <circle cx={304} cy={292} r={9} fill="rgba(212,175,55,.6)" />
+      <circle cx={304} cy={292} r={9} fill="rgba(125,162,255,.6)" />
       <g transform={`translate(392 338) rotate(${-28 * (1 - tap)})`}>
-        <line x1={0} y1={0} x2={-66} y2={-38} stroke={GOLD} strokeWidth={5} strokeLinecap="round" />
+        <line x1={0} y1={0} x2={-66} y2={-38} stroke={ACCENT} strokeWidth={5} strokeLinecap="round" />
         <rect x={-80} y={-50} width={16} height={30} rx={4} transform="rotate(-30 -72 -35)" fill={SOFT} />
       </g>
       {tap > 0.4 && <circle cx={306} cy={292} r={16} fill="none" stroke={SOFT} strokeWidth={2} opacity={tap} />}
@@ -346,8 +346,8 @@ export const SlidingFilament: React.FC<AnimProps> = ({ u }) => {
       <defs><Glow id="sf-glow" blur={3} /></defs>
       {ACTIN_ROWS.map((y) => (
         <g key={y}>
-          {Array.from({ length: 24 }, (_, i) => <circle key={`l${i}`} cx={xL + i * 10} cy={y + (i % 2 ? 2 : -2)} r={3.8} fill="#e2c66e" opacity={0.85} />)}
-          {Array.from({ length: 24 }, (_, i) => <circle key={`r${i}`} cx={xR - i * 10} cy={y + (i % 2 ? 2 : -2)} r={3.8} fill="#e2c66e" opacity={0.85} />)}
+          {Array.from({ length: 24 }, (_, i) => <circle key={`l${i}`} cx={xL + i * 10} cy={y + (i % 2 ? 2 : -2)} r={3.8} fill="#93a8ff" opacity={0.85} />)}
+          {Array.from({ length: 24 }, (_, i) => <circle key={`r${i}`} cx={xR - i * 10} cy={y + (i % 2 ? 2 : -2)} r={3.8} fill="#93a8ff" opacity={0.85} />)}
         </g>
       ))}
       {MYOSIN_ROWS.map((y, row) => (
@@ -365,7 +365,7 @@ export const SlidingFilament: React.FC<AnimProps> = ({ u }) => {
         </g>
       ))}
       {[xL, xR].map((x, i) => (
-        <path key={i} d={`M${x},110 l-8,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-8,20`} stroke={GOLD} strokeWidth={3} fill="none" />
+        <path key={i} d={`M${x},110 l-8,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-16,20 l16,20 l-8,20`} stroke={ACCENT} strokeWidth={3} fill="none" />
       ))}
       <line x1={400} x2={400} y1={120} y2={380} stroke={IVORY} strokeOpacity={0.35} strokeDasharray="4 6" />
       {SPARKS.map(([x, y], i) => <circle key={i} cx={x} cy={y + Math.sin(u * 30 + i) * 4} r={3.4} fill={CA} opacity={calcium * 0.9} filter="url(#sf-glow)" />)}
@@ -424,7 +424,7 @@ export const CardiacConduction: React.FC<AnimProps> = ({ u }) => {
         <radialGradient id="cc-wave"><stop offset="0" stopColor={SOFT} stopOpacity={0.55} /><stop offset="1" stopColor={SOFT} stopOpacity={0} /></radialGradient>
       </defs>
       <g transform={`translate(400 230) scale(${squeeze}) translate(-400 -230)`}>
-        <path d={HEART} fill="rgba(212,175,55,.08)" stroke={GOLD} strokeWidth={2} />
+        <path d={HEART} fill="rgba(125,162,255,.08)" stroke={ACCENT} strokeWidth={2} />
         <g clipPath="url(#cc-heart)">
           <circle cx={305} cy={110} r={40 + atria * 220} fill="url(#cc-wave)" opacity={atria} />
           <rect x={200} y={204} width={400} height={140} fill={SOFT} opacity={ventricles * 0.28} />
@@ -441,8 +441,8 @@ export const CardiacConduction: React.FC<AnimProps> = ({ u }) => {
             {branches < 1 && <Pulse at={along(p, branches)} r={5} filter="cc-glow" />}
           </g>
         ))}
-        <circle cx={305} cy={110} r={9} fill={sa > 0.05 ? '#fff4cc' : GOLD} filter={sa > 0.05 ? 'url(#cc-glow)' : undefined} />
-        <circle cx={385} cy={198} r={8 + av * 3 * Math.abs(Math.sin(u * 60))} fill={av > 0.05 ? SOFT : GOLD} filter={av > 0.05 ? 'url(#cc-glow)' : undefined} />
+        <circle cx={305} cy={110} r={9} fill={sa > 0.05 ? '#fff4cc' : ACCENT} filter={sa > 0.05 ? 'url(#cc-glow)' : undefined} />
+        <circle cx={385} cy={198} r={8 + av * 3 * Math.abs(Math.sin(u * 60))} fill={av > 0.05 ? SOFT : ACCENT} filter={av > 0.05 ? 'url(#cc-glow)' : undefined} />
       </g>
       <T x={292} y={104} anchor="end" on={sa > 0.2 || atria > 0.4}>SA node · pacemaker</T>
       <T x={372} y={226} anchor="end" on={av > 0.2}>AV node · delay ≈0.1 s</T>
@@ -450,7 +450,7 @@ export const CardiacConduction: React.FC<AnimProps> = ({ u }) => {
       <T x={556} y={180} on={branches > 0.4}>Purkinje fibres</T>
       <T x={484} y={318} on={branches > 0 && branches < 1}>Bundle branches</T>
 
-      <rect x={50} y={352} width={700} height={108} rx={10} fill="rgba(5,5,5,.6)" stroke="rgba(212,175,55,.3)" />
+      <rect x={50} y={352} width={700} height={108} rx={10} fill="rgba(8,13,24,.6)" stroke="rgba(125,162,255,.3)" />
       <path d={toPath(ECG_TRACE)} stroke={DIM} strokeWidth={1.5} fill="none" />
       {drawn.length > 1 && <path d={toPath(drawn)} stroke={SOFT} strokeWidth={2.5} fill="none" filter="url(#cc-glow)" />}
       <line x1={60 + u * 680} x2={60 + u * 680} y1={360} y2={452} stroke={SOFT} strokeOpacity={0.4} />

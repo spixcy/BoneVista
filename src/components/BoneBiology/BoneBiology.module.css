@@ -20,7 +20,7 @@
 .numbers > div + div { border-left: 1px solid var(--lp-line); }
 .numbers dt {
   font: 400 34px/1.1 var(--font-display);
-  background: var(--gradient-gold-text);
+  background: var(--gradient-accent-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -51,11 +51,11 @@
   cursor: pointer;
   transition: color .25s, border-color .25s, background .25s;
 }
-.tab span { color: var(--lp-gold); font: 500 10px var(--font-mono); letter-spacing: .1em; opacity: .7; }
-.tab:hover { color: var(--lp-white); border-color: rgba(212, 175, 55, .4); }
-.tabActive { color: #0a0a0a; background: var(--gradient-gold); border-color: transparent; }
-.tabActive span { color: #0a0a0a; opacity: .6; }
-.tabActive:hover { color: #0a0a0a; }
+.tab span { color: var(--lp-accent); font: 500 10px var(--font-mono); letter-spacing: .1em; opacity: .7; }
+.tab:hover { color: var(--lp-white); border-color: rgba(125, 162, 255, .4); }
+.tabActive { color: #06080d; background: var(--gradient-accent); border-color: transparent; }
+.tabActive span { color: #06080d; opacity: .6; }
+.tabActive:hover { color: #06080d; }
 
 /* ─── Layout ─── */
 .layout {
@@ -71,15 +71,15 @@
   height: min(640px, calc(100vh - 110px));
   min-height: 460px;
   overflow: hidden;
-  border: 1px solid rgba(212, 175, 55, .28);
+  border: 1px solid rgba(125, 162, 255, .28);
   border-radius: 22px;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(212, 175, 55, .1), transparent 70%),
-    linear-gradient(180deg, #0d0c0a, #050505);
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(125, 162, 255, .1), transparent 70%),
+    linear-gradient(180deg, #080d18, #080d18);
 }
 .viewer canvas { cursor: grab; }
 .viewer canvas:active { cursor: grabbing; }
-.loading { height: 100%; display: grid; place-items: center; color: var(--lp-gold); font: 500 11px var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
+.loading { height: 100%; display: grid; place-items: center; color: var(--lp-accent); font: 500 11px var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
 .dragHint {
   position: absolute;
   top: 14px;
@@ -88,9 +88,9 @@
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  border: 1px solid rgba(212, 175, 55, .25);
+  border: 1px solid rgba(125, 162, 255, .25);
   border-radius: 999px;
-  background: rgba(5, 5, 5, .6);
+  background: rgba(8, 13, 24, .6);
   color: var(--lp-muted);
   font: 500 10px var(--font-mono);
   letter-spacing: .1em;
@@ -104,8 +104,8 @@
   bottom: 14px;
   padding: 10px 14px;
   border-radius: 12px;
-  background: rgba(5, 5, 5, .72);
-  color: #c9c2b2;
+  background: rgba(8, 13, 24, .72);
+  color: #a2afc6;
   font-size: 12.5px;
   line-height: 1.55;
   pointer-events: none;
@@ -125,16 +125,16 @@
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  border: 1px solid rgba(212, 175, 55, .3);
+  border: 1px solid rgba(125, 162, 255, .3);
   border-radius: 999px;
-  background: rgba(5, 5, 5, .7);
-  color: #c9c2b2;
+  background: rgba(8, 13, 24, .7);
+  color: #a2afc6;
   font: 500 11px var(--font-sans);
   cursor: pointer;
 }
-.stages b { color: var(--lp-gold); font: 600 10px var(--font-mono); }
-.stages .stageActive { background: var(--gradient-gold); border-color: transparent; color: #0a0a0a; }
-.stages .stageActive b { color: #0a0a0a; }
+.stages b { color: var(--lp-accent); font: 600 10px var(--font-mono); }
+.stages .stageActive { background: var(--gradient-accent); border-color: transparent; color: #06080d; }
+.stages .stageActive b { color: #06080d; }
 
 /* ─── 3D labels ─── */
 .labelLayer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -144,15 +144,15 @@
   align-items: center;
   gap: 7px;
   padding: 4px 9px 4px 7px;
-  border: 1px solid rgba(212, 175, 55, .45);
+  border: 1px solid rgba(125, 162, 255, .45);
   border-radius: 999px;
   background: rgba(8, 8, 7, .82);
-  color: #f6f3eb;
+  color: #eef3ff;
   font: 500 11px var(--font-sans);
   white-space: nowrap;
   transform: translate(10px, -50%);
 }
-.label i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: #d4af37; box-shadow: 0 0 8px rgba(212, 175, 55, .8); }
+.label i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: #7da2ff; box-shadow: 0 0 8px rgba(125, 162, 255, .8); }
 .labelCenter { transform: translate(-50%, -50%); }
 .labelLeft { flex-direction: row-reverse; padding: 4px 7px 4px 9px; transform: translate(calc(-100% - 10px), -50%); }
 
@@ -166,23 +166,23 @@
   border-radius: 16px;
   background: linear-gradient(160deg, rgba(255, 255, 255, .03), transparent);
 }
-.fact h4 { margin-bottom: 6px; color: var(--lp-gold-soft); font: 500 18px/1.25 var(--font-display); }
+.fact h4 { margin-bottom: 6px; color: var(--lp-accent-soft); font: 500 18px/1.25 var(--font-display); }
 .fact p { color: var(--lp-muted); font-size: 13px; line-height: 1.65; }
 .highYield {
   margin-top: 14px;
   padding: 18px 20px;
-  border: 1px solid rgba(212, 175, 55, .35);
+  border: 1px solid rgba(125, 162, 255, .35);
   border-radius: 16px;
-  background: rgba(212, 175, 55, .06);
+  background: rgba(125, 162, 255, .06);
 }
-.highYield > span { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; color: var(--lp-gold); font: 600 10.5px var(--font-mono); letter-spacing: .16em; text-transform: uppercase; }
+.highYield > span { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; color: var(--lp-accent); font: 600 10.5px var(--font-mono); letter-spacing: .16em; text-transform: uppercase; }
 .highYield ul { display: flex; flex-direction: column; gap: 8px; padding-left: 18px; }
 .highYield li { color: var(--lp-white); font-size: 13.5px; line-height: 1.6; }
-.highYield li::marker { color: var(--lp-gold); }
+.highYield li::marker { color: var(--lp-accent); }
 .note { margin-top: 26px; color: var(--lp-muted); font: 400 11px/1.6 var(--font-mono); }
 
-:root[data-theme='light'] .tab { border-color: rgba(20, 17, 10, .12); }
-:root[data-theme='light'] .fact { border-color: rgba(20, 17, 10, .08); background: #fff; }
+:root[data-theme='light'] .tab { border-color: rgba(29, 45, 79, .12); }
+:root[data-theme='light'] .fact { border-color: rgba(29, 45, 79, .08); background: #fff; }
 
 @media (max-width: 1100px) {
   .layout { grid-template-columns: 1fr; }
