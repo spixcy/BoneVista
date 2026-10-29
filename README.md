@@ -302,13 +302,14 @@ Detailed attribution records and license texts are maintained in [`LICENSES.md`]
 
 ## 🤝 Contributing
 
-Contributions, feature suggestions, and pull requests are warmly welcomed:
+Bug reports and focused improvements are welcome. To contribute:
 
-1. Fork the repository (`https://github.com/spixcy/BoneVista/fork`).
-2. Create your feature branch (`git checkout -b feature/cutting-edge-feature`).
-3. Commit your enhancements (`git commit -m 'feat: add cutting-edge feature'`).
-4. Push to your branch (`git push origin feature/cutting-edge-feature`).
-5. Open a Pull Request.
+1. Fork the repository and create a branch from `main` (`git switch -c fix/short-description`).
+2. Make a focused change and add or update tests when behavior changes.
+3. Run `npm run build` and `npm run test:e2e` before opening a pull request.
+4. Open a pull request against `main`. Describe what changed and how you checked it.
+
+For anatomy assets, include the source and required attribution and license details. See [`LICENSES.md`](LICENSES.md) and [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) before redistributing model or atlas data.
 
 ---
 
