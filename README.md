@@ -123,6 +123,45 @@ These tools are intentionally educational and transparent about their limits:
 - **Radiographs:** Images are loaded into the browser for local viewing. BoneVista does not upload or analyze them. You can manually choose a corresponding bone and open that structure highlighted in the existing skeleton atlas; no patient-specific 3D model is generated.
 - **Axial stress:** The solver models a simplified, uniform 1D bar under an axial load. Its illustrative stress result can be mapped to a selected atlas mesh for visualization. It does not calculate patient-specific or full 3D bone stress.
 
+## Architecture
+
+BoneVista is a client-side single-page application. Its main layers are:
+
+| Layer | Technologies | Role |
+|---|---|---|
+| Interface | React 19, TypeScript, Vite, CSS Modules | Renders the site and workspace modules, navigation, and controls. |
+| 3D visualization | Three.js, React Three Fiber, Drei, Draco | Loads and displays anatomy models with interactive camera and structure controls. |
+| Application state | Zustand | Coordinates selections, layers, and workspace state. |
+| Axial stress model | TypeScript | Assembles and solves the educational 1D bar model in the browser. |
+| Radiograph viewer | Browser image rendering | Displays local images with viewing controls and manual atlas matching. |
+| Study and export tools | jsPDF, GLTF/OBJ exporters | Supports study material and local document/model exports. |
+
+## Axial FEA formulation
+
+The stress module uses a linear, one-dimensional axial bar model. For each two-node element, its stiffness matrix is
+
+$$
+\mathbf{k}_e = \frac{EA}{L_e}
+\begin{bmatrix}
+1 & -1 \\
+-1 & 1
+\end{bmatrix}
+$$
+
+The element matrices are assembled into the global system
+
+$$
+\mathbf{K}\mathbf{u} = \mathbf{F}
+$$
+
+with the first node fixed and an axial force applied at the free end. BoneVista solves the reduced system using Gaussian elimination, then calculates each element's axial stress from its displacement difference:
+
+$$
+\sigma_e = E\epsilon_e = E\frac{u_{i+1}-u_i}{L_e}
+$$
+
+Here, $E$ is Young's modulus, $A$ is cross-sectional area, $L_e$ is element length, $\mathbf{u}$ is nodal displacement, and $\mathbf{F}$ is the nodal load vector. For this ideal uniform bar under a constant axial force, the corresponding nominal stress is $\sigma = F/A$. This is an educational 1D model; displaying its result on an atlas bone does not make it a full 3D or patient-specific stress analysis.
+
 ## Run locally
 
 **Requirements:** Node.js 20 or newer and a modern browser with WebGL support.
