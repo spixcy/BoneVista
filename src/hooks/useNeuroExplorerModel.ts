@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import type { NeuroExplorerViewProps, NeuroLayerView, NeuroMode, NeuroStructure } from '../data/neuroAtlas';
 import { useAppStore } from '../store/appStore';
-import { NEURON_LAB_LAYERS, NEURON_LAB_STRUCTURES } from '../data/neuronLab';
 
 function asViews(structures: NeuroStructure[]) {
   return structures.map(({ id, name, category, side, region, source, latinName, description }) => ({
@@ -13,7 +12,6 @@ function asViews(structures: NeuroStructure[]) {
 export function useNeuroExplorerModel(): NeuroExplorerViewProps {
   const state = useAppStore();
   const structures = useMemo(() => {
-    if (state.neuroMode === 'neuron-lab') return NEURON_LAB_STRUCTURES;
     if (!state.neuroBrainManifest || !state.neuroNervesManifest) return [];
     return state.neuroMode === 'brain-atlas'
       ? state.neuroBrainManifest.structures
@@ -36,7 +34,7 @@ export function useNeuroExplorerModel(): NeuroExplorerViewProps {
         layer(`neuro:brain:${id}`, category.label),
       );
     }
-    return NEURON_LAB_LAYERS.map(({ id, label, available }) => layer(id, label, available));
+    return [];
   }, [state.neuroMode, state.neuroBrainManifest, state.hiddenNeuroLayers, state.neuroLayerOpacity]);
 
   const onModeChange = useCallback((mode: NeuroMode) => state.setNeuroMode(mode), [state.setNeuroMode]);
@@ -51,7 +49,6 @@ export function useNeuroExplorerModel(): NeuroExplorerViewProps {
     onModeChange,
     loading: state.neuroStatus === 'idle' || state.neuroStatus === 'loading',
     ...(state.neuroError ? { error: state.neuroError } : {}),
-    ...(state.neuroMode === 'neuron-lab' ? { modeNotice: 'Neuron Lab is reserved for integration of your separate Neuron branch. No neuron model or neural simulation is bundled in this core change.' } : {}),
     searchQuery: state.neuroQuery,
     onSearchChange: state.setNeuroQuery,
     structures: asViews(structures),

@@ -200,7 +200,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   neuroMode: 'nervous-system',
   setNeuroMode: (mode) => set((state) => ({
     neuroMode: mode,
-    neuroStatus: mode === 'neuron-lab' ? 'ready' : 'loading',
+    neuroStatus: 'loading',
     neuroError: null,
     hiddenNeuroLayers: mode === 'brain-atlas' ? new Set(['neuro:brain:cranial_nerves']) : new Set(),
     neuroIsolationMode: false,

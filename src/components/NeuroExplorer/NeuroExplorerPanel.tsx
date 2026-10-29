@@ -60,7 +60,6 @@ export const NeuroExplorerPanel: React.FC<NeuroExplorerPanelProps> = ({
   }, [structures, selectedIds]);
 
   const modeMeta = NEURO_MODE_META[activeMode];
-  const isNeuronLab = activeMode === 'neuron-lab';
 
   return (
     <aside
@@ -76,17 +75,6 @@ export const NeuroExplorerPanel: React.FC<NeuroExplorerPanelProps> = ({
         </span>
       </div>
 
-      {/* ── Neuron Lab illustrative disclaimer ──────────────────── */}
-      {isNeuronLab && (
-        <div className={styles.disclaimerBanner} role="note">
-          <span className={styles.disclaimerIcon} aria-hidden="true">★</span>
-          <span>
-            <strong>Illustrative neuron.</strong> This is a procedural/generated morphology,
-            not a validated empirical reconstruction. Signal animations are educational only.
-          </span>
-        </div>
-      )}
-
       {/* ── Mode tabs ───────────────────────────────────────────── */}
       <NeuroModeTabs activeMode={activeMode} onModeChange={onModeChange} />
 
@@ -98,9 +86,7 @@ export const NeuroExplorerPanel: React.FC<NeuroExplorerPanelProps> = ({
             Loading {modeMeta.label}
           </h4>
           <p className={styles.statusSubtext}>
-            {isNeuronLab
-              ? 'Generating illustrative neuron geometry…'
-              : 'Preparing neuro anatomy assets and manifests…'}
+            Preparing neuro anatomy assets and manifests…
           </p>
         </div>
       )}
