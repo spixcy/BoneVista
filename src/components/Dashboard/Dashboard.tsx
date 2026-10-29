@@ -88,7 +88,7 @@ const actions: QuickAction[] = [
     title: 'Anatomy Study Guide',
     detail: 'Review key concepts and follow guided paths into the atlas',
     icon: BookOpen,
-    art: '/branding/3d-anatomy-card.jpg',
+    art: '/branding/card-studies.jpg',
     tone: 'blue',
   },
 ];
