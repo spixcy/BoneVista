@@ -424,6 +424,13 @@
   background: linear-gradient(115deg, rgba(17, 30, 52, 0.8), rgba(8, 17, 34, 0.96));
 }
 
+.studyActions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+}
+
 .studyMascot {
   width: 104px;
   height: 112px;
@@ -444,7 +451,8 @@
   transform: translate(-18px, -18px);
 }
 
-.studyCaseButton {
+.studyCaseButton,
+.studyPgButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -460,13 +468,20 @@
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.studyPgButton {
+  border-color: rgba(125, 162, 255, 0.72);
+  background: #7da2ff;
+  color: #081122;
+}
+
 .studyDescription {
   margin: 0 auto 0 0;
   color: var(--color-text-primary, #e8eefc);
   font: 500 13px/1.5 var(--font-sans);
 }
 
-.studyCaseButton:hover {
+.studyCaseButton:hover,
+.studyPgButton:hover {
   transform: translateY(-2px);
   background: #7da2ff;
   color: #081122;
@@ -645,25 +660,38 @@
     justify-content: center;
   }
   .studyCallout {
-    min-height: 116px;
-    gap: 16px;
-    padding: 8px 14px;
+    min-height: 108px;
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 8px 12px;
+    padding: 10px 12px;
+    display: grid;
   }
   .studyMascot {
-    width: 88px;
-    height: 96px;
+    grid-row: 1 / span 2;
+    width: 62px;
+    height: 70px;
   }
   .studyMascot img {
     width: 142px;
     height: 142px;
     transform: translate(-16px, -16px);
   }
-  .studyCaseButton {
-    min-height: 36px;
-    padding: 0 13px;
-    font-size: 11px;
+  .studyActions {
+    grid-column: 2;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .studyCaseButton,
+  .studyPgButton {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 10.5px;
   }
   .studyDescription {
+    grid-column: 2;
+    min-width: 0;
+    margin: 0;
     font-size: 11px;
   }
+  .studyActions { justify-self: start; }
 }

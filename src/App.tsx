@@ -8,6 +8,7 @@ import AnatomyPanel from './components/AnatomyPanel/AnatomyPanel';
 import { filterNeuroStructures } from './data/neuroAtlas';
 import { WorkspaceVisibleContext } from './hooks/useWorkspaceVisible';
 import BoneBiology from './components/BoneBiology/BoneBiology';
+import NeuralNetworkCanvas from './pages/NeetPg/NeuralNetworkCanvas';
 import { useAppStore } from './store/appStore';
 import styles from './App.module.css';
 import landing from './LandingPage.module.css';
@@ -153,6 +154,7 @@ const App: React.FC = () => {
   return (
     <div className={landing.site}>
       <div className={landing.grain} aria-hidden="true" />
+      <NeuralNetworkCanvas className={landing.siteNetwork} ambient />
       <header className={`${landing.nav} ${scrolled ? landing.navScrolled : ''}`}>
         <a className={landing.brand} href="#top"><span className={landing.brandMark}><Bone size={18}/></span><span>Bone<em>Vista</em></span></a>
         <nav className={landing.navLinks} aria-label="Main site navigation">

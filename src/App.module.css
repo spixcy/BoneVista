@@ -1,10 +1,11 @@
 .app {
+  position: relative;
   display: flex;
   height: 100%;
   min-height: 620px;
   width: 100%;
   overflow: hidden;
-  background: var(--color-bg-base);
+  background: color-mix(in srgb, var(--color-bg-base) 90%, transparent);
 }
 
 .main {

@@ -9,7 +9,7 @@ const LINK_DISTANCE = 150;
  * Hero motion graphic: neurons drift, grow axons towards neighbours, form synapses
  * and pass glowing impulses that can trigger chain reactions through the network.
  */
-const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) => {
+const NeuralNetworkCanvas: React.FC<{ className?: string; ambient?: boolean }> = ({ className, ambient = false }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -27,7 +27,9 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
     let last = performance.now();
 
     const seed = () => {
-      const count = Math.round(Math.min(70, Math.max(24, (width * height) / 16000)));
+      const count = ambient
+        ? Math.round(Math.min(28, Math.max(16, (width * height) / 50000)))
+        : Math.round(Math.min(70, Math.max(24, (width * height) / 16000)));
       neurons = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -102,7 +104,7 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
         }
       }
       // Fire new impulses along mature synapses.
-      if (Math.random() < dt * 3.5) {
+      if (Math.random() < dt * (ambient ? 0.8 : 3.5)) {
         const mature = [...growth.entries()].filter(([, g]) => g >= 1);
         if (mature.length) {
           const [k] = mature[Math.floor(Math.random() * mature.length)];
@@ -193,7 +195,7 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
       observer.disconnect();
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [ambient]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 };

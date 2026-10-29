@@ -213,14 +213,19 @@ const Dashboard: React.FC = () => {
       </section>
 
       {/* Compact study callout */}
-      <section className={styles.studyCallout} aria-label="Case study">
+      <section className={styles.studyCallout} aria-label="Study shortcuts">
         <div className={styles.studyMascot}>
           <img src="/branding/learning-guide.webp" alt="Cute skeleton reading an anatomy book" loading="lazy" decoding="async" />
         </div>
         <p className={styles.studyDescription}>Explore a focused anatomy lesson and test your recall.</p>
-        <button className={styles.studyCaseButton} onClick={() => setActivePage('studies')}>
-          Case Study <ArrowRight size={15} />
-        </button>
+        <div className={styles.studyActions}>
+          <button className={styles.studyPgButton} onClick={() => setActivePage('neet')}>
+            NEET PG <GraduationCap size={15} />
+          </button>
+          <button className={styles.studyCaseButton} onClick={() => setActivePage('studies')}>
+            Case Study <ArrowRight size={15} />
+          </button>
+        </div>
       </section>
 
       {/* Compact Overview: Reference Atlas & Study Guide */}
