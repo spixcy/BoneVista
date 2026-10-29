@@ -197,9 +197,9 @@ const BoneExplorerPage: React.FC = () => {
               </g>
               <circle cx="250" cy="250" r="118" fill="none" stroke="rgba(212,175,55,.3)" strokeWidth="1" />
               <circle cx="250" cy="250" r="34" fill="none" stroke="rgba(212,175,55,.4)" strokeWidth="1" strokeDasharray="4 4" />
-              <path d="M250 18v60M250 422v60M18 250h60M422 250h60" stroke="#d4af37" strokeOpacity=".55" strokeWidth="1.2" />
-              <path d="M238 238h6M238 238v6M262 238h-6M262 238v6M238 262h6M238 262v-6M262 262h-6M262 262v-6" stroke="#d4af37" strokeWidth="1.4" />
-              <g fill="#d4af37" fontSize="10" fontFamily="monospace" fontWeight="700" textAnchor="middle">
+              <path d="M250 18v60M250 422v60M18 250h60M422 250h60" stroke="#7da2ff" strokeOpacity=".55" strokeWidth="1.2" />
+              <path d="M238 238h6M238 238v6M262 238h-6M262 238v6M238 262h6M238 262v-6M262 262h-6M262 262v-6" stroke="#7da2ff" strokeWidth="1.4" />
+              <g fill="#7da2ff" fontSize="10" fontFamily="monospace" fontWeight="700" textAnchor="middle">
                 <text x="250" y="12">000°</text><text x="490" y="254">090°</text><text x="250" y="498">180°</text><text x="12" y="254">270°</text>
               </g>
             </svg>

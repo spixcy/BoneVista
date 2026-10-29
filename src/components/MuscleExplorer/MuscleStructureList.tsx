@@ -132,7 +132,7 @@ export const MuscleStructureList: React.FC<MuscleStructureListProps> = ({
                       title={`${item.name} (${item.side}) — click to select in 3D viewer`}
                     >
                       {item.kind === 'muscle' ? (
-                        <Activity size={12} style={{ color: '#d4af37', flexShrink: 0 }} aria-hidden="true" />
+                        <Activity size={12} style={{ color: '#7da2ff', flexShrink: 0 }} aria-hidden="true" />
                       ) : (
                         <Bone size={12} style={{ color: '#c4a882', flexShrink: 0 }} aria-hidden="true" />
                       )}

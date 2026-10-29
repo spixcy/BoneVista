@@ -23,10 +23,27 @@ const NeuroExplorerDataHost = lazy(() => import('./components/NeuroExplorer/Neur
 const NeuroExplorerPage = lazy(() => import('./components/NeuroExplorer/NeuroExplorerPage'));
 const SkullModel3D = lazy(() => import('./components/SkullModel3D/SkullModel3D'));
 const ScannerTarget3D = lazy(() => import('./components/ScannerTarget3D/ScannerTarget3D'));
+const LandingBone = lazy(() => import('./components/LandingBone'));
 
 type Page = ReturnType<typeof useAppStore.getState>['activePage'];
 
 const EASE = [0.22, 0.8, 0.24, 1] as const;
+
+type LandingBoneSpec = {
+  name: string;
+  x: number;
+  y: number;
+  scale: number;
+  rotation: [number, number, number];
+  speed: number;
+  freeFloat?: boolean;
+};
+
+const HERO_BONES: LandingBoneSpec[] = [
+  { name: 'Femur.l', x: 0.34, y: -0.16, scale: 1.1, rotation: [0.2, 0.45, -0.4], speed: 0.24 },
+  { name: 'Hip bone.l', x: -0.35, y: 0.08, scale: 1.15, rotation: [-0.2, 0.5, 0.15], speed: 0.14, freeFloat: true },
+  { name: 'Scapula.l', x: 0.12, y: -0.28, scale: 0.85, rotation: [-0.4, 1.1, -0.3], speed: 0.18, freeFloat: true },
+];
 
 const STATS = [
   { value: 335, suffix: '+', label: 'Segmented bones' },
@@ -35,13 +52,13 @@ const STATS = [
   { value: 100, suffix: '%', label: 'Runs in your browser' },
 ];
 
-const MODULES: { page: Page; icon: LucideIcon; title: string; tag: string; text: string }[] = [
-  { page: 'viewer', icon: Bone, title: 'Skeletal Atlas', tag: '335+ bones', text: 'Rotate a fully segmented reference skeleton, isolate any bone with one click and view it from six camera presets.' },
-  { page: 'muscles', icon: Layers, title: 'Muscle Explorer', tag: 'Écorché model', text: 'Peel back superficial and deep muscle layers, or combine them with the skeleton to see how they attach.' },
-  { page: 'neuro', icon: Brain, title: 'Neuro & Brain', tag: '44 pathways', text: 'Browse 437 cerebral structures and 255 peripheral nerves grouped into functional pathways.' },
-  { page: 'spine', icon: Rows3, title: 'Spine Explorer', tag: 'C1 – Coccyx', text: 'Filter the vertebral column by region — cervical, thoracic, lumbar, sacrum — synced live with the 3D view.' },
-  { page: 'stress', icon: Gauge, title: 'Stress Analysis', tag: '1D axial FEA', text: 'Apply loads and watch a direct-stiffness solver colour the bone with a live 0–10 MPa stress heatmap.' },
-  { page: 'xray', icon: ScanLine, title: 'X-Ray Studio', tag: 'AP + Lateral', text: 'Open radiographs side by side with zoom, rotation and contrast controls — processed locally, never uploaded.' },
+const MODULES: { page: Page; icon: LucideIcon; title: string; tag: string; text: string; art: string }[] = [
+  { page: 'viewer', icon: Bone, title: 'Skeletal Atlas', tag: '335+ bones', text: 'Rotate a fully segmented reference skeleton, isolate any bone with one click and view it from six camera presets.', art: '/branding/3d-anatomy-card.jpg' },
+  { page: 'muscles', icon: Layers, title: 'Muscle Explorer', tag: 'Écorché model', text: 'Peel back superficial and deep muscle layers, or combine them with the skeleton to see how they attach.', art: '/branding/card-muscles.jpg' },
+  { page: 'neuro', icon: Brain, title: 'Neuro & Brain', tag: '44 pathways', text: 'Browse 437 cerebral structures and 255 peripheral nerves grouped into functional pathways.', art: '/branding/card-neuro.jpg' },
+  { page: 'spine', icon: Rows3, title: 'Spine Explorer', tag: 'C1 – Coccyx', text: 'Filter the vertebral column by region — cervical, thoracic, lumbar, sacrum — synced live with the 3D view.', art: '/branding/card-spine.jpg' },
+  { page: 'stress', icon: Gauge, title: 'Stress Analysis', tag: '1D axial FEA', text: 'Apply loads and watch a direct-stiffness solver colour the bone with a live 0–10 MPa stress heatmap.', art: '/branding/card-stress.jpg' },
+  { page: 'xray', icon: ScanLine, title: 'X-Ray Studio', tag: 'AP + Lateral', text: 'Open radiographs side by side with zoom, rotation and contrast controls — processed locally, never uploaded.', art: '/branding/card-xray.jpg' },
 ];
 
 const STEPS = [
@@ -162,14 +179,15 @@ const App: React.FC = () => {
       <main>
         <section className={landing.hero} id="top">
           <div className={landing.heroGlow} aria-hidden="true" />
+          <Suspense fallback={null}><LandingBone className={landing.boneLayer} bones={HERO_BONES} /></Suspense>
           <div className={landing.heroCopy}>
             <motion.span className={landing.eyebrow} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE }}>
               <Sparkles size={13}/> 3D Anatomy &amp; Biomechanics Workspace
             </motion.span>
             <h1 className={landing.heroTitle}>
-              {['The human body,', 'rendered in', 'gold detail.'].map((line, i) => (
+              {['The human body,', 'rendered in', 'living detail.'].map((line, i) => (
                 <span key={line} className={landing.lineMask}>
-                  <motion.span initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }} className={i === 2 ? landing.goldText : undefined}>{line}</motion.span>
+                  <motion.span initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.15 + i * 0.12, ease: EASE }} className={i === 2 ? landing.accentText : undefined}>{line}</motion.span>
                 </span>
               ))}
             </h1>
@@ -259,6 +277,7 @@ const App: React.FC = () => {
             {MODULES.map((module, i) => (
               <Reveal key={module.page} delay={(i % 3) * 0.08}>
                 <button type="button" className={landing.moduleCard} onClick={() => openModule(module.page)}>
+                  <img className={landing.moduleArt} src={module.art} alt="" aria-hidden="true" loading="lazy" decoding="async" />
                   <span className={landing.moduleTop}><span className={landing.iconBadge}><module.icon size={20}/></span><small>{module.tag}</small></span>
                   <h3>{module.title}</h3>
                   <p>{module.text}</p>

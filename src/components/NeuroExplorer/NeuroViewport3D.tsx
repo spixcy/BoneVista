@@ -249,10 +249,10 @@ const NeuroViewport3D: React.FC<{ active: boolean }> = ({ active }) => {
     <div className={styles.attribution}>Brain Project / Z-Anatomy · CC BY-SA 4.0</div>
     <div className={styles.assetCount}>{neuroMode === 'brain-atlas' ? `${neuroBrainManifest?.structures.length ?? 0} brain structures` : neuroMode === 'nervous-system' ? `${neuroNervesManifest?.structures.length ?? 0} nerve structures · spinal cord unavailable` : 'Neuron Lab integration pending'}</div>
     <Canvas frameloop={active ? (isRotating ? 'always' : 'demand') : 'never'} camera={{ position: [0, 0.15, 5.5], fov: 36, near: 0.01, far: 100 }} dpr={[1, 1.5]} onPointerMissed={() => useAppStore.getState().clearNeuroSelection()}>
-      <color attach="background" args={['#050505']} />
-      <hemisphereLight args={['#fff8e7', '#14110a', 1.8]} />
+      <color attach="background" args={['#080d10']} />
+      <hemisphereLight args={['#d7f3ff', '#171f23', 1.8]} />
       <directionalLight position={[3, 6, 6]} intensity={2.2} />
-      <directionalLight position={[-4, 2, -4]} intensity={1.4} color="#d4af37" />
+      <directionalLight position={[-4, 2, -4]} intensity={1.4} color="#668cff" />
       <FitCamera controls={controls} action={neuroCameraAction} mode={neuroMode} model={model} />
       <group ref={model}>
       <ModelBoundary key={`${neuroMode}-${neuroLoadRequest}`} onError={onError}>

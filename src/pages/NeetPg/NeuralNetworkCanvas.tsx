@@ -163,7 +163,7 @@ const NeuralNetworkCanvas: React.FC<{ className?: string }> = ({ className }) =>
           ctx.arc(n.x, n.y, 26 * glow + 6, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.fillStyle = glow > 0.2 ? '#fff4cc' : '#d4af37';
+        ctx.fillStyle = glow > 0.2 ? '#eaf0ff' : '#7da2ff';
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r + glow * 1.5, 0, Math.PI * 2);
         ctx.fill();

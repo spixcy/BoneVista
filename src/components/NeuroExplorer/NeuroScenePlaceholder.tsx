@@ -252,8 +252,8 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
     <svg className={styles.diagramSvg} viewBox="0 0 500 700" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="brainGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#d4af37" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
+          <stop offset="0%" stopColor="#7da2ff" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#7da2ff" stopOpacity="0" />
         </radialGradient>
       </defs>
 
@@ -286,11 +286,11 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
             <circle cx="250" cy="80" r="48" fill="url(#brainGlow)" />
             <path
               d="M 250 36 C 220 36 208 55 208 85 C 208 115 228 126 244 128 L 244 140 L 256 140 L 256 128 C 272 126 292 115 292 85 C 292 55 280 36 250 36 Z"
-              fill="rgba(212, 175, 55, 0.18)"
-              stroke="#d4af37"
+              fill="rgba(125,162,255,0.18)"
+              stroke="#7da2ff"
               strokeWidth="2.5"
             />
-            <path d="M 250 40 Q 248 85 250 128" stroke="#d4af37" strokeWidth="1.5" strokeDasharray="2 3" opacity="0.6" />
+            <path d="M 250 40 Q 248 85 250 128" stroke="#7da2ff" strokeWidth="1.5" strokeDasharray="2 3" opacity="0.6" />
             <title>Central Nervous System: Brain (Cerebrum)</title>
           </g>
 
@@ -299,7 +299,7 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
             className={`${styles.diagramElement} ${isSelected('spinal_cord') ? styles.selectedElement : ''}`}
             onClick={() => onSelect('spinal_cord')}
           >
-            <rect x="246" y="132" width="8" height="320" rx="4" fill="rgba(212, 175, 55, 0.4)" stroke="#d4af37" strokeWidth="2" />
+            <rect x="246" y="132" width="8" height="320" rx="4" fill="rgba(125,162,255,0.4)" stroke="#7da2ff" strokeWidth="2" />
             <title>Central Nervous System: Spinal Cord (Medulla spinalis)</title>
           </g>
         </g>
@@ -313,8 +313,8 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
             className={`${styles.diagramElement} ${isSelected('optic') || isSelected('olfactory') ? styles.selectedElement : ''}`}
             onClick={() => onSelect('optic')}
           >
-            <path d="M 244 70 L 230 62 M 256 70 L 270 62" stroke="#e2c66e" strokeWidth="2.5" strokeLinecap="round" />
-            <path d="M 246 86 L 222 86 M 254 86 L 278 86" stroke="#e2c66e" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M 244 70 L 230 62 M 256 70 L 270 62" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M 246 86 L 222 86 M 254 86 L 278 86" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" />
             <title>Cranial Nerves: Olfactory (CN I) & Optic (CN II)</title>
           </g>
 
@@ -323,8 +323,8 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
             className={`${styles.diagramElement} ${isSelected('vagus') ? styles.selectedElement : ''}`}
             onClick={() => onSelect('vagus')}
           >
-            <path d="M 242 120 Q 220 145 222 220" stroke="#e2c66e" strokeWidth="2" strokeDasharray="4 2" />
-            <path d="M 258 120 Q 280 145 278 220" stroke="#e2c66e" strokeWidth="2" strokeDasharray="4 2" />
+            <path d="M 242 120 Q 220 145 222 220" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4 2" />
+            <path d="M 258 120 Q 280 145 278 220" stroke="#38bdf8" strokeWidth="2" strokeDasharray="4 2" />
             <title>Cranial Nerves: Vagus Nerve (CN X)</title>
           </g>
         </g>
@@ -339,11 +339,11 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
             onClick={() => onSelect('brachial')}
           >
             {/* Left arm */}
-            <path d="M 244 165 C 210 168 180 190 150 250 L 125 340 L 115 410" stroke="#e2c66e" strokeWidth="2.5" fill="none" />
-            <path d="M 150 250 L 138 340 L 130 405" stroke="#e2c66e" strokeWidth="1.8" fill="none" opacity="0.8" />
+            <path d="M 244 165 C 210 168 180 190 150 250 L 125 340 L 115 410" stroke="#60a5fa" strokeWidth="2.5" fill="none" />
+            <path d="M 150 250 L 138 340 L 130 405" stroke="#60a5fa" strokeWidth="1.8" fill="none" opacity="0.8" />
             {/* Right arm */}
-            <path d="M 256 165 C 290 168 320 190 350 250 L 375 340 L 385 410" stroke="#e2c66e" strokeWidth="2.5" fill="none" />
-            <path d="M 350 250 L 362 340 L 370 405" stroke="#e2c66e" strokeWidth="1.8" fill="none" opacity="0.8" />
+            <path d="M 256 165 C 290 168 320 190 350 250 L 375 340 L 385 410" stroke="#60a5fa" strokeWidth="2.5" fill="none" />
+            <path d="M 350 250 L 362 340 L 370 405" stroke="#60a5fa" strokeWidth="1.8" fill="none" opacity="0.8" />
             <title>Peripheral: Brachial Plexus, Radial, Median, and Ulnar Nerves</title>
           </g>
 
@@ -354,8 +354,8 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
           >
             {[200, 230, 260, 290, 320, 350].map((y, idx) => (
               <React.Fragment key={y}>
-                <path d={`M 244 ${y} Q 210 ${y - 4} 190 ${y + 12}`} stroke="#e2c66e" strokeWidth="1.6" fill="none" opacity="0.75" />
-                <path d={`M 256 ${y} Q 290 ${y - 4} 310 ${y + 12}`} stroke="#e2c66e" strokeWidth="1.6" fill="none" opacity="0.75" />
+                <path d={`M 244 ${y} Q 210 ${y - 4} 190 ${y + 12}`} stroke="#60a5fa" strokeWidth="1.6" fill="none" opacity="0.75" />
+                <path d={`M 256 ${y} Q 290 ${y - 4} 310 ${y + 12}`} stroke="#60a5fa" strokeWidth="1.6" fill="none" opacity="0.75" />
               </React.Fragment>
             ))}
             <title>Peripheral: Intercostal Nerves (T1–T12)</title>
@@ -367,11 +367,11 @@ function WholeNervousSystemDiagram({ isLayerVisible, isSelected, onSelect }: Dia
             onClick={() => onSelect('sciatic')}
           >
             {/* Left leg (Sciatic + Tibial + Peroneal) */}
-            <path d="M 246 430 C 230 460 215 500 210 560 L 205 640 L 200 680" stroke="#e2c66e" strokeWidth="3" fill="none" />
-            <path d="M 246 410 C 238 440 230 480 230 530 L 225 610" stroke="#e2c66e" strokeWidth="2" strokeDasharray="3 3" fill="none" opacity="0.8" />
+            <path d="M 246 430 C 230 460 215 500 210 560 L 205 640 L 200 680" stroke="#60a5fa" strokeWidth="3" fill="none" />
+            <path d="M 246 410 C 238 440 230 480 230 530 L 225 610" stroke="#60a5fa" strokeWidth="2" strokeDasharray="3 3" fill="none" opacity="0.8" />
             {/* Right leg */}
-            <path d="M 254 430 C 270 460 285 500 290 560 L 295 640 L 300 680" stroke="#e2c66e" strokeWidth="3" fill="none" />
-            <path d="M 254 410 C 262 440 270 480 270 530 L 275 610" stroke="#e2c66e" strokeWidth="2" strokeDasharray="3 3" fill="none" opacity="0.8" />
+            <path d="M 254 430 C 270 460 285 500 290 560 L 295 640 L 300 680" stroke="#60a5fa" strokeWidth="3" fill="none" />
+            <path d="M 254 410 C 262 440 270 480 270 530 L 275 610" stroke="#60a5fa" strokeWidth="2" strokeDasharray="3 3" fill="none" opacity="0.8" />
             <title>Peripheral: Lumbosacral Plexus, Sciatic Nerve, Femoral Nerve</title>
           </g>
         </g>
@@ -397,9 +397,9 @@ function BrainAtlasDiagram({ isLayerVisible, isSelected, onSelect }: DiagramProp
           onClick={() => onSelect('pons')}
         >
           {/* Midbrain & Pons */}
-          <path d="M 235 240 C 220 270 215 310 230 350 L 255 350 C 270 310 265 270 250 240 Z" fill="rgba(168,85,247,0.25)" stroke="#f1d78a" strokeWidth="2.5" />
+          <path d="M 235 240 C 220 270 215 310 230 350 L 255 350 C 270 310 265 270 250 240 Z" fill="rgba(168,85,247,0.25)" stroke="#a855f7" strokeWidth="2.5" />
           {/* Medulla */}
-          <path d="M 230 350 L 235 410 L 250 410 L 255 350 Z" fill="rgba(168,85,247,0.2)" stroke="#f1d78a" strokeWidth="2" />
+          <path d="M 230 350 L 235 410 L 250 410 L 255 350 Z" fill="rgba(168,85,247,0.2)" stroke="#a855f7" strokeWidth="2" />
           <title>Brainstem: Midbrain, Pons, and Medulla Oblongata</title>
         </g>
       )}
@@ -413,13 +413,13 @@ function BrainAtlasDiagram({ isLayerVisible, isSelected, onSelect }: DiagramProp
           <path
             d="M 255 270 C 310 270 360 300 365 350 C 370 395 330 420 275 410 C 255 405 245 375 250 350 Z"
             fill="rgba(236,72,153,0.22)"
-            stroke="#f6f3eb"
+            stroke="#ec4899"
             strokeWidth="2.5"
           />
           {/* Foliated striations */}
-          <path d="M 270 310 Q 315 320 345 345" stroke="#f6f3eb" strokeWidth="1.2" opacity="0.6" />
-          <path d="M 265 335 Q 310 350 340 375" stroke="#f6f3eb" strokeWidth="1.2" opacity="0.6" />
-          <path d="M 260 360 Q 295 380 325 395" stroke="#f6f3eb" strokeWidth="1.2" opacity="0.6" />
+          <path d="M 270 310 Q 315 320 345 345" stroke="#ec4899" strokeWidth="1.2" opacity="0.6" />
+          <path d="M 265 335 Q 310 350 340 375" stroke="#ec4899" strokeWidth="1.2" opacity="0.6" />
+          <path d="M 260 360 Q 295 380 325 395" stroke="#ec4899" strokeWidth="1.2" opacity="0.6" />
           <title>Cerebellum: Motor Coordination and Fine Movement Precision</title>
         </g>
       )}
@@ -435,7 +435,7 @@ function BrainAtlasDiagram({ isLayerVisible, isSelected, onSelect }: DiagramProp
             <path
               d="M 230 90 C 160 90 100 135 90 200 C 85 240 105 270 145 285 C 185 290 215 270 230 250 C 235 200 232 140 230 90 Z"
               fill="rgba(59,130,246,0.25)"
-              stroke="#d4af37"
+              stroke="#3b82f6"
               strokeWidth="2.5"
             />
             <title>Frontal Lobe: Executive Function, Planning, Motor Cortex</title>
@@ -477,7 +477,7 @@ function BrainAtlasDiagram({ isLayerVisible, isSelected, onSelect }: DiagramProp
             <path
               d="M 145 285 C 135 320 160 355 205 355 C 240 355 245 310 240 270 C 220 265 180 270 145 285 Z"
               fill="rgba(14,165,233,0.25)"
-              stroke="#d4af37"
+              stroke="#0ea5e9"
               strokeWidth="2.5"
             />
             <title>Temporal Lobe: Auditory Perception, Language (Wernicke), Memory</title>
@@ -529,8 +529,8 @@ function NeuronLabDiagram({ isLayerVisible, isSelected, onSelect, pulsePos }: Ne
     <svg className={styles.diagramSvg} viewBox="0 0 500 600" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="somaGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#e2c66e" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#e2c66e" stopOpacity="0.05" />
+          <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.05" />
         </radialGradient>
       </defs>
 
@@ -541,11 +541,11 @@ function NeuronLabDiagram({ isLayerVisible, isSelected, onSelect, pulsePos }: Ne
           onClick={() => onSelect('dendrite')}
         >
           {/* Apical dendrite branching upwards */}
-          <path d="M 250 160 L 250 90 L 210 30 M 250 90 L 290 30" stroke="#e2c66e" strokeWidth="3" strokeLinecap="round" />
-          <path d="M 210 60 L 170 20 M 290 60 L 330 20" stroke="#e2c66e" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M 250 160 L 250 90 L 210 30 M 250 90 L 290 30" stroke="#38bdf8" strokeWidth="3" strokeLinecap="round" />
+          <path d="M 210 60 L 170 20 M 290 60 L 330 20" stroke="#38bdf8" strokeWidth="2.2" strokeLinecap="round" />
           {/* Basal dendrites */}
-          <path d="M 215 180 L 150 140 L 110 110 M 150 140 L 120 165" stroke="#e2c66e" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M 285 180 L 350 140 L 390 110 M 350 140 L 380 165" stroke="#e2c66e" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 215 180 L 150 140 L 110 110 M 150 140 L 120 165" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 285 180 L 350 140 L 390 110 M 350 140 L 380 165" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" />
           {/* Dendritic spines (dots) */}
           {[
             [210, 50], [290, 50], [195, 38], [305, 38], [140, 130], [360, 130], [245, 110], [255, 110]
@@ -565,11 +565,11 @@ function NeuronLabDiagram({ isLayerVisible, isSelected, onSelect, pulsePos }: Ne
           <polygon
             points="250,160 285,180 280,225 250,240 220,225 215,180"
             fill="url(#somaGlow)"
-            stroke="#a8832a"
+            stroke="#0284c7"
             strokeWidth="3"
           />
           {/* Nucleus */}
-          <circle cx="250" cy="200" r="14" fill="rgba(2,132,199,0.3)" stroke="#e2c66e" strokeWidth="2" />
+          <circle cx="250" cy="200" r="14" fill="rgba(2,132,199,0.3)" stroke="#38bdf8" strokeWidth="2" />
           <circle cx="252" cy="198" r="4" fill="#e0f2fe" />
           <title>Soma (Perikaryon) and Nucleus: Metabolic & Genetic Center</title>
         </g>
@@ -582,9 +582,9 @@ function NeuronLabDiagram({ isLayerVisible, isSelected, onSelect, pulsePos }: Ne
           onClick={() => onSelect('axon')}
         >
           {/* Axon Hillock */}
-          <polygon points="244,238 256,238 253,260 247,260" fill="rgba(14,165,233,0.5)" stroke="#d4af37" strokeWidth="2" />
+          <polygon points="244,238 256,238 253,260 247,260" fill="rgba(14,165,233,0.5)" stroke="#0ea5e9" strokeWidth="2" />
           {/* Axon Shaft */}
-          <line x1="250" y1="260" x2="250" y2="530" stroke="#d4af37" strokeWidth="3" />
+          <line x1="250" y1="260" x2="250" y2="530" stroke="#0ea5e9" strokeWidth="3" />
           <title>Axon Hillock & Axon Proper: Impulse Generation and Propagation</title>
         </g>
       )}
@@ -625,11 +625,11 @@ function NeuronLabDiagram({ isLayerVisible, isSelected, onSelect, pulsePos }: Ne
           onClick={() => onSelect('synapse')}
         >
           {/* Axon Telodendria (terminal branches) */}
-          <path d="M 250 525 L 210 570 M 250 525 L 250 580 M 250 525 L 290 570" stroke="#d4af37" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 250 525 L 210 570 M 250 525 L 250 580 M 250 525 L 290 570" stroke="#0ea5e9" strokeWidth="2.5" strokeLinecap="round" />
           {/* Terminal Boutons */}
-          <circle cx="210" cy="572" r="6" fill="#e2c66e" stroke="#a8832a" strokeWidth="2" />
-          <circle cx="250" cy="582" r="6" fill="#e2c66e" stroke="#a8832a" strokeWidth="2" />
-          <circle cx="290" cy="572" r="6" fill="#e2c66e" stroke="#a8832a" strokeWidth="2" />
+          <circle cx="210" cy="572" r="6" fill="#38bdf8" stroke="#0284c7" strokeWidth="2" />
+          <circle cx="250" cy="582" r="6" fill="#38bdf8" stroke="#0284c7" strokeWidth="2" />
+          <circle cx="290" cy="572" r="6" fill="#38bdf8" stroke="#0284c7" strokeWidth="2" />
           <title>Synaptic Boutons: Presynaptic Neurotransmitter Release Site</title>
         </g>
       )}
@@ -641,8 +641,8 @@ function NeuronLabDiagram({ isLayerVisible, isSelected, onSelect, pulsePos }: Ne
             cx={axonStartX}
             cy={pulseY}
             r="8"
-            fill="#e2c66e"
-            filter="drop-shadow(0 0 8px #e2c66e)"
+            fill="#38bdf8"
+            filter="drop-shadow(0 0 8px #38bdf8)"
           />
           <circle cx={axonStartX} cy={pulseY} r="3" fill="#ffffff" />
           <title>Illustrative Signal Path: Depolarization wave along axon</title>

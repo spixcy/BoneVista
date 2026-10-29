@@ -4,7 +4,7 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  background: var(--color-bg-surface, #0b0b0b);
+  background: var(--color-bg-surface, #0e1625);
 }
 
 .searchBar {
@@ -13,12 +13,12 @@
   gap: 8px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  background: var(--color-bg-base, #050505);
+  background: var(--color-bg-base, #080d18);
   flex-shrink: 0;
 }
 
 .searchIcon {
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
   flex-shrink: 0;
 }
 
@@ -27,13 +27,13 @@
   min-width: 0;
   background: transparent;
   border: none;
-  color: var(--color-text-primary, #f6f3eb);
+  color: var(--color-text-primary, #eef3ff);
   font: 500 12px/1.4 var(--font-sans, 'Inter', sans-serif);
   outline: none;
 }
 
 .searchInput::placeholder {
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
 }
 
 .clearSearchBtn {
@@ -44,16 +44,16 @@
   height: 18px;
   border-radius: 50%;
   border: none;
-  background: var(--color-bg-elevated, #131312);
-  color: var(--color-text-tertiary, #7b7568);
+  background: var(--color-bg-elevated, #131e30);
+  color: var(--color-text-tertiary, #71809a);
   cursor: pointer;
   padding: 0;
   transition: all 0.15s ease;
 }
 
 .clearSearchBtn:hover {
-  color: var(--color-text-primary, #f6f3eb);
-  background: var(--color-bg-hover, #1c1a16);
+  color: var(--color-text-primary, #eef3ff);
+  background: var(--color-bg-hover, #1a2940);
 }
 
 .listScroll {
@@ -76,7 +76,7 @@
   gap: 8px;
   padding: 8px 14px;
   background: transparent;
-  color: var(--color-text-secondary, #b5ae9f);
+  color: var(--color-text-secondary, #a2afc6);
   font: 600 11.5px/1 var(--font-sans, 'Inter', sans-serif);
   cursor: pointer;
   user-select: none;
@@ -85,7 +85,7 @@
 }
 
 .regionHeader:hover {
-  color: var(--color-text-primary, #f6f3eb);
+  color: var(--color-text-primary, #eef3ff);
 }
 
 .regionTitle {
@@ -99,7 +99,7 @@
 
 .regionCount {
   font: 600 10px/1 var(--font-mono, monospace);
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
 }
 
 .structureRow {
@@ -111,11 +111,11 @@
 }
 
 .structureRow:hover {
-  background: var(--color-bg-hover, #1c1a16);
+  background: var(--color-bg-hover, #1a2940);
 }
 
 .structureRow.selected {
-  background: var(--color-accent-dim, rgba(212, 175, 55, 0.15));
+  background: var(--color-accent-dim, rgba(94, 132, 245, 0.15));
 }
 
 .structureRow.hidden .structureName {
@@ -138,7 +138,7 @@
 }
 
 .selectButton:focus-visible {
-  outline: 2px solid var(--color-accent, #d4af37);
+  outline: 2px solid var(--color-accent, #7da2ff);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -152,20 +152,20 @@
 
 .structureName {
   font: 550 11.5px/1.3 var(--font-sans, 'Inter', sans-serif);
-  color: var(--color-text-primary, #f6f3eb);
+  color: var(--color-text-primary, #eef3ff);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .selected .structureName {
-  color: var(--color-accent, #d4af37);
+  color: var(--color-accent, #7da2ff);
   font-weight: 650;
 }
 
 .structureLatin {
   font: italic 400 10px/1.2 var(--font-sans, 'Inter', sans-serif);
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -182,7 +182,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
   font: 700 8.5px/1 var(--font-mono, monospace);
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
   flex-shrink: 0;
 }
 
@@ -197,9 +197,9 @@
 }
 
 .layerPillSup {
-  background: rgba(212, 175, 55, 0.12);
+  background: rgba(125, 162, 255, 0.12);
   color: #9cbaff;
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  border: 1px solid rgba(125, 162, 255, 0.25);
 }
 
 .layerPillDeep {
@@ -217,7 +217,7 @@
   border-radius: 4px;
   border: none;
   background: transparent;
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
   cursor: pointer;
   padding: 0;
   transition: all 0.12s ease;
@@ -225,8 +225,8 @@
 }
 
 .visibilityButton:hover {
-  color: var(--color-text-primary, #f6f3eb);
-  background: var(--color-bg-elevated, #131312);
+  color: var(--color-text-primary, #eef3ff);
+  background: var(--color-bg-elevated, #131e30);
 }
 
 .visibilityButton.hidden {
@@ -236,7 +236,7 @@
 .emptyState {
   padding: 24px 16px;
   text-align: center;
-  color: var(--color-text-tertiary, #7b7568);
+  color: var(--color-text-tertiary, #71809a);
   font: 500 11.5px/1.5 var(--font-sans, sans-serif);
 }
 
@@ -245,13 +245,13 @@
   padding: 6px 12px;
   border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
   border-radius: 6px;
-  background: var(--color-bg-elevated, #131312);
-  color: var(--color-accent, #d4af37);
+  background: var(--color-bg-elevated, #131e30);
+  color: var(--color-accent, #7da2ff);
   font: 600 11px/1 var(--font-sans, sans-serif);
   cursor: pointer;
 }
 
 .resetFilterBtn:hover {
-  background: var(--color-bg-hover, #1c1a16);
-  border-color: var(--color-accent, #d4af37);
+  background: var(--color-bg-hover, #1a2940);
+  border-color: var(--color-accent, #7da2ff);
 }

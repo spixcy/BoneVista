@@ -51,8 +51,8 @@ const AtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl | null>
         : null;
       materials.forEach((material) => {
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.color.set(stressColor ?? (id && selectedBones.has(id) ? '#d4af37' : '#ece6d6'));
-          material.emissive.set(isStressTarget && stressColor ? stressColor.clone().multiplyScalar(0.18) : id && selectedBones.has(id) ? '#4a3608' : '#000000');
+          material.color.set(stressColor ?? (id && selectedBones.has(id) ? '#668cff' : '#d4d3c8'));
+          material.emissive.set(isStressTarget && stressColor ? stressColor.clone().multiplyScalar(0.18) : id && selectedBones.has(id) ? '#182b68' : '#000000');
           material.roughness = 0.78;
           material.metalness = 0.02;
         }
@@ -135,7 +135,7 @@ const MuscleAtlasModel: React.FC<{ controls: React.RefObject<OrbitControlsImpl |
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       materials.forEach((material) => {
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.emissive.set(selected ? '#4a3608' : '#000000');
+          material.emissive.set(selected ? '#182b68' : '#000000');
           material.emissiveIntensity = selected ? 0.8 : 1;
         }
       });
@@ -237,11 +237,11 @@ const Viewport3D: React.FC<{ active: boolean }> = ({ active }) => {
       <div className={styles.attribution}>Reference anatomy · Z-Anatomy / BodyParts3D · CC BY-SA 4.0</div>
       <div className={styles.assetCount}>{visibleStructureCount || '—'} named structures</div>
       <Canvas frameloop={active ? (isRotating ? 'always' : 'demand') : 'never'} camera={{ position: [0, 0.4, 5.7], fov: 36, near: 0.01, far: 100 }} dpr={[1, 1.5]} onPointerMissed={clearBoneSelection}>
-        <color attach="background" args={['#050505']} />
-        <hemisphereLight args={['#fff8e7', '#14110a', 1.8]} />
+        <color attach="background" args={['#080d10']} />
+        <hemisphereLight args={['#d7f3ff', '#171f23', 1.8]} />
         <directionalLight position={[3, 6, 6]} intensity={2.2} />
-        <directionalLight position={[-4, 2, -4]} intensity={1.4} color="#d4af37" />
-        <Grid position={[0, -1.8, 0]} args={[12, 12]} cellSize={0.4} cellThickness={0.4} cellColor="#1e1a10" sectionColor="#3a3018" fadeDistance={12} fadeStrength={2} infiniteGrid />
+        <directionalLight position={[-4, 2, -4]} intensity={1.4} color="#668cff" />
+        <Grid position={[0, -1.8, 0]} args={[12, 12]} cellSize={0.4} cellThickness={0.4} cellColor="#163231" sectionColor="#214440" fadeDistance={12} fadeStrength={2} infiniteGrid />
         <ModelBoundary key={`${showMuscleModel ? 'ecorche' : 'bonevista'}-${muscleLoadAttempt}`} onError={setLoadError}>
           <Suspense fallback={null}>
             {showMuscleModel
