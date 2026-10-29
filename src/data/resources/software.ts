@@ -85,5 +85,39 @@ export const softwareResources: ResourceItem[] = [
     relatedModule: 'Global UI',
     verificationStatus: 'Verified',
     tags: ['icons', 'lucide', 'ui', 'isc']
+  },
+  {
+    id: 'inter-font',
+    title: 'Inter Typeface',
+    category: 'libraries-research',
+    authorsOrOrganization: 'Rasmus Andersson',
+    description: 'A typeface carefully crafted and optimised for computer screens, used throughout the BoneVista interface.',
+    sourceUrl: 'https://github.com/rsms/inter',
+    licenseName: 'SIL Open Font License 1.1',
+    licenseUrl: 'https://scripts.sil.org/OFL',
+    citationText: 'Andersson, R. (2023). Inter: A typeface specially designed for user interfaces. GitHub. https://github.com/rsms/inter',
+    attributionText: 'Inter typeface by Rasmus Andersson under the SIL Open Font License.',
+    resourceRole: 'Software dependency',
+    boneVistaUsage: 'Primary UI sans-serif typeface for labels, descriptions, and navigation text.',
+    relatedModule: 'Global UI',
+    verificationStatus: 'Verified',
+    tags: ['inter', 'font', 'typeface', 'ofl']
+  },
+  {
+    id: 'jetbrains-mono-font',
+    title: 'JetBrains Mono',
+    category: 'libraries-research',
+    authorsOrOrganization: 'JetBrains s.r.o.',
+    description: 'A monospace typeface for developers with increased code readability, used for anatomical codes and IDs.',
+    sourceUrl: 'https://github.com/JetBrains/JetBrainsMono',
+    licenseName: 'SIL Open Font License 1.1',
+    licenseUrl: 'https://scripts.sil.org/OFL',
+    citationText: 'JetBrains s.r.o. (2023). JetBrains Mono: A Free and Open Source Typeface for Developers. GitHub. https://github.com/JetBrains/JetBrainsMono',
+    attributionText: 'JetBrains Mono by JetBrains s.r.o. under the SIL Open Font License.',
+    resourceRole: 'Software dependency',
+    boneVistaUsage: 'Monospace labels for anatomical IDs, commit hashes, and code-style elements.',
+    relatedModule: 'Global UI',
+    verificationStatus: 'Verified',
+    tags: ['jetbrains', 'mono', 'font', 'ofl']
   }
 ];
